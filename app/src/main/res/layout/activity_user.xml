@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:foregroundTint="@color/white"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@drawable/wings"
+    tools:context=".userActivity">
+
+
+
+    <!--EditText for username-->
+    <EditText
+        android:id="@+id/username"
+        style="@style/Widget.AppCompat.Light.AutoCompleteTextView"
+        android:layout_width="331dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="144dp"
+        android:layout_marginEnd="24dp"
+        android:background="#66D7DFD6"
+        android:hint="@string/prompt_username"
+        android:inputType="text"
+        android:selectAllOnFocus="true"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <!--EditText for password-->
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="330dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="24dp"
+        android:background="#66D7DFD6"
+        android:hint="@string/prompt_password"
+        android:imeActionLabel="@string/action_sign_in"
+        android:imeOptions="actionDone"
+        android:inputType="textPassword"
+        android:selectAllOnFocus="true"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="@+id/username"
+        app:layout_constraintTop_toBottomOf="@+id/username" />
+    <!--EditText for username-->
+    <TextView
+        android:id="@+id/or"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/or"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/login"
+        app:layout_constraintTop_toBottomOf="@+id/login" />
+
+    <!--EditText for register-->
+
+    <TextView
+        android:id="@+id/register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/action_register"
+        android:textColor="#E60C3F"
+        android:textSize="26dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/buttonForGoogle"
+        app:layout_constraintTop_toBottomOf="@+id/buttonForGoogle" />
+    <!--EditText for not register-->
+    <TextView
+        android:id="@+id/notRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="188dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/not_register"
+        android:textColor="#E60C3F"
+        android:textSize="26dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/buttonForGoogle"
+        app:layout_constraintTop_toBottomOf="@+id/buttonForGoogle" />
+
+    <!--Button for sign-in-->
+    <Button
+        android:id="@+id/login"
+        android:layout_width="323dp"
+        android:layout_height="81dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="56dp"
+        android:backgroundTint="#AD1457"
+        android:enabled="false"
+        android:text="@string/action_sign_in"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/password"
+        app:layout_constraintTop_toBottomOf="@+id/password" />
+    <!--Button for facebook-->
+    <Button
+        android:id="@+id/buttonForFacebook"
+        android:layout_width="323dp"
+        android:layout_height="81dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="@color/white"
+        android:enabled="false"
+        android:text="@string/facebook"
+        android:textColor="#283593"
+        android:textSize="22dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/login"
+        app:layout_constraintTop_toBottomOf="@+id/login" />
+    <!--Button for google-->
+    <Button
+        android:id="@+id/buttonForGoogle"
+        android:layout_width="323dp"
+        android:layout_height="81dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:backgroundTint="@color/white"
+        android:enabled="false"
+        android:text="@string/Google"
+        android:textColor="@color/black"
+        android:textSize="22dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/buttonForFacebook"
+        app:layout_constraintTop_toBottomOf="@+id/buttonForFacebook" />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="197dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="60dp"
+        android:layoutDirection="rtl"
+        android:text="@string/remmber_me"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="@+id/password"
+        app:layout_constraintTop_toTopOf="@+id/password" />
+    <!--logo image-->
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="130dp"
+        android:layout_height="107dp"
+        android:layout_marginStart="124dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/globe" />
+    <!--user image-->
+    <ImageView
+        android:id="@+id/user"
+        android:layout_width="39dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="250dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toStartOf="@+id/username"
+        app:layout_constraintTop_toTopOf="@+id/username"
+        app:srcCompat="@drawable/user" />
+    <!--lock image-->
+    <ImageView
+        android:id="@+id/lock"
+        android:layout_width="33dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="252dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toStartOf="@+id/password"
+        app:layout_constraintTop_toTopOf="@+id/password"
+        app:srcCompat="@drawable/lock" />
+    <!--facebook image-->
+    <!--google image-->
+
+    <ImageView
+        android:id="@+id/facebook"
+        android:layout_width="49dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/buttonForFacebook"
+        app:layout_constraintTop_toTopOf="@+id/buttonForFacebook"
+        app:srcCompat="@drawable/facebook" />
+
+    <ImageView
+        android:id="@+id/google"
+        android:layout_width="55dp"
+        android:layout_height="57dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/buttonForGoogle"
+        app:layout_constraintTop_toTopOf="@+id/buttonForGoogle"
+        app:srcCompat="@drawable/google" />
+
+    <ProgressBar
+        android:id="@+id/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="64dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/password"
+        app:layout_constraintStart_toStartOf="@+id/password"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

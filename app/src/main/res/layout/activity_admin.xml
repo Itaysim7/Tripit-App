@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:foregroundTint="@color/white"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@drawable/wings"
+    tools:context=".welcomeActivity">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="130dp"
+        android:layout_height="107dp"
+        android:layout_marginStart="124dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/globe" />
+
+    <!--Button for sign-in-->
+
+    <EditText
+        android:id="@+id/username"
+        style="@style/Widget.AppCompat.Light.AutoCompleteTextView"
+        android:layout_width="331dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="264dp"
+        android:background="#66D7DFD6"
+        android:hint="@string/prompt_username"
+        android:inputType="text"
+        android:selectAllOnFocus="true"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="330dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="24dp"
+        android:background="#66D7DFD6"
+        android:hint="@string/prompt_password"
+        android:imeActionLabel="@string/action_sign_in"
+        android:imeOptions="actionDone"
+        android:inputType="textPassword"
+        android:selectAllOnFocus="true"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="@+id/username"
+        app:layout_constraintTop_toBottomOf="@+id/username" />
+
+    <Button
+        android:id="@+id/login"
+        android:layout_width="323dp"
+        android:layout_height="81dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="56dp"
+        android:backgroundTint="#AD1457"
+        android:enabled="false"
+        android:text="@string/action_sign_in"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/password"
+        app:layout_constraintTop_toBottomOf="@+id/password" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="299dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="36dp"
+        android:fontFamily="monospace"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="@string/welcome_admin"
+        android:textColor="#FFFFFF"
+        android:textSize="36sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/icon" />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="197dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="60dp"
+        android:layoutDirection="rtl"
+        android:text="@string/remmber_me"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/password"
+        app:layout_constraintTop_toTopOf="@+id/password" />
+
+    <TextView
+        android:id="@+id/notRegister"
+        android:layout_width="260sp"
+        android:layout_height="43sp"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="300dp"
+        android:text="@string/admin_problem"
+        android:textColor="#E60C3F"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/login"
+        app:layout_constraintTop_toBottomOf="@+id/login" />
+</androidx.constraintlayout.widget.ConstraintLayout>
