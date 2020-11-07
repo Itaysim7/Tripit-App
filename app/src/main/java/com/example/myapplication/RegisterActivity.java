@@ -28,7 +28,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     {
         if(view == register_now_btn)
         {
-            popup.setText("ההרשמה התבצעה בהצלחה!");
             Intent intent=new Intent(this,userActivity.class);
             startActivity(intent);
         }//if
