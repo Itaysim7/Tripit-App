@@ -11,14 +11,18 @@ public class welcomeActivity extends AppCompatActivity implements View.OnClickLi
 {
     private Button btn_admin_login;
     private Button btn_user_login;
+    private Button btn_home;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         btn_admin_login = (Button)findViewById(R.id.adminButton);
         btn_user_login = (Button)findViewById(R.id.userButton);
+        btn_home = (Button)findViewById(R.id.home);
+
         btn_admin_login.setOnClickListener(this);
         btn_user_login.setOnClickListener(this);
+        btn_home.setOnClickListener(this);
     }
 
 
@@ -33,6 +37,11 @@ public class welcomeActivity extends AppCompatActivity implements View.OnClickLi
         else if(v== btn_user_login)
         {
             Intent intent=new Intent(this,userActivity.class);
+            startActivity(intent);
+        }
+        else if(v== btn_home)
+        {
+            Intent intent=new Intent(this,homePage.class);
             startActivity(intent);
         }//else if
     }

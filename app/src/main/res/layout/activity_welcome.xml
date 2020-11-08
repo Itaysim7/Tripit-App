@@ -7,6 +7,19 @@
     android:background="@drawable/wings"
     tools:context=".welcomeActivity">
 
+    <Button
+        android:id="@+id/home"
+        android:layout_width="223sp"
+        android:layout_height="81sp"
+        android:layout_marginStart="92dp"
+        android:layout_marginTop="112dp"
+        android:backgroundTint="#AD1457"
+        android:text="homepage"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userButton" />
+
     <ImageView
         android:id="@+id/icon"
         android:layout_width="130dp"
