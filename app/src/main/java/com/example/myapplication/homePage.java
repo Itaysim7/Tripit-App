@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.widget.TextView;
 
 public class homePage extends AppCompatActivity {
 
@@ -15,7 +16,10 @@ public class homePage extends AppCompatActivity {
         setContentView(R.layout.activity_home_page);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
+        mTitle.setText(toolbar.getTitle());
+        getSupportActionBar().setDisplayShowTitleEnabled(false); //delete the default title
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

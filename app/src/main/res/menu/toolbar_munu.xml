@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/newPost" android:title="הוספת פוסט" />
-    <item android:id="@+id/Search" android:title="חיפוש" />
-    <item android:id="@+id/myProfile" android:title="הפרופיל שלי" />
-    <item android:id="@+id/savePost" android:title="פוסטים שמורים" />
+    <item android:id="@+id/newPost" android:title="הוספת פוסט" app:showAsAction="collapseActionView"/>
+    <item android:id="@+id/Search" android:title="חיפוש"  app:showAsAction="collapseActionView" />
+    <item android:id="@+id/myProfile" android:title="הפרופיל שלי" app:showAsAction="collapseActionView" />
+    <item android:id="@+id/savePost"  android:title="פוסטים שמורים"  app:showAsAction="collapseActionView" />
 </menu>
