@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "473562025343",
+    "firebase_url": "https://tripit-app-99c32.firebaseio.com",
+    "project_id": "tripit-app-99c32",
+    "storage_bucket": "tripit-app-99c32.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:473562025343:android:ab7c6e0e4112d3ef7b9e4a",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "473562025343-1eprc2s6o7165ie5tn0ce9kuisagu1dp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChZ9yI4vSw1YCarA7paQcbIZXSl21prAw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "473562025343-1eprc2s6o7165ie5tn0ce9kuisagu1dp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
