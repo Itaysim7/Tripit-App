@@ -24,7 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity
 {
-    private EditText emailEditText,usernameEditText,passwordEditText,password2EditText;
+    private EditText emailEditText,passwordEditText,password2EditText;
     private Button register_now_btn;
     private TextView popup;
     private FirebaseDatabase database;
@@ -40,7 +40,6 @@ public class RegisterActivity extends AppCompatActivity
         setContentView(R.layout.activity_register);
 
         emailEditText=(EditText)findViewById(R.id.email);
-        usernameEditText=(EditText)findViewById(R.id.username);
         passwordEditText=(EditText)findViewById(R.id.password);
         password2EditText=(EditText)findViewById(R.id.repeat_password);
         register_now_btn = (Button)findViewById(R.id.register_now);
@@ -65,14 +64,18 @@ public class RegisterActivity extends AppCompatActivity
                         Toast.makeText(getApplicationContext(),"Enter email or password",Toast.LENGTH_LONG).show();
                         return;
                     }
+                    if(password.length()<6)
+                    {
+                        Toast.makeText(getApplicationContext(),"Password length must be at least 6",Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     String password2=password2EditText.getText().toString();
-                    if(password!=password2)//if the password different
+                    if(!password.equals(password2))//if the password different
                     {
                         Toast.makeText(getApplicationContext(),"hese passwords did not match, please try again",Toast.LENGTH_LONG).show();
                         return;
                     }
-                    String username=usernameEditText.getText().toString();
-                    user=new UsersObj(username,email,password);
+                    user=new UsersObj(email,password);
                     registerUser(email,password);
                 }
             }
