@@ -98,7 +98,6 @@
         android:layout_marginStart="0dp"
         android:layout_marginTop="56dp"
         android:backgroundTint="#AD1457"
-        android:enabled="false"
         android:text="@string/action_sign_in"
         android:textColor="@color/white"
         android:textSize="20dp"
