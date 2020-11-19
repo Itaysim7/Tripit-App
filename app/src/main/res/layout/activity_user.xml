@@ -5,14 +5,13 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/wings"
     android:foregroundTint="@color/white"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:background="@drawable/wings"
     tools:context=".userActivity">
-
 
 
     <!--EditText for username-->
@@ -112,7 +111,6 @@
         android:layout_marginStart="0dp"
         android:layout_marginTop="40dp"
         android:backgroundTint="@color/white"
-        android:enabled="false"
         android:text="@string/facebook"
         android:textColor="#283593"
         android:textSize="22dp"
@@ -124,11 +122,9 @@
         android:id="@+id/buttonForGoogle"
         android:layout_width="323dp"
         android:layout_height="81dp"
-        android:layout_marginStart="0dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
         android:backgroundTint="@color/white"
-        android:enabled="false"
+        android:enabled="true"
         android:text="@string/Google"
         android:textColor="@color/black"
         android:textSize="22dp"
@@ -177,9 +173,8 @@
         app:layout_constraintStart_toStartOf="@+id/password"
         app:layout_constraintTop_toTopOf="@+id/password"
         app:srcCompat="@drawable/lock" />
-    <!--facebook image-->
-    <!--google image-->
 
+    <!--facebook image-->
     <ImageView
         android:id="@+id/facebook"
         android:layout_width="49dp"
@@ -190,6 +185,7 @@
         app:layout_constraintTop_toTopOf="@+id/buttonForFacebook"
         app:srcCompat="@drawable/facebook" />
 
+    <!--google image-->
     <ImageView
         android:id="@+id/google"
         android:layout_width="55dp"
@@ -215,7 +211,6 @@
         app:layout_constraintStart_toStartOf="@+id/password"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.3" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

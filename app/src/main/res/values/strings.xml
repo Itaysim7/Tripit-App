@@ -23,5 +23,7 @@
 
     <string name="title_activity_register">RegisterActivity</string>
 
+    <string name="facebook_app_id">1046481372536918</string>
+    <string name="fb_login_protocol_scheme">fb1046481372536918</string>
 
 </resources>
