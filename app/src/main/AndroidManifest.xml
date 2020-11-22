@@ -3,7 +3,7 @@
     package="com.example.myapplication">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature android:name="android.hardware.type.watch" />
 
@@ -14,6 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/appTheme">
+        <activity android:name=".CreatePost"></activity>
         <!--
                Set to true if your app is Standalone, that is, it does not require the handheld
                app to run.
@@ -23,7 +24,8 @@
             android:value="true" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
+            android:value="@string/facebook_app_id" />
+
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -39,7 +41,7 @@
         </activity>
         <activity android:name=".userActivity" />
         <activity android:name=".adminActivity" />
-        <activity android:name=".homePage"/>
+        <activity android:name=".homePage" />
         <activity android:name=".welcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
