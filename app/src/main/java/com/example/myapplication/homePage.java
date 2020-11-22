@@ -1,10 +1,14 @@
 package com.example.myapplication;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 public class homePage extends AppCompatActivity {
@@ -26,5 +30,18 @@ public class homePage extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.toolbar_munu, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        int id=item.getItemId();
+        //menu item click handling
+        if(id==R.id.newPost)
+        {
+            Intent intent=new Intent(this,CreatePost.class);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

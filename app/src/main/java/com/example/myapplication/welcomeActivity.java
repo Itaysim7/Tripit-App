@@ -41,7 +41,7 @@ public class welcomeActivity extends AppCompatActivity implements View.OnClickLi
         }
         else if(v== btn_home)
         {
-            Intent intent=new Intent(this,CreatePost.class);
+            Intent intent=new Intent(this,homePage.class);
             startActivity(intent);
         }//else if
     }

@@ -26,6 +26,8 @@
     <string name="return_date">תאריך חזרה</string>
     <string name="chooseYourOptions">בחר סוגי טיול</string>
     <string name="icon"></string>
+    <string name="yes">כן</string>
+    <string name="no">לא</string>
     <string name="title_activity_register">RegisterActivity</string>
     <string name="facebook_app_id">1046481372536918</string>
     <string name="fb_login_protocol_scheme">fb1046481372536918</string>
