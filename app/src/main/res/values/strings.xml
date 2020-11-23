@@ -28,8 +28,16 @@
     <string name="icon"></string>
     <string name="yes">כן</string>
     <string name="no">לא</string>
+    <string name="destination">בבקשה תכתוב את יעדך:</string>
+    <string name="input_destination">כתוב כאן.</string>
     <string name="title_activity_register">RegisterActivity</string>
     <string name="facebook_app_id">1046481372536918</string>
     <string name="fb_login_protocol_scheme">fb1046481372536918</string>
+    <string name="search_flight">מועד טיסה</string>
+    <string name="date_specific_search">תאריך מדוייק</string>
+    <string name="date_range_search">גמיש בתאריכים</string>
+    <string name="gender_chooser">בחר מין מועדף</string>
+    <string name="age_range_chooser">בחר דווח גילאים מועדף</string>
+    <string name="search">חפש</string>
 
 </resources>
