@@ -1,9 +1,11 @@
 package com.example.myapplication;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,10 +14,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 public class SearchPostActivity extends AppCompatActivity implements View.OnClickListener {
 TextView start_end;
@@ -55,6 +60,7 @@ MaterialDatePicker materialDatePicker;
         trip_type.setOnClickListener(this);
         search.setOnClickListener(this);
 
+        //DatePicket Configuration
         builder = MaterialDatePicker.Builder.dateRangePicker();
         builder.setTitleText("בחר טווח תאריכים");
         materialDatePicker = builder.build();
@@ -80,7 +86,8 @@ MaterialDatePicker materialDatePicker;
                 @Override
                 public void onDateSet(DatePicker view, int mYear, int mMonth, int dayOfMonth)
                 {
-                    start_end.setText(dayOfMonth+ "/" + (mMonth+1) + "/"+ mYear);
+                    //start_end.setText(dayOfMonth+ "/" + (mMonth+1) + "/"+ mYear);
+                    Toast.makeText(getApplicationContext(), dayOfMonth+ "/" + (mMonth+1) + "/"+ mYear, Toast.LENGTH_LONG).show();
                 }
             },day,month,year);
             dp_start_end.show();
@@ -88,6 +95,58 @@ MaterialDatePicker materialDatePicker;
         else if(v == date_range) //Case of range of dates
         {
             materialDatePicker.show(getSupportFragmentManager(),"DATE_RANGE_PICKER");
+        }//else if
+        else if(v == trip_type)
+        {
+            AlertDialog.Builder builder=new AlertDialog.Builder(SearchPostActivity.this);
+            //string array for alert dialog multichoice items(flight Purposes)
+            String [] flightPurposes=new String[]{"בטן-גב","טרקים","אומנות","שופינג","סקי","טבע","מורשת","אחרי צבא","קולינרי","אחר"};
+            //convert the flightPurposes array to list
+            final List<String> flightPurposesList= Arrays.asList(flightPurposes);
+            //boolean array for initial selected items(flight Purposes)
+            final boolean [] checkedFlightPurposes=new boolean[]{false,false,false,false,false,false,false,false,false,false};
+            //set alertDialog title
+            builder.setTitle("בחר סוגי טיול");
+            //set multichoice
+            builder.setMultiChoiceItems(flightPurposes, checkedFlightPurposes, new DialogInterface.OnMultiChoiceClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which, boolean isChecked)
+                {
+                    //update current focused item's checked status
+                    checkedFlightPurposes[which]=isChecked;
+                    //get the current focused item's
+                    String currentItems=flightPurposesList.get(which);
+                }//OnClick
+            });//setMultiChoiceItems
+
+            //set positive/yes button onclick listener
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    trip_type.setText("מטרות הטיסה שבחרת:");
+                    for(int i=0;i<checkedFlightPurposes.length;i++)
+                    {
+                        boolean checked=checkedFlightPurposes[i];
+                        if(checked)
+                        {
+                            trip_type.setText(trip_type.getText()+flightPurposesList.get(i)+" ");
+                        }//If
+                    }//For
+                }//onClick
+            });//setPositiveButton
+
+            //set neutral/cancel button click listener
+            builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }//onClicl
+            });//setNeutralButton
+
+            AlertDialog dialog=builder.create();
+            //show alert
+            dialog.show();
         }//else if
     }//onClicl
 }
