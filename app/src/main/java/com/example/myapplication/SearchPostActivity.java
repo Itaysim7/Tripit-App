@@ -3,6 +3,7 @@ package com.example.myapplication;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.util.Pair;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
@@ -17,19 +18,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class SearchPostActivity extends AppCompatActivity implements View.OnClickListener {
-TextView start_end;
 AutoCompleteTextView dest;
 Button date_specific,date_range,gender,range_age,trip_type,search;
 Calendar c_start,c_end,c_start_end;
 DatePickerDialog dp_start,dp_end,dp_start_end;
-MaterialDatePicker.Builder builder;
-MaterialDatePicker materialDatePicker;
+MaterialDatePicker.Builder<androidx.core.util.Pair<Long, Long>> build_range;
+MaterialDatePicker<androidx.core.util.Pair<Long, Long>> pick_range;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,9 +65,7 @@ MaterialDatePicker materialDatePicker;
         search.setOnClickListener(this);
 
         //DatePicket Configuration
-        builder = MaterialDatePicker.Builder.dateRangePicker();
-        builder.setTitleText("בחר טווח תאריכים");
-        materialDatePicker = builder.build();
+
 
     }//onCreate
     @Override
@@ -86,15 +88,36 @@ MaterialDatePicker materialDatePicker;
                 @Override
                 public void onDateSet(DatePicker view, int mYear, int mMonth, int dayOfMonth)
                 {
-                    //start_end.setText(dayOfMonth+ "/" + (mMonth+1) + "/"+ mYear);
-                    Toast.makeText(getApplicationContext(), dayOfMonth+ "/" + (mMonth+1) + "/"+ mYear, Toast.LENGTH_LONG).show();
+                    date_specific.setText(dayOfMonth+ "/" + (mMonth+1) + "/"+ mYear);
+                    //Toast.makeText(getApplicationContext(), dayOfMonth+ "/" + (mMonth+1) + "/"+ mYear, Toast.LENGTH_LONG).show();
                 }
             },day,month,year);
             dp_start_end.show();
         }//If
         else if(v == date_range) //Case of range of dates
         {
-            materialDatePicker.show(getSupportFragmentManager(),"DATE_RANGE_PICKER");
+            build_range = MaterialDatePicker.Builder.dateRangePicker();
+            build_range.setTitleText("בחר טווח תאריכים");
+            pick_range = build_range.build();
+            pick_range.show(getSupportFragmentManager(),"DATE_RANGE_PICKER");
+            pick_range.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Pair<Long, Long>>() {
+                @Override
+                public void onPositiveButtonClick(Pair<Long, Long> selection) {
+                    Long start_time_Long = selection.first;
+                    Date start_time_date=new Date(start_time_Long);
+                    Long end_time_Long = selection.second;
+                    Date end_time_date=new Date(end_time_Long);
+
+                    SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
+
+
+                    String first_date = sdf2.format(start_time_date);
+                    String end_date = sdf2.format(end_time_date);
+                    date_range.setText(end_date+"-"+first_date);
+                    //Toast.makeText(getApplicationContext(), first_date+" "+end_date, Toast.LENGTH_LONG).show();
+                }
+            });
+
         }//else if
         else if(v == trip_type)
         {
