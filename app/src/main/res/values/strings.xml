@@ -37,7 +37,7 @@
     <string name="date_specific_search">תאריך מדוייק</string>
     <string name="date_range_search">גמיש בתאריכים</string>
     <string name="gender_chooser">בחר מין מועדף</string>
-    <string name="age_range_chooser">בחר דווח גילאים מועדף</string>
+    <string name="age_range_chooser">בחר טווח גילאים מועדף</string>
     <string name="search">חפש</string>
 
 </resources>
