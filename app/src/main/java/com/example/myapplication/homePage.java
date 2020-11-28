@@ -42,6 +42,16 @@ public class homePage extends AppCompatActivity {
             Intent intent=new Intent(this,CreatePost.class);
             startActivity(intent);
         }
+        if(id==R.id.Search)
+        {
+            Intent intent=new Intent(this,SearchPostActivity.class);
+            startActivity(intent);
+        }
+        if(id==R.id.home)
+        {
+            Intent intent=new Intent(this,homePage.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 }
