@@ -20,10 +20,9 @@
     <string name="login_admin_title">ברוך הבא בוס.</string>
     <string name="login_admin_problem">יש בעיה בהתחברות?</string>
     <string name="flight_purposes">בחר את מטרות הטיסה שלך</string>
-    <string name="date_flight1">בחר תאריך יציאה</string>
-    <string name="date_flight2">בחר תאריך חזרה</string>
-    <string name="departure_date">תאריך יציאה</string>
-    <string name="return_date">תאריך חזרה</string>
+    <string name="date_flight1">תאריך יציאה</string>
+    <string name="date_flight2">תאריך חזרה</string>
+    <string name="choose">בחר</string>
     <string name="chooseYourOptions">בחר סוגי טיול</string>
     <string name="icon"></string>
     <string name="yes">כן</string>
