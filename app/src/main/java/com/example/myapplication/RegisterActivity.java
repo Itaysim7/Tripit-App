@@ -22,13 +22,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
+
 public class RegisterActivity extends AppCompatActivity
 {
     private EditText emailEditText,passwordEditText,password2EditText;
     private Button register_now_btn;
     private TextView popup;
     private FirebaseDatabase database;
-    private  DatabaseReference mDatebase;
+    private DatabaseReference mDatebase;
     private FirebaseAuth mAuth;
     private UsersObj user;
     private static final String TAG="RegisterActivity";
@@ -75,7 +77,7 @@ public class RegisterActivity extends AppCompatActivity
                         Toast.makeText(getApplicationContext(),"hese passwords did not match, please try again",Toast.LENGTH_LONG).show();
                         return;
                     }
-                    user=new UsersObj(email,password);
+                    user=new UsersObj(email,"default");
                     registerUser(email,password);
                 }
             }
@@ -109,10 +111,25 @@ public class RegisterActivity extends AppCompatActivity
     }
     public void updateUI(FirebaseUser currentUser)
     {
+
         String keyId=mDatebase.push().getKey();
-        mDatebase.child(keyId).setValue(user);
-        Intent loginIntent=new Intent(this,userActivity.class);
-        startActivity(loginIntent);
+        mDatebase = FirebaseDatabase.getInstance().getReference("users").child(keyId);
+
+        HashMap<String,String> map = new HashMap<>();
+        map.put("email",currentUser.getEmail());
+        map.put("imageUrl", "default");
+
+        mDatebase.setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Intent loginIntent=new Intent(RegisterActivity.this,userActivity.class);
+                    loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(loginIntent);
+                    finish();
+                }
+            }
+        });
     }
 
 
