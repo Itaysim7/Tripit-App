@@ -10,11 +10,14 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +34,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.auth.User;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
@@ -49,44 +51,59 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private DatabaseReference reference;
     private FirebaseUser fUser;
     private FirebaseAuth mAuth;
+    private UsersObj user;
+
     private ImageView image_profile;
+    private EditText about_myself_txt;
+    private Button save_desc_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        //firebase
         mAuth = FirebaseAuth.getInstance();
         fUser = mAuth.getCurrentUser();
-        image_profile = findViewById(R.id.image_profile_view);
 
-        reference = FirebaseDatabase.getInstance().getReference("users")
-                .child(fUser.getUid());
+        image_profile = findViewById(R.id.image_profile_view);
+        about_myself_txt = findViewById(R.id.About_Myself_Txt);
+
+
+        reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid());
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 UsersObj user = snapshot.getValue(UsersObj.class);
-                //image_profile = (ImageView) snapshot.getValue();
+                //set image
                 if(user.getImageUrl().equals("default")) {
                     image_profile.setImageResource(R.drawable.user_image);
                 }
                 else{
                     Glide.with(ProfileActivity.this).load(user.getImageUrl()).into(image_profile);
                 }
+                //set description
+                if(user.getDescription().equals("empty")) {
+                    about_myself_txt.setText("למשתמש זה אין שום דבר לומר על עצמו.");
+                }
+                else{
+                    about_myself_txt.setText(user.getDescription());
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.d("Failed", error.getMessage());
             }
         });
 
 
         storageReference = FirebaseStorage.getInstance().getReference("uploads");
         image_profile.setOnClickListener(this);
+        about_myself_txt.setOnClickListener(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
         mTitle.setText(toolbar.getTitle());
         getSupportActionBar().setDisplayShowTitleEnabled(false); //delete the default title
@@ -98,7 +115,19 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         if (v == image_profile){
             openImage();
         }
+        if(v == about_myself_txt){
+            changeText();
+        }
     }
+
+    private void changeText() {
+        String newDescription = about_myself_txt.getText().toString();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("description",newDescription);
+        reference.updateChildren(map);
+
+    }
+
 
     /**
     * Allows the user to select an image from his phone
@@ -202,7 +231,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 return true;
 
             case R.id.Search:
-                return true;
 
             case R.id.myProfile:
                 Intent toProfile = new Intent(getApplicationContext(), ProfileActivity.class);
@@ -211,7 +239,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.savePost:
 
             case R.id.logOut:
-                FirebaseAuth.getInstance().signOut();
+                mAuth.signOut();
                 finish();
                 Intent intent = new Intent(getApplicationContext(), welcomeActivity.class);
                 startActivity(intent);

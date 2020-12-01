@@ -21,6 +21,7 @@ public class homePage extends AppCompatActivity {
     TextView helloTxt;
     DatabaseReference reference;
     FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -28,7 +29,7 @@ public class homePage extends AppCompatActivity {
         setContentView(R.layout.activity_home_page);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
         mTitle.setText(toolbar.getTitle());
         getSupportActionBar().setDisplayShowTitleEnabled(false); //delete the default title
@@ -68,10 +69,18 @@ public class homePage extends AppCompatActivity {
             Intent intent=new Intent(this,homePage.class);
             startActivity(intent);
         }
-        else if(id==R.id.myProfile)
+        if(id==R.id.myProfile)
         {
             Intent intent=new Intent(this,ProfileActivity.class);
             startActivity(intent);
+        }
+        if(id==R.id.logOut)
+        {
+            mAuth.signOut();
+            finish();
+            Intent intent = new Intent(getApplicationContext(), welcomeActivity.class);
+            startActivity(intent);
+
         }
         return super.onOptionsItemSelected(item);
     }

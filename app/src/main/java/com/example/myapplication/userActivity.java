@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -63,6 +64,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
     private Button mButtonFacebook;
     private CallbackManager callbackManager;
     private LoginManager loginManager;
+    private UsersObj user;
 
     private Button signInButton;
     private GoogleSignInClient mGoogleSignInClient;
@@ -150,17 +152,11 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        //FirebaseUser currentUser = mAuth.getCurrentUser();
-        //updateUI(currentUser);
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser == null)
+            return;
+        updateUI(currentUser);
     }
-
-    /*@Override
-    protected void onStop(){
-        super.onStop();
-        if(authStateListener != null){
-            mAuth.removeAuthStateListener(authStateListener);
-        }
-    }*/
 
     public void validation(String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password)
@@ -177,7 +173,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(userActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            updateUI(null);
+                            //updateUI(null);
 
                         }//else
                     }
@@ -272,10 +268,10 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
     }//signIn
 
 
-    private void updateUIGoogle(FirebaseUser user){
-        GoogleSignInAccount acc = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
-        goToHomePage();
-    }//updateUIGoogle
+//    private void updateUIGoogle(FirebaseUser user){
+//        GoogleSignInAccount acc = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
+//        goToHomePage();
+//    }//updateUIGoogle
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask){
         try{
@@ -300,7 +296,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
                     if (task.isSuccessful()) {
                         Toast.makeText(userActivity.this, "Successful", Toast.LENGTH_SHORT).show();
                         FirebaseUser user = mAuth.getCurrentUser();
-                        updateUI(user);
+                        register(user);
                     } else {
                         Toast.makeText(userActivity.this, "Failed", Toast.LENGTH_SHORT).show();
                         updateUI(null);
@@ -311,6 +307,22 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
         else{
             Toast.makeText(userActivity.this, "acc failed", Toast.LENGTH_SHORT).show();
         }
+    }//FirebaseGoogleAuth
+
+    public void register(FirebaseUser firebaseUser)
+    {
+        user = new UsersObj(firebaseUser.getEmail(),"default","empty","default","default",0);
+        mDatebase.child(firebaseUser.getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Intent loginIntent=new Intent(userActivity.this, homePage.class);
+                    loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(loginIntent);
+                    finish();
+                }
+            }
+        });
     }
 
 }

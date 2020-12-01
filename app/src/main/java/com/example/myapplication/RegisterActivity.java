@@ -28,7 +28,6 @@ public class RegisterActivity extends AppCompatActivity
 {
     private EditText emailEditText,passwordEditText,password2EditText;
     private Button register_now_btn;
-    private TextView popup;
     private FirebaseDatabase database;
     private DatabaseReference mDatebase;
     private FirebaseAuth mAuth;
@@ -74,10 +73,10 @@ public class RegisterActivity extends AppCompatActivity
                     String password2=password2EditText.getText().toString();
                     if(!password.equals(password2))//if the password different
                     {
-                        Toast.makeText(getApplicationContext(),"hese passwords did not match, please try again",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"These passwords did not match, please try again",Toast.LENGTH_LONG).show();
                         return;
                     }
-                    user=new UsersObj(email,"default");
+                    user=new UsersObj(email,"default","empty", "default","default", 0);
                     registerUser(email,password);
                 }
             }
@@ -109,17 +108,10 @@ public class RegisterActivity extends AppCompatActivity
                     }
                 });
     }
-    public void updateUI(FirebaseUser currentUser)
+
+    public void updateUI(FirebaseUser firebaseUser)
     {
-
-        String keyId=mDatebase.push().getKey();
-        mDatebase = FirebaseDatabase.getInstance().getReference("users").child(keyId);
-
-        HashMap<String,String> map = new HashMap<>();
-        map.put("email",currentUser.getEmail());
-        map.put("imageUrl", "default");
-
-        mDatebase.setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+        mDatebase.child(firebaseUser.getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
