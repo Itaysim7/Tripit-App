@@ -145,13 +145,15 @@
 
 
         </LinearLayout>
-
+        <!-- Image Cropper fill the remaining available height -->
         <ImageView
             android:id="@+id/add_photo"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginTop="20dp"
+            android:clickable="true"
             app:srcCompat="@drawable/addimage" />
+
 
         <EditText
             android:id="@+id/description"

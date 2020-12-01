@@ -45,8 +45,6 @@
         <activity android:name=".userActivity" />
         <activity android:name=".adminActivity" />
         <activity android:name=".homePage" />
-        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat"/>
         <activity android:name=".welcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

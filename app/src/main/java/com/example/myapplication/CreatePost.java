@@ -4,15 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-
+import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,44 +23,32 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.api.SystemParameterOrBuilder;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
-
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-
+import java.util.UUID;
 
 public class CreatePost extends AppCompatActivity implements View.OnClickListener
 {
-    private static final int MAX_LENGTH=100; //max length of random string
-    private String age_text = "",departure_date="",return_date="",gender="",current_user_id="";
+    private String age_text = "",departure_date="",return_date="",gender="",current_user_id="",type_trip="";
     private ImageView new_post_image;
     private EditText destination,description;
     private Uri post_image_uri;
-    private StorageReference storage_reference;
-    private FirebaseFirestore firebase_firestore;
+    FirebaseFirestore db;
     private FirebaseAuth firebaseAuth;
+    ProgressDialog pd;
     TextView text_dep_date,text_ret_date,text_type_trip;
     Button btn_dep_date,btn_ret_date,btn_type_trip,btn_gender,btn_age,btn_publish;
     Calendar cal_dep,cal_ret;
     DatePickerDialog dpd_dep,dpd_ret;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -76,11 +64,11 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         getSupportActionBar().setDisplayShowTitleEnabled(false); //delete the default title
 
         //firebase
-        storage_reference= FirebaseStorage.getInstance().getReference();
-        firebase_firestore=FirebaseFirestore.getInstance();
+        db=FirebaseFirestore.getInstance();
         firebaseAuth=FirebaseAuth.getInstance();
         current_user_id=firebaseAuth.getCurrentUser().getUid();
-
+        //progressDialog
+        pd=new ProgressDialog(this);
         //image
         new_post_image=findViewById(R.id.add_photo);
         //EditText
@@ -107,7 +95,6 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         btn_publish.setOnClickListener(this);
         //Listener for image
         new_post_image.setOnClickListener(this);
-
     }
 
     @Override
@@ -199,7 +186,6 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                     String currentItems=flight_purposes_List.get(which);
                 }
             });
-
             //set positive/yes button onclick listener
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
@@ -214,9 +200,9 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                             text_type_trip.setText(text_type_trip.getText()+flight_purposes_List.get(i)+" ");
                         }
                     }
+                    type_trip=text_type_trip.getText().toString();
                 }
             });
-
             //set neutral/cancel button click listener
             builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
                 @Override
@@ -224,7 +210,6 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
 
                 }
             });
-
             AlertDialog dialog=builder.create();
             //show alert
             dialog.show();
@@ -278,111 +263,71 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         }
         else if(view==new_post_image)
         {
-            // start picker to get image for cropping and then use the image in cropping activity
-            CropImage.activity()
-                    .setGuidelines(CropImageView.Guidelines.ON)
-                    .setMinCropResultSize(512,512)
-                    .setAspectRatio(1,1)
-                    .start(CreatePost.this);
+            Intent open_gallery_intent=new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(open_gallery_intent,1000);
         }
         else if(view==btn_publish)
         {
             String dest=destination.getText().toString();
             String desc=description.getText().toString();
-            if(!TextUtils.isEmpty(desc)&&post_image_uri!=null)
-            {
-                String random_name= random();
-                StorageReference file_path=storage_reference.child("post_images").child(random_name+".jpg");
-                System.out.println("mess1");
-                file_path.putFile(post_image_uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>()
-                {
-                    @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task)
-                    {
-                        if(task.isSuccessful())
-                        {
-                            String download_uri=task.getResult().getStorage().getDownloadUrl().toString();
-                            Map<String,Object> post_map=new HashMap<>();
-
-                            post_map.put("approval",0);
-                            post_map.put("user_id",current_user_id);
-                            post_map.put("timestamp",FieldValue.serverTimestamp());
-                            post_map.put("destination",dest);
-                            post_map.put("departure_date",departure_date);
-                            post_map.put("return_date",return_date);
-                            post_map.put("age",age_text);
-                            post_map.put("gender",gender);
-                            post_map.put("type_trip",text_type_trip.toString());
-                            post_map.put("image_url",download_uri);
-                            post_map.put("description",desc);
-                            post_map.put("clicks",0);
-
-                            firebase_firestore.collection("Posts").add(post_map).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentReference> task)
-                                {
-                                    if(task.isSuccessful())
-                                    {
-                                        Toast.makeText(getApplicationContext(),"הפוסט נשלח לאישור מנהל",Toast.LENGTH_LONG).show();
-                                        Intent home=new Intent(CreatePost.this,homePage.class);
-                                        startActivity(home);
-                                        finish();
-                                    }
-                                    else
-                                    {
-                                        Toast.makeText(getApplicationContext(),"פרסום הפוסט נכשל",Toast.LENGTH_LONG).show();
-                                        return;
-                                    }
-
-                                }
-                            });
-                        }
-                        else
-                        {
-
-                        }
-
-                    }
-                });
-            }
-            else
-            {
-                Toast.makeText(getApplicationContext(),"אתה צריך להוסיף תמונה ולספר על עצמך",Toast.LENGTH_LONG).show();
-                return;
-            }
-
+            uploadData(dest,desc);
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
-                    post_image_uri = result.getUri();
+        if (requestCode == 1000)
+        {
+            if (resultCode == Activity.RESULT_OK)
+            {
+                    post_image_uri = data.getData();
                     new_post_image.setImageURI(post_image_uri);
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
             }
         }
     }
     /*
-        The function generator a random string
+        The function upload the data of the post to the firebase
      */
-    public static String random() {
-        Random generator = new Random();
-        StringBuilder randomStringBuilder = new StringBuilder();
-        int randomLength = generator.nextInt(MAX_LENGTH);
-        char tempChar;
-        for (int i = 0; i < randomLength; i++){
-            tempChar = (char) (generator.nextInt(96) + 32);
-            randomStringBuilder.append(tempChar);
-        }
-        return randomStringBuilder.toString();
+    private void uploadData(String dest,String desc)
+    {
+        pd.setTitle("מוסיף את המידע למאגר");
+        pd.show();
+        //random id for each data to be stored
+        String id= UUID.randomUUID().toString();
+        Map<String,Object> post_map=new HashMap<>();
+
+        post_map.put("id",id);
+        post_map.put("approval",0);
+        post_map.put("user_id",current_user_id);
+        post_map.put("timestamp",FieldValue.serverTimestamp());
+        post_map.put("destination",dest);
+        post_map.put("departure_date",departure_date);
+        post_map.put("return_date",return_date);
+        post_map.put("age",age_text);
+        post_map.put("gender",gender);
+        post_map.put("type_trip",type_trip);
+     //   post_map.put("image_url",download_uri);
+        post_map.put("description",desc);
+        post_map.put("clicks",0);
+
+        //add this data
+        db.collection("Posts").document(id).set(post_map)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                    //this will be called when the data added successfully
+                        pd.dismiss();
+                        Toast.makeText(CreatePost.this,"Uploaded...",Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //this will be called if there is any error while uploading
+                        pd.dismiss();
+                        Toast.makeText(CreatePost.this,e.getMessage(),Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
-
-
 }
-
-
