@@ -16,9 +16,9 @@ public class welcomeActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-        btn_admin_login = (Button)findViewById(R.id.adminButton);
-        btn_user_login = (Button)findViewById(R.id.userButton);
-        btn_home = (Button)findViewById(R.id.home);
+        btn_admin_login = findViewById(R.id.adminButton);
+        btn_user_login = findViewById(R.id.userButton);
+        btn_home = findViewById(R.id.home);
 
         btn_admin_login.setOnClickListener(this);
         btn_user_login.setOnClickListener(this);

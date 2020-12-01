@@ -11,7 +11,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class homePage extends AppCompatActivity {
+
+    TextView helloTxt;
+    DatabaseReference reference;
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -20,11 +29,19 @@ public class homePage extends AppCompatActivity {
         setContentView(R.layout.activity_home_page);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
         mTitle.setText(toolbar.getTitle());
         getSupportActionBar().setDisplayShowTitleEnabled(false); //delete the default title
+
+        helloTxt = findViewById(R.id.hello);
+
+        mAuth=FirebaseAuth.getInstance();
+        reference= FirebaseDatabase.getInstance().getReference("users");
+        FirebaseUser user = mAuth.getCurrentUser();
+        helloTxt.setText("Hello "+user.getEmail());
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -51,6 +68,19 @@ public class homePage extends AppCompatActivity {
         {
             Intent intent=new Intent(this,homePage.class);
             startActivity(intent);
+        }
+        if(id==R.id.myProfile)
+        {
+            Intent intent=new Intent(this,ProfileActivity.class);
+            startActivity(intent);
+        }
+        if(id==R.id.logOut)
+        {
+            mAuth.signOut();
+            finish();
+            Intent intent = new Intent(getApplicationContext(), welcomeActivity.class);
+            startActivity(intent);
+
         }
         return super.onOptionsItemSelected(item);
     }

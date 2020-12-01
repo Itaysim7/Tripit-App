@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -63,6 +64,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
     private Button mButtonFacebook;
     private CallbackManager callbackManager;
     private LoginManager loginManager;
+    private UsersObj user;
 
     private Button signInButton;
     private GoogleSignInClient mGoogleSignInClient;
@@ -103,12 +105,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        signInButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                signIn();
-            }
-        });
+        signInButton.setOnClickListener(this);
 
     }
 
@@ -133,12 +130,11 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
             loginManager.logInWithReadPermissions(this,
                     Arrays.asList("email", "public_profile", "user_birthday"));
         }//else if
-    }//OnClick
 
-    private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }//signIn
+        else if(v == signInButton){
+            signIn();
+        }
+    }//OnClick
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -150,57 +146,16 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask){
-        try{
-
-            GoogleSignInAccount acc = completedTask.getResult(ApiException.class);
-            Toast.makeText(userActivity.this,"Signed In Successfully",Toast.LENGTH_SHORT).show();
-            FirebaseGoogleAuth(acc);
-        }
-        catch (ApiException e){
-            Toast.makeText(userActivity.this,"Sign In Failed",Toast.LENGTH_SHORT).show();
-            FirebaseGoogleAuth(null);
-        }
-    }
-
-    private void FirebaseGoogleAuth(GoogleSignInAccount acct) {
-        //check if the account is null
-        if (acct != null) {
-            AuthCredential authCredential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-            mAuth.signInWithCredential(authCredential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(userActivity.this, "Successful", Toast.LENGTH_SHORT).show();
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        updateUI(user);
-                    } else {
-                        Toast.makeText(userActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-                        updateUI(null);
-                    }
-                }
-            });
-        }
-        else{
-            Toast.makeText(userActivity.this, "acc failed", Toast.LENGTH_SHORT).show();
-        }
-    }
 
 
     @Override
     protected void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        //FirebaseUser currentUser = mAuth.getCurrentUser();
-        //updateUI(currentUser);
-    }
-
-    @Override
-    protected void onStop(){
-        super.onStop();
-        if(authStateListener != null){
-            mAuth.removeAuthStateListener(authStateListener);
-        }
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser == null)
+            return;
+        updateUI(currentUser);
     }
 
     public void validation(String email, String password) {
@@ -218,7 +173,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(userActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            updateUI(null);
+                            //updateUI(null);
 
                         }//else
                     }
@@ -229,17 +184,17 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
         goToHomePage();
     }//updateUI
 
-    private void updateUIGoogle(FirebaseUser user){
-        GoogleSignInAccount acc = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
-        goToHomePage();
-    }//updateUIGoogle
 
     private void goToHomePage() {
         Intent loginIntent = new Intent(this, homePage.class);
         startActivity(loginIntent);
     }//goToHomePage
 
+
+
+
     //-----------------------Login with facebook functions--------------------
+
     public void facebookLogin() {
         loginManager = LoginManager.getInstance();
         callbackManager = CallbackManager.Factory.create();
@@ -299,6 +254,72 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
                     Log.d(TAG, "sign in with credential: failed", task.getException());
                     Toast.makeText(userActivity.this, "Authentication Failed!", Toast.LENGTH_SHORT).show();
                     updateUI(null);
+                }
+            }
+        });
+    }
+
+
+    //-----------------------Login with Google functions--------------------
+
+    private void signIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }//signIn
+
+
+//    private void updateUIGoogle(FirebaseUser user){
+//        GoogleSignInAccount acc = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
+//        goToHomePage();
+//    }//updateUIGoogle
+
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask){
+        try{
+
+            GoogleSignInAccount acc = completedTask.getResult(ApiException.class);
+            Toast.makeText(userActivity.this,"Signed In Successfully",Toast.LENGTH_SHORT).show();
+            FirebaseGoogleAuth(acc);
+        }
+        catch (ApiException e){
+            Toast.makeText(userActivity.this,"Sign In Failed",Toast.LENGTH_SHORT).show();
+            FirebaseGoogleAuth(null);
+        }
+    }
+
+    private void FirebaseGoogleAuth(GoogleSignInAccount acct) {
+        //check if the account is null
+        if (acct != null) {
+            AuthCredential authCredential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+            mAuth.signInWithCredential(authCredential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(userActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        register(user);
+                    } else {
+                        Toast.makeText(userActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                        updateUI(null);
+                    }
+                }
+            });
+        }
+        else{
+            Toast.makeText(userActivity.this, "acc failed", Toast.LENGTH_SHORT).show();
+        }
+    }//FirebaseGoogleAuth
+
+    public void register(FirebaseUser firebaseUser)
+    {
+        user = new UsersObj(firebaseUser.getEmail(),"default","empty","default","default",0);
+        mDatebase.child(firebaseUser.getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Intent loginIntent=new Intent(userActivity.this, homePage.class);
+                    loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(loginIntent);
+                    finish();
                 }
             }
         });
