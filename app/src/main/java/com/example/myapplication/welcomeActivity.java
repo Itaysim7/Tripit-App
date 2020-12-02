@@ -9,9 +9,8 @@ import android.widget.Button;
 
 public class welcomeActivity extends AppCompatActivity implements View.OnClickListener
 {
-    private Button btn_admin_login;
-    private Button btn_user_login;
-    private Button btn_home;
+    private Button btn_admin_login,btn_user_login,btn_home;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +40,7 @@ public class welcomeActivity extends AppCompatActivity implements View.OnClickLi
         }
         else if(v== btn_home)
         {
-            Intent intent=new Intent(this,homePage.class);
+            Intent intent=new Intent(this,SearchPostActivity.class);
             startActivity(intent);
         }//else if
     }

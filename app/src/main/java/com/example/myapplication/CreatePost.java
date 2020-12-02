@@ -100,8 +100,11 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         btn_gender.setOnClickListener(this);
         btn_age.setOnClickListener(this);
         btn_publish.setOnClickListener(this);
+
         //Listener for image
         new_post_image.setOnClickListener(this);
+
+
     }
 
     @Override
@@ -223,7 +226,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         }
         else if(view==btn_gender)
         {
-            String [] list_gender=new String[]{"נקבה","זכר","לא מעוניין לענות"};
+            String [] list_gender=new String[]{"אישה", "גבר", "לא משנה"};
             AlertDialog.Builder mBuilder=new AlertDialog.Builder(CreatePost.this);
             mBuilder.setTitle("בחר מין");
             mBuilder.setSingleChoiceItems(list_gender, -1, new DialogInterface.OnClickListener() {
@@ -301,7 +304,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         pd.setTitle("מוסיף את המידע למאגר");
         pd.show();
         //random id for each data to be stored
-        String id= UUID.randomUUID().toString();
+        String id= UUID.randomUUID().toString(); //Create Random Post ID
         Map<String,Object> post_map=new HashMap<>();
         reference=FirebaseDatabase.getInstance().getReference("users").child(current_user_id).child("imageUrl");
         reference.toString();
