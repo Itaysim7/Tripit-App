@@ -1,9 +1,5 @@
 package com.example.myapplication;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
@@ -23,12 +19,21 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -44,6 +49,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
     private Uri post_image_uri;
     FirebaseFirestore db;
     private FirebaseAuth firebaseAuth;
+    private DatabaseReference reference;
     ProgressDialog pd;
     TextView text_dep_date,text_ret_date,text_type_trip;
     Button btn_dep_date,btn_ret_date,btn_type_trip,btn_gender,btn_age,btn_publish;
@@ -67,6 +73,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         db=FirebaseFirestore.getInstance();
         firebaseAuth=FirebaseAuth.getInstance();
         current_user_id=firebaseAuth.getCurrentUser().getUid();
+
         //progressDialog
         pd=new ProgressDialog(this);
         //image
@@ -296,10 +303,12 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         //random id for each data to be stored
         String id= UUID.randomUUID().toString();
         Map<String,Object> post_map=new HashMap<>();
-
+        reference=FirebaseDatabase.getInstance().getReference("users").child(current_user_id).child("imageUrl");
+        reference.toString();
         post_map.put("id",id);
         post_map.put("approval",0);
         post_map.put("user_id",current_user_id);
+        post_map.put("image_url",reference.toString());
         post_map.put("timestamp",FieldValue.serverTimestamp());
         post_map.put("destination",dest);
         post_map.put("departure_date",departure_date);
