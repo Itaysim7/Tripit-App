@@ -10,7 +10,6 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,12 +24,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -38,12 +33,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Vector;
+import java.util.Set;
 
 public class SearchPostActivity extends AppCompatActivity implements View.OnClickListener  {
-    private ArrayList<String> picked_dates,gender,picked_age,flight_Purposes;
+    private ArrayList<String> picked_age,flight_Purposes,picked_dates;
+    private String gender,date_dep,destination;
     AutoCompleteTextView dest;
     Button btn_date_specific, btn_date_range, btn_range_age, btn_trip_type, btn_search, btn_gender;
     Calendar c_start_end;
@@ -64,6 +63,7 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
         getSupportActionBar().setDisplayShowTitleEnabled(false); //delete the default title
 
         //findView
+
         dest = (AutoCompleteTextView) findViewById(R.id.autocomp_destination);
         btn_date_specific = (Button) findViewById(R.id.search_date_specific_input);
         btn_date_range = (Button) findViewById(R.id.search_date_range_input);
@@ -84,12 +84,12 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
         //FireBase:
         db=FirebaseFirestore.getInstance();
 
-        //Init Filter Variables:
-        picked_dates = new ArrayList<String>();
-        gender = new ArrayList<String>();
+        //Init Filter Variables
+        gender = "";
+        date_dep = "";
         picked_age = new ArrayList<String>();
         flight_Purposes = new ArrayList<String>();
-
+        picked_dates = new ArrayList<String>();
     }//onCreate
 
     @Override
@@ -124,7 +124,11 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        if (v == btn_date_specific) // Case of specific date
+        if(v == dest)
+        {
+            destination = "mexico";
+        }//If
+        else if (v == btn_date_specific) // Case of specific date
         {
             c_start_end = Calendar.getInstance();
             int day = c_start_end.get(Calendar.DAY_OF_MONTH);
@@ -136,10 +140,7 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
                     String date = dayOfMonth + "/" + (mMonth + 1) + "/" + mYear;
                     btn_date_specific.setText(date);
                     btn_date_range.setText("גמיש בתאריכים");
-                    if(!picked_dates.isEmpty()) {
-                        picked_dates.clear();
-                    }//if    
-                    picked_dates.add(date);
+                    date_dep = date;
                     //Toast.makeText(getApplicationContext(), dayOfMonth+ "/" + (mMonth+1) + "/"+ mYear, Toast.LENGTH_LONG).show();
                 }//onDateSet
             }, day, month, year);
@@ -160,17 +161,13 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
                     Date end_time_date = new Date(end_time_Long);
 
                     SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
-
+                    picked_dates = Date_Range_To_DatesList(start_time_date,end_time_date,sdf2);
 
                     String first_date = sdf2.format(start_time_date);
                     String end_date = sdf2.format(end_time_date);
                     btn_date_range.setText(end_date + "-" + first_date);
                     btn_date_specific.setText("תאריך מדוייק");
-                    if(!picked_dates.isEmpty()) {
-                        picked_dates.clear();
-                    }//if    
-                    picked_dates.add(first_date);
-                    picked_dates.add(end_date);
+                    System.out.println(picked_dates.toString());
                     //Toast.makeText(getApplicationContext(), first_date+" "+end_date, Toast.LENGTH_LONG).show();
                 }//onPositiveButtonClick
             });//addOnPositiveButtonClickListener
@@ -256,7 +253,7 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
                         boolean checked = checkedFlightPurposes[i];
                         if (checked) {
                             btn_range_age.setText(btn_range_age.getText() + ageList.get(i) + " ");
-                            Age_Simplifier(ageList.get(i));
+                            Age_Range_To_AgeList(ageList.get(i));
                         }//If
                     }//For
                 }//onClick
@@ -304,8 +301,7 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
                 public void onClick(DialogInterface dialog, int which) {
                     btn_gender.setText("מין מועדף: ");
                     btn_gender.setText(btn_gender.getText() + genderList.get(cheked_gender_vals[0]));
-                    gender.clear();
-                    gender.add(genderList.get(cheked_gender_vals[0]));
+                    gender = genderList.get(cheked_gender_vals[0]);
                 }//onClick
             });//setPositiveButton
 
@@ -324,12 +320,36 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
 
         else if(v == btn_search)
         {
+            ArrayList<Pair<String,Integer>> order = new ArrayList<Pair<String,Integer>>();
             CollectionReference posts = db.collection("Posts");
-            Task<QuerySnapshot> query = posts.whereEqualTo("gender",gender.get(0)).whereIn("age",picked_age).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            Task<QuerySnapshot> query = posts.whereEqualTo("destination",destination).whereEqualTo("gender",gender).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
+                            String id = document.getId();
+                            int score = 2;
+                            Set<String> user_TripType = new HashSet<String>((Collection<? extends String>) document.get("type_trip"));
+                            int user_age = Integer.valueOf((String)document.get("age"));
+                            String user_dep = (String)document.get("departure_date");
+                            String user_ret = (String)document.get("departure_date");
+                            Set<String> intersaction = new HashSet<String>(flight_Purposes);
+                            intersaction.retainAll(user_TripType);
+
+                            score+= Math.pow(2,intersaction.size());
+                            if(!picked_dates.isEmpty())//Not all the cases!!!!
+                            {
+                                if(picked_dates.contains(user_dep) && picked_dates.contains(user_ret) )
+                                    score += 4;
+                                else if(!picked_dates.contains(user_dep) && picked_dates.contains(user_ret))
+                                    score += 2;
+                                else if(picked_dates.contains(user_dep) && !picked_dates.contains(user_ret))
+                                    score += 2;
+                            }//if
+
+                            if(picked_age.contains(user_age))
+                                score+=2;
+                            order.add(new Pair<String, Integer>(id,score));
                             Toast.makeText(SearchPostActivity.this,document.getId(),Toast.LENGTH_SHORT).show();
                         }//for
                     } else {
@@ -344,17 +364,41 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
     }//onClick
 
     /*
-        Chenge Range Ages to Singles.
+        From Range to List of Dates
      */
-    private void Age_Simplifier(String s) {
-        String start_age = s.substring(0,2);
-        int start = Integer.parseInt(start_age);
-        String end_age = s.substring(3,5);
-        int end = Integer.parseInt(end_age);
-        for (int i = start ; i<=end ; ++i)
+    public static ArrayList<String> Date_Range_To_DatesList(
+            Date startDate, Date endDate, SimpleDateFormat sdf2) {
+        ArrayList<String> datesInRange = new ArrayList<String>();
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(startDate);
+
+        Calendar endCalendar = new GregorianCalendar();
+        endCalendar.setTime(endDate);
+
+        while (calendar.before(endCalendar)) {
+            String result = sdf2.format(calendar.getTime());
+            datesInRange.add(result);
+            calendar.add(Calendar.DATE, 1);
+        }//while
+        //While Skipping last day
+        String result = sdf2.format(calendar.getTime());
+        datesInRange.add(result);
+        calendar.add(Calendar.DATE, 1);
+        return datesInRange;
+    }
+
+    /*
+        From Range to List of ages
+     */
+    private void Age_Range_To_AgeList(String s) {
+        int start = Integer.valueOf(s.substring(0,2));
+        int end = Integer.valueOf(s.substring(3,5));
+        for (int i = start ; i<= end ; ++i)
         {
-                picked_age.add(String.valueOf(i));
+            picked_age.add(String.valueOf(i));
         }//for
-    }//Age_Simplifier
+    }//Age_Range_Refuctoring
+
+
 }
 
