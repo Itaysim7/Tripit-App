@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -322,39 +323,43 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
         {
             ArrayList<Pair<String,Integer>> order = new ArrayList<Pair<String,Integer>>();
             CollectionReference posts = db.collection("Posts");
-            Task<QuerySnapshot> query = posts.whereEqualTo("destination",destination).whereEqualTo("gender",gender).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            Task<QuerySnapshot> query = posts.whereEqualTo("destination","Madrid").whereEqualTo("gender",gender).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String id = document.getId();
                             int score = 2;
-                            Set<String> user_TripType = new HashSet<String>((Collection<? extends String>) document.get("type_trip"));
-                            int user_age = Integer.valueOf((String)document.get("age"));
-                            String user_dep = (String)document.get("departure_date");
-                            String user_ret = (String)document.get("departure_date");
-                            Set<String> intersaction = new HashSet<String>(flight_Purposes);
-                            intersaction.retainAll(user_TripType);
-
-                            score+= Math.pow(2,intersaction.size());
-                            if(!picked_dates.isEmpty())//Not all the cases!!!!
-                            {
-                                if(picked_dates.contains(user_dep) && picked_dates.contains(user_ret) )
-                                    score += 4;
-                                else if(!picked_dates.contains(user_dep) && picked_dates.contains(user_ret))
-                                    score += 2;
-                                else if(picked_dates.contains(user_dep) && !picked_dates.contains(user_ret))
-                                    score += 2;
-                            }//if
-
-                            if(picked_age.contains(user_age))
-                                score+=2;
+//                            Set<String> user_TripType = new HashSet<String>((Collection<? extends String>) document.get("type_trip"));
+//                            int user_age = Integer.valueOf((String)document.get("age"));
+//                            String user_dep = (String)document.get("departure_date");
+//                            String user_ret = (String)document.get("departure_date");
+//                            Set<String> intersaction = new HashSet<String>(flight_Purposes);
+//                            intersaction.retainAll(user_TripType);
+//
+//                            score+= Math.pow(2,intersaction.size());
+//                            if(!picked_dates.isEmpty())//Not all the cases!!!!
+//                            {
+//                                if(picked_dates.contains(user_dep) && picked_dates.contains(user_ret) )
+//                                    score += 4;
+//                                else if(!picked_dates.contains(user_dep) && picked_dates.contains(user_ret))
+//                                    score += 2;
+//                                else if(picked_dates.contains(user_dep) && !picked_dates.contains(user_ret))
+//                                    score += 2;
+//                            }//if
+//
+//                            if(picked_age.contains(user_age))
+//                                score+=2;
                             order.add(new Pair<String, Integer>(id,score));
                             Toast.makeText(SearchPostActivity.this,document.getId(),Toast.LENGTH_SHORT).show();
                         }//for
-                    } else {
+                        Comparator<Pair<String,Integer>> comp = (Pair<String,Integer> o1,Pair<String,Integer> o2)->o1.second.compareTo(o2.second);
+                        order.sort(comp);
+                        System.out.println(order.toString());
+                    }//if
+                    else
+                        {
                         Toast.makeText(SearchPostActivity.this,task.getException().toString(),Toast.LENGTH_SHORT).show();
-
                     }//else
                 }//onComplete
             });
