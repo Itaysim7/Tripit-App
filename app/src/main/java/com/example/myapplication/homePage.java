@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
+import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,7 +21,12 @@ import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
+import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
@@ -28,9 +34,10 @@ public class homePage extends AppCompatActivity {
 
     private FirebaseFirestore db;
     private RecyclerView mFirestoreList;
-    private FirestoreRecyclerAdapter adapter;
-
-    FirebaseAuth mAuth;
+    private FirestorePagingAdapter adapter;
+    private TextView helloTxt;
+    private DatabaseReference reference;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -44,15 +51,23 @@ public class homePage extends AppCompatActivity {
         mTitle.setText(toolbar.getTitle());
         getSupportActionBar().setDisplayShowTitleEnabled(false); //delete the default title
 
+        helloTxt = findViewById(R.id.hello);
+        mAuth=FirebaseAuth.getInstance();
+        reference= FirebaseDatabase.getInstance().getReference("users");
+        FirebaseUser user = mAuth.getCurrentUser();
+        helloTxt.setText("שלום "+user.getEmail()+" ממליצים לך לערוך את הפרופיל שלך");
+
         db=FirebaseFirestore.getInstance();
         mFirestoreList=findViewById(R.id.firestore_list);
 
 
         Query query=db.collection("Posts").whereNotEqualTo("approval",0);//Query for the post that admin approve
+        PagedList.Config config=new PagedList.Config.Builder()
+                .setInitialLoadSizeHint(8).setPageSize(2).build();
         //recyclerOptions
-        FirestoreRecyclerOptions<PostsModel> options=new FirestoreRecyclerOptions.Builder<PostsModel>()
-                .setQuery(query,PostsModel.class).build();
-        adapter= new FirestoreRecyclerAdapter<PostsModel, PostsViewHolder>(options) {
+        FirestorePagingOptions<PostsModel> options=new FirestorePagingOptions.Builder<PostsModel>()
+                .setQuery(query,config,PostsModel.class).build();
+        adapter= new FirestorePagingAdapter<PostsModel, PostsViewHolder>(options) {
             @NonNull
             @Override
             public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
