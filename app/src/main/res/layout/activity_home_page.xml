@@ -12,14 +12,9 @@
         layout="@layout/toolbar" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="159dp"
-        android:layout_height="61dp" />
+        android:id="@+id/firestore_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-    <TextView
-        android:id="@+id/hello"
-        android:layout_width="302dp"
-        android:layout_height="58dp"
-        android:text="TextView" />
 
 </LinearLayout >

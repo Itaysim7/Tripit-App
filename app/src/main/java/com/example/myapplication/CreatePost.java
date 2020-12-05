@@ -34,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -55,6 +56,8 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
     Button btn_dep_date,btn_ret_date,btn_type_trip,btn_gender,btn_age,btn_publish;
     Calendar cal_dep,cal_ret;
     DatePickerDialog dpd_dep,dpd_ret;
+    ArrayList<String> type_array;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -176,6 +179,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         }
         else if(view==btn_type_trip)
         {
+            type_array=new ArrayList<String>();
             AlertDialog.Builder builder=new AlertDialog.Builder(CreatePost.this);
             //string array for alert dialog multichoice items(flight Purposes)
             String [] flight_purposes=new String[]{"בטן-גב","טרקים","אומנות","שופינג","סקי","טבע","מורשת","אחרי צבא","קולינרי","אחר"};
@@ -208,6 +212,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                         if(checked)
                         {
                             text_type_trip.setText(text_type_trip.getText()+flight_purposes_List.get(i)+" ");
+                            type_array.add(flight_purposes_List.get(i));
                         }
                     }
                     type_trip=text_type_trip.getText().toString();
@@ -291,8 +296,8 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         {
             if (resultCode == Activity.RESULT_OK)
             {
-                    post_image_uri = data.getData();
-                    new_post_image.setImageURI(post_image_uri);
+                post_image_uri = data.getData();
+                new_post_image.setImageURI(post_image_uri);
             }
         }
     }
@@ -307,7 +312,6 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         String id= UUID.randomUUID().toString(); //Create Random Post ID
         Map<String,Object> post_map=new HashMap<>();
         reference=FirebaseDatabase.getInstance().getReference("users").child(current_user_id).child("imageUrl");
-        reference.toString();
         post_map.put("id",id);
         post_map.put("approval",0);
         post_map.put("user_id",current_user_id);
@@ -318,8 +322,8 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         post_map.put("return_date",return_date);
         post_map.put("age",age_text);
         post_map.put("gender",gender);
-        post_map.put("type_trip",type_trip);
-     //   post_map.put("image_url",download_uri);
+        post_map.put("type_trip",type_array);
+        //   post_map.put("image_url",download_uri);
         post_map.put("description",desc);
         post_map.put("clicks",0);
 
@@ -328,9 +332,11 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                    //this will be called when the data added successfully
+                        //this will be called when the data added successfully
                         pd.dismiss();
                         Toast.makeText(CreatePost.this,"Uploaded...",Toast.LENGTH_SHORT).show();
+                        Intent home_page=new Intent(CreatePost.this,homePage.class);
+                        startActivity(home_page);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
