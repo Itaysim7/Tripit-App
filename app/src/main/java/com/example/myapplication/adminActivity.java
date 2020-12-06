@@ -2,14 +2,19 @@ package com.example.myapplication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -30,7 +35,7 @@ public class adminActivity extends AppCompatActivity implements View.OnClickList
     private FirebaseUser fUser;
     private DatabaseReference reference;
     private FirebaseAuth mAuth;
-    private UsersObj user;
+    public UsersObj user;
 
     private EditText emailEditText, passwordEditText;
     private Button login;
@@ -53,19 +58,6 @@ public class adminActivity extends AppCompatActivity implements View.OnClickList
         emailEditText.setOnClickListener(this);
         passwordEditText.setOnClickListener(this);
         login.setOnClickListener(this);
-
-/*        /*reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid());
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                user = snapshot.getValue(UsersObj.class);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("Failed", error.getMessage());
-            }
-        });*/
 
 
     }
@@ -107,6 +99,23 @@ public class adminActivity extends AppCompatActivity implements View.OnClickList
     }//validation
 
     private void updateUI(FirebaseUser user) {
+        reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                UsersObj user = snapshot.getValue(UsersObj.class);
+                if(user.getAdmin() == 0){
+                    Toast.makeText(getApplicationContext(), "Not Authorized to Enter!", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(getApplicationContext(), welcomeActivity.class);
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("Failed", error.getMessage());
+            }
+        });
         Intent loginIntent = new Intent(this, AdminHomeActivity.class);
         startActivity(loginIntent);
     }//updateUI

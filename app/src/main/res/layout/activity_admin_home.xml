@@ -10,28 +10,6 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar" />
 
-    <ScrollView
-
-
-        android:layout_width="413dp"
-        android:layout_height="438dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/firestore_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </LinearLayout>
-    </ScrollView>
 
 
 
@@ -59,7 +37,7 @@
         app:layout_constraintTop_toBottomOf="@+id/Hello_txt" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/goToAdminPostsBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -67,6 +45,16 @@
         android:text="מעבר לפוסטים"
         app:layout_constraintEnd_toStartOf="@+id/textView3"
         app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/firestore_list"
+        android:layout_width="match_parent"
+        android:layout_height="462dp"
+        android:layout_marginTop="264dp"
+        app:layout_constraintEnd_toStartOf="@+id/goToAdminPostsBtn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
