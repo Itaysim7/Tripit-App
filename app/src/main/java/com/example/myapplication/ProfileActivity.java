@@ -16,7 +16,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -55,7 +54,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     private ImageView image_profile;
     private EditText about_myself_txt;
-    private Button save_desc_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +64,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         mAuth = FirebaseAuth.getInstance();
         fUser = mAuth.getCurrentUser();
 
+
         image_profile = findViewById(R.id.image_profile_view);
         about_myself_txt = findViewById(R.id.About_Myself_Txt);
 
@@ -74,7 +73,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                UsersObj user = snapshot.getValue(UsersObj.class);
+                user = snapshot.getValue(UsersObj.class);
                 //set image
                 if(user.getImageUrl().equals("default")) {
                     image_profile.setImageResource(R.drawable.user_image);
@@ -125,6 +124,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         HashMap<String, Object> map = new HashMap<>();
         map.put("description",newDescription);
         reference.updateChildren(map);
+
+
 
     }
 

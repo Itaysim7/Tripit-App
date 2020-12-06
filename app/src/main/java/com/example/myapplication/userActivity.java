@@ -267,12 +267,6 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }//signIn
 
-
-//    private void updateUIGoogle(FirebaseUser user){
-//        GoogleSignInAccount acc = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
-//        goToHomePage();
-//    }//updateUIGoogle
-
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask){
         try{
 
@@ -311,7 +305,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
 
     public void register(FirebaseUser firebaseUser)
     {
-        user = new UsersObj(firebaseUser.getEmail(),"default","empty","default","default",0);
+        user = new UsersObj(firebaseUser.getEmail(),"default","empty","default","default",0,0);
         mDatebase.child(firebaseUser.getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

@@ -11,12 +11,13 @@ public class UsersObj
     private String fullName;
     private int age;
     private String gender;
+    private int admin;
 
     public UsersObj() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public UsersObj(String email, String imageUrl, String description, String fullName, String gender, int age)
+    public UsersObj(String email, String imageUrl, String description, String fullName, String gender, int age, int admin)
     {
         this.email = email;
         this.imageUrl = imageUrl;
@@ -24,6 +25,7 @@ public class UsersObj
         this.fullName = fullName;
         this.gender = gender;
         this.age =age;
+        this.admin = admin;
     }
 
     public String getEmail() {
@@ -64,5 +66,13 @@ public class UsersObj
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public int getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(int admin) {
+        this.admin = admin;
     }
 }
