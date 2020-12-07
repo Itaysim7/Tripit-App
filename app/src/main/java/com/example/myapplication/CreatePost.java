@@ -1,13 +1,11 @@
 package com.example.myapplication;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,10 +27,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.hbb20.CountryCodePicker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,19 +42,18 @@ import java.util.UUID;
 
 public class CreatePost extends AppCompatActivity implements View.OnClickListener
 {
-    private String age_text = "",departure_date="",return_date="",gender="",current_user_id="",type_trip="";
-    private ImageView new_post_image;
-    private EditText destination,description;
+    private String age_text = "",departure_date="",return_date="",gender="",current_user_id="";
+    private EditText description;
+    private CountryCodePicker ccp;
     private Uri post_image_uri;
-    FirebaseFirestore db;
+    private FirebaseFirestore db;
     private FirebaseAuth firebaseAuth;
-    private DatabaseReference reference;
-    ProgressDialog pd;
-    TextView text_dep_date,text_ret_date,text_type_trip;
-    Button btn_dep_date,btn_ret_date,btn_type_trip,btn_gender,btn_age,btn_publish;
-    Calendar cal_dep,cal_ret;
-    DatePickerDialog dpd_dep,dpd_ret;
-    ArrayList<String> type_array;
+    private ProgressDialog pd;
+    private TextView text_dep_date,text_ret_date,text_type_trip;
+    private Button btn_dep_date,btn_ret_date,btn_type_trip,btn_gender,btn_age,btn_publish;
+    private Calendar cal_dep,cal_ret;
+    private DatePickerDialog dpd_dep,dpd_ret;
+    private ArrayList<String> type_array;
 
 
     @Override
@@ -79,11 +76,10 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
 
         //progressDialog
         pd=new ProgressDialog(this);
-        //image
-        new_post_image=findViewById(R.id.add_photo);
+        //CountryCodePicker
+        ccp=findViewById(R.id.ccp);
         //EditText
         description=findViewById(R.id.description);
-        destination=findViewById(R.id.destination);
         //TextView
         text_dep_date=findViewById(R.id.departure_date);
         text_ret_date=findViewById(R.id.return_date);
@@ -103,11 +99,6 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         btn_gender.setOnClickListener(this);
         btn_age.setOnClickListener(this);
         btn_publish.setOnClickListener(this);
-
-        //Listener for image
-        new_post_image.setOnClickListener(this);
-
-
     }
 
     @Override
@@ -215,7 +206,6 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                             type_array.add(flight_purposes_List.get(i));
                         }
                     }
-                    type_trip=text_type_trip.getText().toString();
                 }
             });
             //set neutral/cancel button click listener
@@ -276,31 +266,14 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
             });
             mBuilder.show();
         }
-        else if(view==new_post_image)
-        {
-            Intent open_gallery_intent=new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(open_gallery_intent,1000);
-        }
         else if(view==btn_publish)
         {
-            String dest=destination.getText().toString();
+            String dest=ccp.getSelectedCountryName();
             String desc=description.getText().toString();
             uploadData(dest,desc);
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1000)
-        {
-            if (resultCode == Activity.RESULT_OK)
-            {
-                post_image_uri = data.getData();
-                new_post_image.setImageURI(post_image_uri);
-            }
-        }
-    }
     /*
         The function upload the data of the post to the firebase
      */
@@ -311,11 +284,9 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         //random id for each data to be stored
         String id= UUID.randomUUID().toString(); //Create Random Post ID
         Map<String,Object> post_map=new HashMap<>();
-        reference=FirebaseDatabase.getInstance().getReference("users").child(current_user_id).child("imageUrl");
         post_map.put("id",id);
         post_map.put("approval",0);
         post_map.put("user_id",current_user_id);
-        post_map.put("image_url",reference.toString());
         post_map.put("timestamp",FieldValue.serverTimestamp());
         post_map.put("destination",dest);
         post_map.put("departure_date",departure_date);
@@ -323,7 +294,6 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         post_map.put("age",age_text);
         post_map.put("gender",gender);
         post_map.put("type_trip",type_array);
-        //   post_map.put("image_url",download_uri);
         post_map.put("description",desc);
         post_map.put("clicks",0);
 
@@ -348,4 +318,5 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                     }
                 });
     }
+
 }

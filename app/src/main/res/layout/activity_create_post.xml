@@ -17,18 +17,28 @@
         <include
             android:id="@+id/toolbar"
             layout="@layout/toolbar" />
-        <EditText
+
+
+        <TextView
             android:id="@+id/destination"
-            style="@style/Widget.AppCompat.Light.AutoCompleteTextView"
-            android:layout_width="350dp"
-            android:layout_height="61dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="28dp"
-            android:background="#66D7DFD6"
-            android:hint="הכנס יעד"
-            android:inputType="text"
-            android:selectAllOnFocus="true"
-            android:textAlignment="center"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="הכנס יעד"
+            android:textAlignment="center"
+            android:textSize="24dp"/>
+
+        <com.hbb20.CountryCodePicker
+            android:id="@+id/ccp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ccp_showFullName="true"
+            app:ccp_showPhoneCode="false"
+            app:ccp_showNameCode="false"
+            app:ccp_rememberLastSelection="true"
+            app:ccp_countryPreference="US,DE,NL,GR,FR,ES"
+            app:ccp_defaultNameCode="IL"
+            app:ccp_defaultLanguage="HEBREW"/>
+
 
         <LinearLayout
             android:orientation="horizontal"
@@ -145,15 +155,6 @@
 
 
         </LinearLayout>
-        <!-- Image Cropper fill the remaining available height -->
-        <ImageView
-            android:id="@+id/add_photo"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="20dp"
-            android:clickable="true"
-            app:srcCompat="@drawable/addimage" />
-
 
         <EditText
             android:id="@+id/description"

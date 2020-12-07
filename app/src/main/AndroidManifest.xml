@@ -18,8 +18,8 @@
         android:supportsRtl="true"
         android:theme="@style/appTheme">
 
-        <activity android:name=".ProfileActivity"></activity>
-        <activity android:name=".SearchPostActivity"></activity>
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".SearchPostActivity" />
 
         <activity android:name=".ApprovePostsActivity"></activity>
         <activity android:name=".AdminHomeActivity" />
