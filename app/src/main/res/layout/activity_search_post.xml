@@ -22,7 +22,7 @@
     <Button
         android:id="@+id/search_date_range_input"
         android:layout_width="178dp"
-        android:layout_height="45dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:text="@string/date_range_search"

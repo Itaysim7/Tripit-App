@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
@@ -24,6 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -35,19 +35,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class SearchPostActivity extends AppCompatActivity implements View.OnClickListener  {
     private CountryCodePicker counry_picker;
-    private ArrayList<String> picked_age,flight_Purposes,picked_dates;
-    private String gender,date_dep,destination;
-    AutoCompleteTextView dest;
+    private ArrayList<String> picked_age,flight_Purposes;
+    private String gender;
+    private Timestamp date_dep_start, date_dep_end;
+    private String destination;
+    private boolean if_date_range_picked = false;
     Button btn_date_specific, btn_date_range, btn_range_age, btn_trip_type, btn_search, btn_gender;
     Calendar c_start_end;
     DatePickerDialog dp_start_end;
@@ -90,10 +89,8 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
 
         //Init Filter Variables
         gender = "";
-        date_dep = "";
         picked_age = new ArrayList<String>();
         flight_Purposes = new ArrayList<String>();
-        picked_dates = new ArrayList<String>();
     }//onCreate
 
     @Override
@@ -134,6 +131,7 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
         }//If
         else if (v == btn_date_specific) // Case of specific date
         {
+            if_date_range_picked =false;
             c_start_end = Calendar.getInstance();
             int day = c_start_end.get(Calendar.DAY_OF_MONTH);
             int month = c_start_end.get(Calendar.MONTH);
@@ -143,8 +141,10 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
                 public void onDateSet(DatePicker view, int mYear, int mMonth, int dayOfMonth) {
                     String date = dayOfMonth + "/" + (mMonth + 1) + "/" + mYear;
                     btn_date_specific.setText(date);
-                    btn_date_range.setText("גמיש בתאריכים");
-                    date_dep = date;
+                    btn_date_range.setText("גמיש בתאריכי היציאה");
+                    c_start_end.set(mYear,mMonth,dayOfMonth,0,0,0);
+                    date_dep_start = new Timestamp(c_start_end.getTime());
+
                     //Toast.makeText(getApplicationContext(), dayOfMonth+ "/" + (mMonth+1) + "/"+ mYear, Toast.LENGTH_LONG).show();
                 }//onDateSet
             }, day, month, year);
@@ -152,6 +152,7 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
         }//If
         else if (v == btn_date_range) //Case of range of dates
         {
+            if_date_range_picked = true;
             build_range = MaterialDatePicker.Builder.dateRangePicker();
             build_range.setTitleText("בחר טווח תאריכים");
             pick_range = build_range.build();
@@ -163,15 +164,16 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
                     Date start_time_date = new Date(start_time_Long);
                     Long end_time_Long = selection.second;
                     Date end_time_date = new Date(end_time_Long);
-
+                    Calendar c = Calendar.getInstance();
+                    date_dep_start = new Timestamp(start_time_date);
+                    date_dep_end = new Timestamp(end_time_date);
                     SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
-                    picked_dates = Date_Range_To_DatesList(start_time_date,end_time_date,sdf2);
+                    //picked_dates = Date_Range_To_DatesList(start_time_date,end_time_date,sdf2);
 
                     String first_date = sdf2.format(start_time_date);
                     String end_date = sdf2.format(end_time_date);
                     btn_date_range.setText(end_date + "-" + first_date);
                     btn_date_specific.setText("תאריך מדוייק");
-                    System.out.println(picked_dates.toString());
                     //Toast.makeText(getApplicationContext(), first_date+" "+end_date, Toast.LENGTH_LONG).show();
                 }//onPositiveButtonClick
             });//addOnPositiveButtonClickListener
@@ -325,50 +327,27 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
         else if(v == btn_search)
         {
             ArrayList<Pair<QueryDocumentSnapshot,Integer>> order = new ArrayList<Pair<QueryDocumentSnapshot,Integer>>();
+            if(if_date_range_picked == false)
+            {
+                Query query = db.collection("Posts").whereEqualTo("destination",destination)
+                        .whereEqualTo("gender",gender)
+                        .whereEqualTo("departure_date", date_dep_start);
+                Intent intent = new Intent();
 
-            CollectionReference posts = db.collection("Posts");
-            Task<QuerySnapshot> query = posts.whereEqualTo("destination",destination).whereEqualTo("gender",gender).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            int score = 2;
-
-//                            Set<String> user_TripType = new HashSet<String>((Collection<? extends String>) document.get("type_trip"));
-//                            int user_age = Integer.valueOf((String)document.get("age"));
-//                            String user_dep = (String)document.get("departure_date");
-//                            String user_ret = (String)document.get("departure_date");
-//                            Set<String> intersaction = new HashSet<String>(flight_Purposes);
-//                            intersaction.retainAll(user_TripType);
-//
-//                            score+= Math.pow(2,intersaction.size());
-//                            if(!picked_dates.isEmpty())//Not all the cases!!!!
-//                            {
-//                                if(picked_dates.contains(user_dep) && picked_dates.contains(user_ret) )
-//                                    score += 4;
-//                                else if(!picked_dates.contains(user_dep) && picked_dates.contains(user_ret))
-//                                    score += 2;
-//                                else if(picked_dates.contains(user_dep) && !picked_dates.contains(user_ret))
-//                                    score += 2;
-//                            }//if
-//
-//                            if(picked_age.contains(user_age))
-//                                score+=2;
-                            order.add(new Pair<QueryDocumentSnapshot, Integer>(document,score));
-                            Toast.makeText(SearchPostActivity.this,document.getId(),Toast.LENGTH_SHORT).show();
-                        }//for
-                                Comparator<Pair<QueryDocumentSnapshot,Integer>> comp = (Pair<QueryDocumentSnapshot,Integer> o1,Pair<QueryDocumentSnapshot,Integer> o2)->o1.second.compareTo(o2.second);
-                        order.sort(comp);
-
-                        System.out.println(order.toString());
-                    }//if
-                    else
-                        {
-                        Toast.makeText(SearchPostActivity.this,task.getException().toString(),Toast.LENGTH_SHORT).show();
-                    }//else
-                }//onComplete
-            });
-
+                System.out.println(query.toString());
+            }//If
+            else //Range of date
+            {
+                CollectionReference posts = db.collection("Posts");
+                Task<QuerySnapshot> query = posts.whereEqualTo("destination",destination)
+                        .whereEqualTo("gender",gender)
+                        .whereGreaterThanOrEqualTo("departure_date", date_dep_start)
+                        .whereLessThanOrEqualTo("departure_date", date_dep_end).get();
+                Intent intent=new Intent(this,homePage.class);
+                FilterObj filter = new FilterObj(destination,gender,date_dep_start,date_dep_start);
+                intent.putExtra("filter",filter);
+                startActivity(intent);
+            }//else
 
         }//else if
     }//onClick
