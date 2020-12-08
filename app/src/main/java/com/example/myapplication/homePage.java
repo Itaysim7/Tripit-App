@@ -18,17 +18,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+
+import java.io.Serializable;
+import java.util.ArrayList;
 
 public class homePage extends AppCompatActivity {
 
@@ -38,7 +43,7 @@ public class homePage extends AppCompatActivity {
     private TextView helloTxt;
     private DatabaseReference reference;
     private FirebaseAuth mAuth;
-
+    private Query query;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -60,8 +65,31 @@ public class homePage extends AppCompatActivity {
         db=FirebaseFirestore.getInstance();
         mFirestoreList=findViewById(R.id.firestore_list);
 
+        query=db.collection("Posts").whereNotEqualTo("approval",0);//Query for the post that admin approve
+        Intent intent = this.getIntent();
+        Bundle bundle = intent.getExtras();
+        if(bundle != null) {
+            Toast.makeText(getApplicationContext(), "Inside", Toast.LENGTH_LONG).show();
+            FilterObj filter = (FilterObj) bundle.getSerializable("filter");
+            Timestamp date_dep_start = filter.getDate_dep_start();
+            Timestamp date_dep_end = filter.getDate_dep_end();
+            if(date_dep_end == null) {//Specific
+                query = query.whereEqualTo("departure_date", date_dep_start);
+            }//if
+            else {//Not specific
+                query = query.whereGreaterThanOrEqualTo("departure_date", date_dep_start);
 
-        Query query=db.collection("Posts").whereNotEqualTo("approval",0);//Query for the post that admin approve
+                query = query.whereLessThanOrEqualTo("departure_date", date_dep_end);
+            }//if
+            String destination = filter.getDestination();
+            if(destination != null)
+                query = query.whereEqualTo("destination",destination);
+            if(filter.get_Flight_Purposes() != null) {
+                ArrayList<String> trip_type = new ArrayList<String>(filter.get_Flight_Purposes());
+                query = query.whereArrayContainsAny("type_trip", trip_type);
+            }//if
+
+        }//if
         PagedList.Config config=new PagedList.Config.Builder()
                 .setInitialLoadSizeHint(8).setPageSize(2).build();
         //recyclerOptions
