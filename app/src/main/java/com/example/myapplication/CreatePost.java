@@ -61,7 +61,6 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
     private ArrayList<String> type_array;
     private Timestamp dep_timeStamp,ret_timeStamp;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -153,7 +152,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                 {
                     departure_date=dayOfMonth+ "/" + (mMonth+1) + "/"+ mYear;
                     text_dep_date.setText(departure_date);
-                    cal_dep.set(mYear,mMonth,dayOfMonth);
+                    cal_dep.set(mYear,mMonth,dayOfMonth,0,0,0);
                     dep_timeStamp = new Timestamp(cal_dep.getTime());
                 }
             },day,month,year);
@@ -172,7 +171,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                 {
                     return_date=dayOfMonth+ "/" + (mMonth+1) + "/"+ mYear;
                     text_ret_date.setText(return_date);
-                    cal_ret.set(mYear,mMonth,dayOfMonth);
+                    cal_ret.set(mYear,mMonth,dayOfMonth,0,0,0);
                     ret_timeStamp = new Timestamp(cal_ret.getTime());
                 }
             },day,month,year);
@@ -180,7 +179,6 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         }
         else if(view==btn_type_trip)
         {
-            type_array=new ArrayList<String>();
             AlertDialog.Builder builder=new AlertDialog.Builder(CreatePost.this);
             //string array for alert dialog multichoice items(flight Purposes)
             String [] flight_purposes=new String[]{"בטן-גב","טרקים","אומנות","שופינג","סקי","טבע","מורשת","אחרי צבא","קולינרי","אחר"};
@@ -206,6 +204,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                 @Override
                 public void onClick(DialogInterface dialog, int which)
                 {
+                    type_array=new ArrayList<String>();
                     text_type_trip.setText("מטרות הטיסה שבחרת:");
                     for(int i=0;i<checked_flight_purposes.length;i++)
                     {
@@ -233,7 +232,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         {
             String [] list_gender=new String[]{"אישה", "גבר", "לא משנה"};
             AlertDialog.Builder mBuilder=new AlertDialog.Builder(CreatePost.this);
-            mBuilder.setTitle("בחר מין");
+            mBuilder.setTitle("בחר עם איזה מין אתה מעוניין לטייל");
             mBuilder.setSingleChoiceItems(list_gender, -1, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which)
