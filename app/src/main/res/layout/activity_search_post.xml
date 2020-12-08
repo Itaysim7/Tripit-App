@@ -50,17 +50,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
-    <AutoCompleteTextView
+
+    <com.hbb20.CountryCodePicker
         android:id="@+id/autocomp_destination"
-        android:layout_width="346dp"
-        android:layout_height="37dp"
-        android:layout_marginTop="13dp"
-        android:inputType="textPostalAddress"
-        android:text="@string/input_destination"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ccp_showFullName="true"
+        app:ccp_showPhoneCode="false"
+        app:ccp_showNameCode="false"
+        app:ccp_rememberLastSelection="true"
+        app:ccp_countryPreference="US,DE,NL,GR,FR,ES"
+        app:ccp_defaultNameCode="IL"
+        app:ccp_defaultLanguage="HEBREW"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_destination" />
-
     <TextView
         android:id="@+id/btn_search_date"
         android:layout_width="159dp"
