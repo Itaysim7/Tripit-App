@@ -23,7 +23,7 @@
             android:id="@+id/destination"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="הכנס יעד"
+            android:text="@string/destination"
             android:textAlignment="center"
             android:textSize="24dp"/>
 

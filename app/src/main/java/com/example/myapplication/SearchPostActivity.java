@@ -26,8 +26,10 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.hbb20.CountryCodePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,6 +44,7 @@ import java.util.List;
 import java.util.Set;
 
 public class SearchPostActivity extends AppCompatActivity implements View.OnClickListener  {
+    private CountryCodePicker counry_picker;
     private ArrayList<String> picked_age,flight_Purposes,picked_dates;
     private String gender,date_dep,destination;
     AutoCompleteTextView dest;
@@ -65,7 +68,7 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
 
         //findView
 
-        dest = (AutoCompleteTextView) findViewById(R.id.autocomp_destination);
+        counry_picker = (CountryCodePicker) findViewById(R.id.autocomp_destination);
         btn_date_specific = (Button) findViewById(R.id.search_date_specific_input);
         btn_date_range = (Button) findViewById(R.id.search_date_range_input);
         btn_gender = (Button) findViewById(R.id.btn_gender);
@@ -74,7 +77,7 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
         btn_search = (Button) findViewById(R.id.btn_search);
 
         //Listeners:
-        dest.setOnClickListener(this);
+        counry_picker.setOnClickListener(this);
         btn_date_specific.setOnClickListener(this);
         btn_date_range.setOnClickListener(this);
         btn_gender.setOnClickListener(this);
@@ -125,9 +128,9 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        if(v == dest)
+        if(v == counry_picker)
         {
-            destination = "mexico";
+            destination = counry_picker.getSelectedCountryName();
         }//If
         else if (v == btn_date_specific) // Case of specific date
         {
@@ -321,15 +324,16 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
 
         else if(v == btn_search)
         {
-            ArrayList<Pair<String,Integer>> order = new ArrayList<Pair<String,Integer>>();
+            ArrayList<Pair<QueryDocumentSnapshot,Integer>> order = new ArrayList<Pair<QueryDocumentSnapshot,Integer>>();
+
             CollectionReference posts = db.collection("Posts");
-            Task<QuerySnapshot> query = posts.whereEqualTo("destination","Madrid").whereEqualTo("gender",gender).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            Task<QuerySnapshot> query = posts.whereEqualTo("destination",destination).whereEqualTo("gender",gender).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            String id = document.getId();
                             int score = 2;
+
 //                            Set<String> user_TripType = new HashSet<String>((Collection<? extends String>) document.get("type_trip"));
 //                            int user_age = Integer.valueOf((String)document.get("age"));
 //                            String user_dep = (String)document.get("departure_date");
@@ -350,11 +354,12 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
 //
 //                            if(picked_age.contains(user_age))
 //                                score+=2;
-                            order.add(new Pair<String, Integer>(id,score));
+                            order.add(new Pair<QueryDocumentSnapshot, Integer>(document,score));
                             Toast.makeText(SearchPostActivity.this,document.getId(),Toast.LENGTH_SHORT).show();
                         }//for
-                        Comparator<Pair<String,Integer>> comp = (Pair<String,Integer> o1,Pair<String,Integer> o2)->o1.second.compareTo(o2.second);
+                                Comparator<Pair<QueryDocumentSnapshot,Integer>> comp = (Pair<QueryDocumentSnapshot,Integer> o1,Pair<QueryDocumentSnapshot,Integer> o2)->o1.second.compareTo(o2.second);
                         order.sort(comp);
+
                         System.out.println(order.toString());
                     }//if
                     else
