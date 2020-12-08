@@ -78,12 +78,11 @@ public class homePage extends AppCompatActivity {
             }//if
             else {//Not specific
                 query = query.whereGreaterThanOrEqualTo("departure_date", date_dep_start);
-
                 query = query.whereLessThanOrEqualTo("departure_date", date_dep_end);
             }//if
             String destination = filter.getDestination();
             if(destination != null)
-                query = query.whereEqualTo("destination",destination);
+                        query = query.whereEqualTo("destination",destination);
             if(filter.get_Flight_Purposes() != null) {
                 ArrayList<String> trip_type = new ArrayList<String>(filter.get_Flight_Purposes());
                 query = query.whereArrayContainsAny("type_trip", trip_type);
