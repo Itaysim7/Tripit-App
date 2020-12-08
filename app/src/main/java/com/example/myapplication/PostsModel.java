@@ -1,19 +1,26 @@
 package com.example.myapplication;
 
+import android.widget.Switch;
+
+import com.google.firebase.Timestamp;
+
 import java.lang.reflect.Array;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class PostsModel
 {
-    private String departure_date;
-    private String return_date;
+    private Timestamp departure_date;
+    private Timestamp return_date;
     private String destination;
     private String age;
     private String gender;
     private String description;
     private ArrayList<String> type_trip;
 
-    private PostsModel(String departure_date, String return_date, String destination, String age, String gender, String description) {
+    private PostsModel(Timestamp departure_date, Timestamp return_date, String destination, String age, String gender, String description) {
         this.departure_date = departure_date;
         this.return_date = return_date;
         this.destination = destination;
@@ -48,20 +55,24 @@ public class PostsModel
         this.description = description;
     }
 
-    public void setDeparture_date(String departure_date) {
+    public void setDeparture_date(Timestamp departure_date) {
         this.departure_date = departure_date;
     }
 
-    public void setReturn_date(String return_date) {
+    public void setReturn_date(Timestamp return_date) {
         this.return_date = return_date;
     }
 
-    public String getDeparture_date() {
-        return departure_date;
+    public String getDeparture_date()
+    {
+        String dep=TimestampToString(departure_date);
+        return dep;
     }
 
-    public String getReturn_date() {
-        return return_date;
+    public String getReturn_date()
+    {
+        String ret=TimestampToString(return_date);
+        return ret;
     }
     public String getDestination() {
         return destination;
@@ -91,6 +102,14 @@ public class PostsModel
             text=text.substring(0,text.length()-2);
         }
         return text;
+    }
+
+    private String TimestampToString(Timestamp time)
+    {
+        Date date=time.toDate();
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String s = formatter.format(date);
+        return s;
     }
 }
 
