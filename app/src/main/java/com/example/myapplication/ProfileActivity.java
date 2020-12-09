@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.paging.PagedList;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -11,10 +14,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,6 +27,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
+import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -33,6 +40,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
@@ -50,6 +59,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private DatabaseReference reference;
     private FirebaseUser fUser;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    private RecyclerView mFirestoreList;
+    private FirestorePagingAdapter adapter;
     private UsersObj user;
 
     private ImageView image_profile;
@@ -63,6 +75,41 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         //firebase
         mAuth = FirebaseAuth.getInstance();
         fUser = mAuth.getCurrentUser();
+        db= FirebaseFirestore.getInstance();
+        mFirestoreList=findViewById(R.id.firestore_list);
+
+        //Query for the post that admin approve
+        Query query=db.collection("Posts").whereNotEqualTo("approval",0);
+        PagedList.Config config = new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
+
+        //recyclerOptions
+        FirestorePagingOptions<PostsModel> options=new FirestorePagingOptions.Builder<PostsModel>()
+                .setQuery(query,config,PostsModel.class).build();
+        adapter= new FirestorePagingAdapter<PostsModel, PostsViewHolder>(options) {
+            @NonNull
+            @Override
+            public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_single,parent,false);
+                return new PostsViewHolder(view) ;
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull PostsViewHolder holder, int position, @NonNull PostsModel model)
+            { //set data
+                holder.list_departure_date.setText("תאריך יציאה: "+model.getDeparture_date());
+                holder.list_return_date.setText("תאריך חזרה: "+model.getReturn_date());
+                holder.list_destination.setText("יעד: "+model.getDestination());
+                holder.list_age.setText("גיל: "+model.getAge());
+                holder.list_gender.setText("מין: "+model.getGender());
+                holder.list_description.setText("תיאור: "+model.getDescription());
+                holder.list_type.setText("מטרות הטיול: "+model.getType_trip());
+            }
+        };
+
+        mFirestoreList.setHasFixedSize(true);
+        mFirestoreList.setLayoutManager(new LinearLayoutManager(this));
+        mFirestoreList.setAdapter(adapter);
+
 
 
         image_profile = findViewById(R.id.image_profile_view);
@@ -77,15 +124,14 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 //set image
                 if(user.getImageUrl().equals("default")) {
                     image_profile.setImageResource(R.drawable.user_image);
-                }
-                else{
+                } else{
                     Glide.with(ProfileActivity.this).load(user.getImageUrl()).into(image_profile);
                 }
+
                 //set description
                 if(user.getDescription().equals("empty")) {
                     about_myself_txt.setText("למשתמש זה אין שום דבר לומר על עצמו.");
-                }
-                else{
+                } else{
                     about_myself_txt.setText(user.getDescription());
                 }
             }
@@ -101,6 +147,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         image_profile.setOnClickListener(this);
         about_myself_txt.setOnClickListener(this);
 
+
+        //Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
@@ -121,15 +169,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     private void changeText() {
         String newDescription = about_myself_txt.getText().toString();
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("description",newDescription);
-        reference.updateChildren(map);
-
-
-
+        user.setDescription(newDescription);
+        reference.setValue(user);
     }
 
-
+    //-----------------------------Upload Image Function ------------------------------
     /**
     * Allows the user to select an image from his phone
      */
@@ -253,5 +297,38 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    //------------------------Posts Class---------------------------------------
+    private class PostsViewHolder extends RecyclerView.ViewHolder {
+        private TextView list_departure_date;
+        private TextView list_return_date;
+        private TextView list_destination;
+        private TextView list_age;
+        private TextView list_gender;
+        private TextView list_description;
+        private TextView list_type;
+
+        public PostsViewHolder(@NonNull View itemView) {
+            super(itemView);
+            list_departure_date=itemView.findViewById(R.id.list_departure_date);
+            list_return_date=itemView.findViewById(R.id.list_return_date);
+            list_destination=itemView.findViewById(R.id.list_destination);
+            list_age=itemView.findViewById(R.id.list_age);
+            list_gender=itemView.findViewById(R.id.list_gender);
+            list_description=itemView.findViewById(R.id.list_description);
+            list_type=itemView.findViewById(R.id.list_type);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
 
 }

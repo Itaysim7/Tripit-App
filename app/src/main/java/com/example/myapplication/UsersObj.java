@@ -3,8 +3,7 @@ package com.example.myapplication;
 import android.media.Image;
 import android.net.Uri;
 
-public class UsersObj
-{
+public class UsersObj {
     private String email;
     private String imageUrl;
     private String description;

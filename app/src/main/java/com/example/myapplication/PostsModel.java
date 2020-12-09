@@ -18,15 +18,19 @@ public class PostsModel
     private String age;
     private String gender;
     private String description;
+    private String id;
     private ArrayList<String> type_trip;
+    private int approved;
 
-    private PostsModel(Timestamp departure_date, Timestamp return_date, String destination, String age, String gender, String description) {
+    private PostsModel(Timestamp departure_date, Timestamp return_date, String destination, String age, String gender, String description, String id) {
         this.departure_date = departure_date;
         this.return_date = return_date;
         this.destination = destination;
         this.age = age;
         this.gender = gender;
         this.description = description;
+        this.approved = 0;
+        this.id = id;
     }
 
     //constructor
@@ -111,5 +115,16 @@ public class PostsModel
         String s = formatter.format(date);
         return s;
     }
-}
 
+    public int getApproved() {
+        return approved;
+    }
+
+    public void setApproved(int approved) {
+        this.approved = approved;
+    }
+
+    public String getId() {
+        return id;
+    }
+}

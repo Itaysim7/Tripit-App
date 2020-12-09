@@ -40,10 +40,10 @@ public class RegisterActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        emailEditText=(EditText)findViewById(R.id.email);
-        passwordEditText=(EditText)findViewById(R.id.password);
-        password2EditText=(EditText)findViewById(R.id.repeat_password);
-        register_now_btn = (Button)findViewById(R.id.register_now);
+        emailEditText = findViewById(R.id.email);
+        passwordEditText = findViewById(R.id.password);
+        password2EditText = findViewById(R.id.repeat_password);
+        register_now_btn = findViewById(R.id.register_now);
 
 
         database=FirebaseDatabase.getInstance();
