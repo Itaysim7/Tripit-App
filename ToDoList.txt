@@ -1,0 +1,7 @@
+1. שמירת ססמא - userActivity + adminActivity - דרך: Shared Preferences
+2.שחזור ססמא - userActivity + adminActivity 
+3.בדיקת ססמא חזקה - userActivity + adminActivity 
+4.בדיקת תאריך יציאה וחזרה (סנכרון זמנים) - createPost
+5.שינוי סמל - Layouts
+6.סנכרון מציג תאריכים - searchPostActivity
+7.מיקום נוכחי ככתובת דיפולטיבית לפרופיל - profileActivity -דרך:sensors 
