@@ -41,7 +41,6 @@ public class FilterObj implements Serializable {
             return null;
         Date start_time_date = new Date(date_dep_start);
         Timestamp timestamp = new Timestamp(start_time_date);
-        System.out.println(timestamp.toDate().toString());
         return timestamp;
     }
 

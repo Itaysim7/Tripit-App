@@ -65,26 +65,33 @@ public class homePage extends AppCompatActivity {
         db=FirebaseFirestore.getInstance();
         mFirestoreList=findViewById(R.id.firestore_list);
 
-        query=db.collection("Posts").whereNotEqualTo("approval",0);//Query for the post that admin approve
+        query=db.collection("Posts").whereEqualTo("approval",1);//Query for the post that admin approve
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
         if(bundle != null) {
             Toast.makeText(getApplicationContext(), "Inside", Toast.LENGTH_LONG).show();
             FilterObj filter = (FilterObj) bundle.getSerializable("filter");
+            String destination = filter.getDestination();
+            if(destination != null) {
+                System.out.println("Destination:\t"+destination);
+                query = query.whereEqualTo("destination", destination);
+            }
             Timestamp date_dep_start = filter.getDate_dep_start();
+
             Timestamp date_dep_end = filter.getDate_dep_end();
             if(date_dep_end == null) {//Specific
+                System.out.println("Start:\t"+date_dep_start.toDate().toString());
                 query = query.whereEqualTo("departure_date", date_dep_start);
             }//if
             else {//Not specific
+                System.out.println("Start:\t"+date_dep_start.toDate().toString());
+                System.out.println("End:\t"+date_dep_end.toDate().toString());
                 query = query.whereGreaterThanOrEqualTo("departure_date", date_dep_start);
                 query = query.whereLessThanOrEqualTo("departure_date", date_dep_end);
             }//if
-            String destination = filter.getDestination();
-            if(destination != null)
-                        query = query.whereEqualTo("destination",destination);
             if(filter.get_Flight_Purposes() != null) {
                 ArrayList<String> trip_type = new ArrayList<String>(filter.get_Flight_Purposes());
+                System.out.println("Trip type:\t"+trip_type.toString());
                 query = query.whereArrayContainsAny("type_trip", trip_type);
             }//if
 

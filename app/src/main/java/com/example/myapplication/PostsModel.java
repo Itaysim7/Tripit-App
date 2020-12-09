@@ -110,10 +110,16 @@ public class PostsModel
 
     private String TimestampToString(Timestamp time)
     {
-        Date date=time.toDate();
-        Format formatter = new SimpleDateFormat("yyyy-MM-dd");
-        String s = formatter.format(date);
-        return s;
+        if(time != null)
+        {
+            Date date=time.toDate();
+            Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+            String s = formatter.format(date);
+            return s;
+        }//if
+        else
+            return "";
+
     }
 
     public int getApproved() {
