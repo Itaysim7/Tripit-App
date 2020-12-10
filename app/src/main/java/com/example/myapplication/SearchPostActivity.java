@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hbb20.CountryCodePicker;
 
@@ -37,6 +38,7 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
     private Long date_dep_start;
     private Long date_dep_end;
     private String destination;
+    private FirebaseAuth mAuth;
     Button btn_date_specific, btn_date_range,  btn_trip_type, btn_search;
     Calendar c_start_end;
     DatePickerDialog dp_start_end;
@@ -71,6 +73,7 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
 
         //FireBase:
         db=FirebaseFirestore.getInstance();
+        mAuth=FirebaseAuth.getInstance();
 
         //Init Filter Variables
         flight_Purposes = new ArrayList<String>();
@@ -92,7 +95,7 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
         {
             Intent intent=new Intent(this,CreatePost.class);
             startActivity(intent);
-        }//if
+        }
         if(id==R.id.Search)
         {
             Intent intent=new Intent(this,SearchPostActivity.class);
@@ -101,6 +104,18 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
         if(id==R.id.home)
         {
             Intent intent=new Intent(this,homePage.class);
+            startActivity(intent);
+        }
+        if(id==R.id.myProfile)
+        {
+            Intent intent=new Intent(this,ProfileActivity.class);
+            startActivity(intent);
+        }
+        if(id==R.id.logOut)
+        {
+            mAuth.signOut();
+            finish();
+            Intent intent = new Intent(getApplicationContext(), welcomeActivity.class);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);

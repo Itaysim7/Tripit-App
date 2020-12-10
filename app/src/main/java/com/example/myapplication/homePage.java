@@ -177,7 +177,6 @@ public class homePage extends AppCompatActivity {
             finish();
             Intent intent = new Intent(getApplicationContext(), welcomeActivity.class);
             startActivity(intent);
-
         }
         return super.onOptionsItemSelected(item);
     }

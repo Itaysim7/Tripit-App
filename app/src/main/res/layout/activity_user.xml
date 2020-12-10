@@ -67,7 +67,7 @@
         android:id="@+id/register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="8dp"
         android:text="@string/action_register"
         android:textColor="#E60C3F"
@@ -80,7 +80,7 @@
         android:id="@+id/notRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="188dp"
+        android:layout_marginStart="110dp"
         android:layout_marginTop="8dp"
         android:text="@string/not_register"
         android:textColor="#E60C3F"
@@ -104,12 +104,13 @@
         app:layout_constraintStart_toStartOf="@+id/password"
         app:layout_constraintTop_toBottomOf="@+id/password" />
     <!--Button for facebook-->
+    <!--Button for google-->
     <Button
         android:id="@+id/buttonForFacebook"
-        android:layout_width="323dp"
-        android:layout_height="81dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="40dp"
+        android:layout_width="246dp"
+        android:layout_height="83dp"
+        android:layout_marginStart="76dp"
+        android:layout_marginTop="48dp"
         android:backgroundTint="@color/white"
         android:text="@string/facebook"
         android:textColor="#283593"
@@ -117,20 +118,44 @@
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/login"
         app:layout_constraintTop_toBottomOf="@+id/login" />
-    <!--Button for google-->
+    <Button
+        android:id="@+id/white_btn_for_facebook"
+        android:layout_width="80dp"
+        android:layout_height="83dp"
+        android:backgroundTint="@color/white"
+        android:layout_marginTop="48dp"
+        android:enabled="false"
+        tools:layout_editor_absoluteX="29dp"
+        tools:layout_editor_absoluteY="458dp"
+        app:layout_constraintStart_toStartOf="@+id/login"
+        app:layout_constraintTop_toBottomOf="@+id/login"/>
+
     <Button
         android:id="@+id/buttonForGoogle"
-        android:layout_width="323dp"
-        android:layout_height="81dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="246dp"
+        android:layout_height="83dp"
+        android:layout_marginStart="76dp"
+        android:layout_marginTop="150dp"
         android:backgroundTint="@color/white"
         android:enabled="true"
         android:text="@string/Google"
         android:textColor="@color/black"
         android:textSize="22dp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/buttonForFacebook"
-        app:layout_constraintTop_toBottomOf="@+id/buttonForFacebook" />
+        app:layout_constraintStart_toStartOf="@+id/login"
+        app:layout_constraintTop_toBottomOf="@+id/login" />
+
+    <Button
+        android:id="@+id/white_btn_for_google"
+        android:layout_width="80dp"
+        android:layout_height="83dp"
+        android:backgroundTint="@color/white"
+        android:layout_marginTop="150dp"
+        android:enabled="false"
+        tools:layout_editor_absoluteX="29dp"
+        tools:layout_editor_absoluteY="458dp"
+        app:layout_constraintStart_toStartOf="@+id/white_btn_for_facebook"
+        app:layout_constraintTop_toBottomOf="@+id/login"/>
 
     <CheckBox
         android:id="@+id/checkBox"
@@ -175,24 +200,26 @@
         app:srcCompat="@drawable/lock" />
 
     <!--facebook image-->
+
+    <!--google image-->
+
     <ImageView
         android:id="@+id/facebook"
         android:layout_width="49dp"
         android:layout_height="65dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="@+id/buttonForFacebook"
-        app:layout_constraintTop_toTopOf="@+id/buttonForFacebook"
+        android:layout_marginTop="135dp"
+        app:layout_constraintStart_toStartOf="@+id/login"
+        app:layout_constraintTop_toTopOf="@+id/login"
         app:srcCompat="@drawable/facebook" />
 
-    <!--google image-->
     <ImageView
         android:id="@+id/google"
         android:layout_width="55dp"
         android:layout_height="57dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="@+id/buttonForGoogle"
+        app:layout_constraintStart_toStartOf="@+id/login"
         app:layout_constraintTop_toTopOf="@+id/buttonForGoogle"
         app:srcCompat="@drawable/google" />
 
@@ -211,6 +238,8 @@
         app:layout_constraintStart_toStartOf="@+id/password"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.3" />
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

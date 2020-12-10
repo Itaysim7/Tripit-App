@@ -128,13 +128,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
                         @Override
                         protected void onBindViewHolder(@NonNull PostsViewHolder holder, int position, @NonNull PostsModel model) { //set data
-                            holder.list_departure_date.setText("תאריך יציאה: " + model.getDeparture_date());
-                            holder.list_return_date.setText("תאריך חזרה: " + model.getReturn_date());
-                            holder.list_destination.setText("יעד: " + model.getDestination());
-                            holder.list_age.setText("גיל: " + model.getAge());
-                            holder.list_gender.setText("מין: " + model.getGender());
-                            holder.list_description.setText("תיאור: " + model.getDescription());
-                            holder.list_type.setText("מטרות הטיול: " + model.getType_trip());
+                            holder.list_departure_date.setText("תאריך יציאה: "+model.getDeparture_date());
+                            holder.list_return_date.setText("תאריך חזרה: "+model.getReturn_date());
+                            holder.list_destination.setText("יעד: "+model.getDestination());
+                            holder.list_age.setText("גיל השותף: "+model.getAge());
+                            holder.list_gender.setText("מין השותף: "+model.getGender());
+                            holder.list_description.setText("תיאור: "+model.getDescription());
+                            holder.list_type.setText("מטרות הטיול: "+model.getType_trip());;
                         }
                     };
 
@@ -284,30 +284,36 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.newPost:
-                return true;
-
-            case R.id.Search:
-
-            case R.id.myProfile:
-                Intent toProfile = new Intent(getApplicationContext(), ProfileActivity.class);
-                startActivity(toProfile);
-
-            case R.id.savePost:
-
-            case R.id.logOut:
-                mAuth.signOut();
-                finish();
-                Intent intent = new Intent(getApplicationContext(), welcomeActivity.class);
-                startActivity(intent);
-
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-
+        int id=item.getItemId();
+        //menu item click handling
+        if(id==R.id.newPost)
+        {
+            Intent intent=new Intent(this,CreatePost.class);
+            startActivity(intent);
         }
+        if(id==R.id.Search)
+        {
+            Intent intent=new Intent(this,SearchPostActivity.class);
+            startActivity(intent);
+        }
+        if(id==R.id.home)
+        {
+            Intent intent=new Intent(this,homePage.class);
+            startActivity(intent);
+        }
+        if(id==R.id.myProfile)
+        {
+            Intent intent=new Intent(this,ProfileActivity.class);
+            startActivity(intent);
+        }
+        if(id==R.id.logOut)
+        {
+            mAuth.signOut();
+            finish();
+            Intent intent = new Intent(getApplicationContext(), welcomeActivity.class);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     //------------------------Posts Class---------------------------------------

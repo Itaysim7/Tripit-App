@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +26,6 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.auth.FirebaseUser;
@@ -40,13 +38,9 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hbb20.CountryCodePicker;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +63,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
     private Calendar cal_dep,cal_ret;
     private DatePickerDialog dpd_dep,dpd_ret;
     private ArrayList<String> type_array;
-    private Timestamp dep_timeStamp,ret_timeStamp;
+    private int dep_date=-1,ret_date=-1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -158,6 +152,18 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
             Intent intent=new Intent(this,homePage.class);
             startActivity(intent);
         }
+        if(id==R.id.myProfile)
+        {
+            Intent intent=new Intent(this,ProfileActivity.class);
+            startActivity(intent);
+        }
+        if(id==R.id.logOut)
+        {
+            firebaseAuth.signOut();
+            finish();
+            Intent intent = new Intent(getApplicationContext(), welcomeActivity.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -177,8 +183,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                 {
                     departure_date=dayOfMonth+ "/" + (mMonth+1) + "/"+ mYear;
                     text_dep_date.setText(departure_date);
-                    cal_dep.set(mYear,mMonth,dayOfMonth,0,0,0);
-                    dep_timeStamp = new Timestamp(cal_dep.getTime());
+                    dep_date =dayOfMonth+(mMonth+1)*100+ mYear*10000;
                 }
             },day,month,year);
             dpd_dep.show();
@@ -196,8 +201,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                 {
                     return_date=dayOfMonth+ "/" + (mMonth+1) + "/"+ mYear;
                     text_ret_date.setText(return_date);
-                    cal_ret.set(mYear,mMonth,dayOfMonth,0,0,0);
-                    ret_timeStamp = new Timestamp(cal_ret.getTime());
+                    ret_date =dayOfMonth+(mMonth+1)*100+ mYear*10000;
                 }
             },day,month,year);
             dpd_ret.show();
@@ -323,8 +327,8 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         post_map.put("user_id",current_user_id);
         post_map.put("timestamp",FieldValue.serverTimestamp());
         post_map.put("destination",dest);
-        post_map.put("departure_date",dep_timeStamp);
-        post_map.put("return_date",ret_timeStamp);
+        post_map.put("departure_date",dep_date);
+        post_map.put("return_date",ret_date);
         post_map.put("age",age_text);
         post_map.put("gender",gender);
         post_map.put("type_trip",type_array);

@@ -1,42 +1,64 @@
 package com.example.myapplication;
 
-import android.widget.Switch;
 
 import com.google.firebase.Timestamp;
-
-import java.lang.reflect.Array;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class PostsModel
 {
-    private Timestamp departure_date;
-    private Timestamp return_date;
+    private int departure_date;
+    private int return_date;
     private String destination;
     private String age;
     private String gender;
     private String description;
     private String id;
     private ArrayList<String> type_trip;
-    private int approved;
+    private int approval;
+    private int clicks;
+    private Timestamp timestamp;
+    private String user_id;
 
-    private PostsModel(Timestamp departure_date, Timestamp return_date, String destination, String age, String gender, String description, String id) {
+    private PostsModel(int departure_date, int return_date, String destination, String age, String gender, String description,
+                       String id,ArrayList<String> type_trip,int approval,int clicks,Timestamp timestamp,String user_id) {
         this.departure_date = departure_date;
         this.return_date = return_date;
         this.destination = destination;
         this.age = age;
         this.gender = gender;
         this.description = description;
-        this.approved = 0;
+        this.approval =approval;
+        this.type_trip=type_trip;
         this.id = id;
+        this.clicks=clicks;
+        this.timestamp=timestamp;
+        this.user_id=user_id;
     }
 
     //constructor
     private PostsModel()
     {
 
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setClicks(int clicks) {
+        this.clicks = clicks;
+    }
+
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
+    public void setApproval(int approval) {
+        this.approval = approval;
     }
 
     public void setType_trip(ArrayList<String> type_trip) {
@@ -59,23 +81,23 @@ public class PostsModel
         this.description = description;
     }
 
-    public void setDeparture_date(Timestamp departure_date) {
+    public void setDeparture_date(int departure_date) {
         this.departure_date = departure_date;
     }
 
-    public void setReturn_date(Timestamp return_date) {
+    public void setReturn_date(int return_date) {
         this.return_date = return_date;
     }
 
     public String getDeparture_date()
     {
-        String dep=TimestampToString(departure_date);
+        String dep=intToStringDate(departure_date);
         return dep;
     }
 
     public String getReturn_date()
     {
-        String ret=TimestampToString(return_date);
+        String ret=intToStringDate(return_date);
         return ret;
     }
     public String getDestination() {
@@ -107,30 +129,40 @@ public class PostsModel
         }
         return text;
     }
-
-    private String TimestampToString(Timestamp time)
-    {
-        if(time != null)
-        {
-            Date date=time.toDate();
-            Format formatter = new SimpleDateFormat("yyyy-MM-dd");
-            String s = formatter.format(date);
-            return s;
-        }//if
-        else
-            return "";
-
-    }
-
-    public int getApproved() {
-        return approved;
-    }
-
-    public void setApproved(int approved) {
-        this.approved = approved;
+    public int getApproval() {
+        return approval;
     }
 
     public String getId() {
         return id;
     }
+
+    public int getClicks() {
+        return clicks;
+    }
+
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    private String intToStringDate(int time)
+    {
+        if(time != -1)
+        {
+            String day=""+(time%100);
+            time=time/100;
+            String month=""+(time%100);
+            time=time/100;//year
+            String s =day+"/"+month+"/"+time;
+            return s;
+        }//if
+        else
+            return "";
+    }
+
+
 }
