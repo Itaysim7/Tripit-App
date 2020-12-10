@@ -18,7 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/appTheme">
 
-        <activity android:name=".ProfileActivity" />
+        <activity
+            android:name=".ProfileActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".SearchPostActivity" />
 
         <activity android:name=".ApprovePostsActivity"></activity>

@@ -38,15 +38,14 @@
         app:layout_constraintTop_toBottomOf="@+id/image_profile_view" />
 
     <ScrollView
-        android:id="@+id/Scroll_view"
-        android:layout_width="413dp"
-        android:layout_height="438dp"
+        android:layout_width="match_parent"
+        android:layout_height="450dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        >
 
         <LinearLayout
+            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
@@ -54,19 +53,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginRight="50dp"
-                android:fontFamily="monospace"
                 android:text="הפוסטים שלי:"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
 
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/firestore_list"
                 android:layout_width="match_parent"
-                android:layout_height="462dp"
-                app:layout_constraintEnd_toStartOf="@+id/About_Myself_Txt"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_height="430dp"
+                android:layout_marginTop="15dp"
+                />
+
         </LinearLayout>
+
 
 
     </ScrollView>

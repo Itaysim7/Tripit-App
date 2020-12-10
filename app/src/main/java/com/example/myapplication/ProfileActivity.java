@@ -47,6 +47,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener{
@@ -63,58 +64,27 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private RecyclerView mFirestoreList;
     private FirestorePagingAdapter adapter;
     private UsersObj user;
+    private Query query;
 
     private ImageView image_profile;
     private EditText about_myself_txt;
+    private TextView myPosts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        image_profile = findViewById(R.id.image_profile_view);
+        about_myself_txt = findViewById(R.id.About_Myself_Txt);
+        myPosts = findViewById(R.id.My_Posts);
+
         //firebase
         mAuth = FirebaseAuth.getInstance();
         fUser = mAuth.getCurrentUser();
-        db= FirebaseFirestore.getInstance();
         mFirestoreList=findViewById(R.id.firestore_list);
 
-        //Query for the post that admin approve
-        Query query=db.collection("Posts").whereNotEqualTo("approval",0);
-        PagedList.Config config = new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
-
-        //recyclerOptions
-        FirestorePagingOptions<PostsModel> options=new FirestorePagingOptions.Builder<PostsModel>()
-                .setQuery(query,config,PostsModel.class).build();
-        adapter= new FirestorePagingAdapter<PostsModel, PostsViewHolder>(options) {
-            @NonNull
-            @Override
-            public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_single,parent,false);
-                return new PostsViewHolder(view) ;
-            }
-
-            @Override
-            protected void onBindViewHolder(@NonNull PostsViewHolder holder, int position, @NonNull PostsModel model)
-            { //set data
-                holder.list_departure_date.setText("תאריך יציאה: "+model.getDeparture_date());
-                holder.list_return_date.setText("תאריך חזרה: "+model.getReturn_date());
-                holder.list_destination.setText("יעד: "+model.getDestination());
-                holder.list_age.setText("גיל: "+model.getAge());
-                holder.list_gender.setText("מין: "+model.getGender());
-                holder.list_description.setText("תיאור: "+model.getDescription());
-                holder.list_type.setText("מטרות הטיול: "+model.getType_trip());
-            }
-        };
-
-        mFirestoreList.setHasFixedSize(true);
-        mFirestoreList.setLayoutManager(new LinearLayoutManager(this));
-        mFirestoreList.setAdapter(adapter);
-
-
-
-        image_profile = findViewById(R.id.image_profile_view);
-        about_myself_txt = findViewById(R.id.About_Myself_Txt);
-
+        db = FirebaseFirestore.getInstance();
 
         reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid());
         reference.addValueEventListener(new ValueEventListener() {
@@ -127,13 +97,54 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 } else{
                     Glide.with(ProfileActivity.this).load(user.getImageUrl()).into(image_profile);
                 }
-
                 //set description
                 if(user.getDescription().equals("empty")) {
                     about_myself_txt.setText("למשתמש זה אין שום דבר לומר על עצמו.");
                 } else{
                     about_myself_txt.setText(user.getDescription());
                 }
+                if(user.getMyPosts() == null){
+                    myPosts.setText("לא קיימים פוסטים להצגה.");
+                }else{
+                    ArrayList<String> value = new ArrayList<>();
+                    for (String key: user.getMyPosts().keySet()) {
+                        value.add(user.getMyPosts().get(key));
+                    }
+
+
+                    query = db.collection("Posts").whereIn("id", value);
+                    PagedList.Config config = new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
+
+                    //recyclerOptions
+                    FirestorePagingOptions<PostsModel> options = new FirestorePagingOptions.Builder<PostsModel>()
+                            .setQuery(query, config, PostsModel.class).build();
+                    adapter = new FirestorePagingAdapter<PostsModel, PostsViewHolder>(options) {
+                        @NonNull
+                        @Override
+                        public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_single, parent, false);
+                            return new PostsViewHolder(view);
+                        }
+
+                        @Override
+                        protected void onBindViewHolder(@NonNull PostsViewHolder holder, int position, @NonNull PostsModel model) { //set data
+                            holder.list_departure_date.setText("תאריך יציאה: " + model.getDeparture_date());
+                            holder.list_return_date.setText("תאריך חזרה: " + model.getReturn_date());
+                            holder.list_destination.setText("יעד: " + model.getDestination());
+                            holder.list_age.setText("גיל: " + model.getAge());
+                            holder.list_gender.setText("מין: " + model.getGender());
+                            holder.list_description.setText("תיאור: " + model.getDescription());
+                            holder.list_type.setText("מטרות הטיול: " + model.getType_trip());
+                        }
+                    };
+
+                    mFirestoreList.setHasFixedSize(true);
+                    mFirestoreList.setLayoutManager(new LinearLayoutManager(ProfileActivity.this));
+                    mFirestoreList.setAdapter(adapter);
+                    adapter.startListening();
+
+                }
+
             }
 
             @Override
@@ -141,7 +152,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 Log.d("Failed", error.getMessage());
             }
         });
-
+        //Query for the post that admin approve
+        //query = db.collection("Posts").whereArrayContains("id", user.getMyPosts());
 
         storageReference = FirebaseStorage.getInstance().getReference("uploads");
         image_profile.setOnClickListener(this);
@@ -166,6 +178,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             changeText();
         }
     }
+
 
     private void changeText() {
         String newDescription = about_myself_txt.getText().toString();
@@ -322,13 +335,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onStop() {
         super.onStop();
-        adapter.stopListening();
+        //adapter.stopListening();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        adapter.startListening();
+
     }
 
 }

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,6 +30,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hbb20.CountryCodePicker;
@@ -53,6 +60,9 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
     private Uri post_image_uri;
     private FirebaseFirestore db;
     private FirebaseAuth firebaseAuth;
+    private FirebaseUser fUser;
+    private UsersObj user;
+    private DatabaseReference reference;
     private ProgressDialog pd;
     private TextView text_dep_date,text_ret_date,text_type_trip;
     private Button btn_dep_date,btn_ret_date,btn_type_trip,btn_gender,btn_age,btn_publish;
@@ -77,6 +87,19 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         //firebase
         db=FirebaseFirestore.getInstance();
         firebaseAuth=FirebaseAuth.getInstance();
+        fUser = firebaseAuth.getCurrentUser();
+        reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                user = snapshot.getValue(UsersObj.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("Failed", error.getMessage());
+            }
+        });
         current_user_id=firebaseAuth.getCurrentUser().getUid();
 
         //progressDialog
@@ -104,6 +127,8 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         btn_gender.setOnClickListener(this);
         btn_age.setOnClickListener(this);
         btn_publish.setOnClickListener(this);
+
+
     }
 
     @Override
@@ -326,6 +351,11 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                         Toast.makeText(CreatePost.this,e.getMessage(),Toast.LENGTH_SHORT).show();
                     }
                 });
+
+        //update the user
+        reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid()).child("myPosts");
+        reference.push().setValue(id);
+        //user.updateMyPosts(id);
     }
 
 

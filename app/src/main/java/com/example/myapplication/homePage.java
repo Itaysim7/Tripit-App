@@ -11,6 +11,7 @@ import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.sax.StartElementListener;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -120,6 +121,15 @@ public class homePage extends AppCompatActivity {
                 holder.list_gender.setText("מין השותף: "+model.getGender());
                 holder.list_description.setText("תיאור: "+model.getDescription());
                 holder.list_type.setText("מטרות הטיול: "+model.getType_trip());
+
+                holder.Star.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        holder.Star.setText("סומן בכוכב");
+                        //reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid()).child("myPosts");
+                        //reference.push().setValue(id);
+                    }
+                });
             }
         };
 
@@ -181,8 +191,9 @@ public class homePage extends AppCompatActivity {
         private TextView list_gender;
         private TextView list_description;
         private TextView list_type;
-        public PostsViewHolder(@NonNull View itemView)
-        {
+        private TextView Star;
+
+        public PostsViewHolder(@NonNull View itemView) {
             super(itemView);
             list_departure_date=itemView.findViewById(R.id.list_departure_date);
             list_return_date=itemView.findViewById(R.id.list_return_date);
@@ -191,6 +202,7 @@ public class homePage extends AppCompatActivity {
             list_gender=itemView.findViewById(R.id.list_gender);
             list_description=itemView.findViewById(R.id.list_description);
             list_type=itemView.findViewById(R.id.list_type);
+            Star = itemView.findViewById(R.id.Star);
         }
     }
 

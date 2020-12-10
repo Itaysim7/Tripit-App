@@ -25,6 +25,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -104,6 +105,8 @@ public class ApprovePostsActivity extends AppCompatActivity {
                 holder.no_txt.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        //reference= FirebaseDatabase.getInstance().getReference("users").child(model.getId()).child("myPosts");
+                        //reference.setValue()
                         db.collection("Posts").document(model.getId()).delete();
                     }
                 });
@@ -184,8 +187,6 @@ public class ApprovePostsActivity extends AppCompatActivity {
 
             yes_txt = itemView.findViewById(R.id.yes_txt);
             no_txt = itemView.findViewById(R.id.no_txt);
-
-
         }
     }
 

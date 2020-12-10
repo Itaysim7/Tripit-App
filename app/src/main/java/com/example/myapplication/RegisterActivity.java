@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,14 +21,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.HashMap;
-
 public class RegisterActivity extends AppCompatActivity
 {
     private EditText emailEditText,passwordEditText,password2EditText;
     private Button register_now_btn;
-    private FirebaseDatabase database;
-    private DatabaseReference mDatebase;
+    private DatabaseReference reference;
     private FirebaseAuth mAuth;
     private UsersObj user;
     private static final String TAG="RegisterActivity";
@@ -46,8 +42,8 @@ public class RegisterActivity extends AppCompatActivity
         register_now_btn = findViewById(R.id.register_now);
 
 
-        database=FirebaseDatabase.getInstance();
-        mDatebase=database.getReference("users");
+        FirebaseDatabase database=FirebaseDatabase.getInstance();
+        reference =database.getReference("users");
         mAuth=FirebaseAuth.getInstance();
 
 
@@ -76,7 +72,7 @@ public class RegisterActivity extends AppCompatActivity
                         Toast.makeText(getApplicationContext(),"These passwords did not match, please try again",Toast.LENGTH_LONG).show();
                         return;
                     }
-                    user=new UsersObj(email,"default","empty", "default","default", 0,0);
+                    user=new UsersObj(email,"default","empty", "default","default", 0,0, null);
                     registerUser(email,password);
                 }
             }
@@ -111,7 +107,7 @@ public class RegisterActivity extends AppCompatActivity
 
     public void updateUI(FirebaseUser firebaseUser)
     {
-        mDatebase.child(firebaseUser.getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+        reference.child(firebaseUser.getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
