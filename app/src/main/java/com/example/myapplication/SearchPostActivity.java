@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
@@ -29,14 +28,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class SearchPostActivity extends AppCompatActivity implements View.OnClickListener  {
     private CountryCodePicker counry_picker;
     private ArrayList<String> flight_Purposes;
-    private Long date_dep_start;
-    private Long date_dep_end;
+    private int date_dep_start;
+    private int date_dep_end;
     private String destination;
     private FirebaseAuth mAuth;
     Button btn_date_specific, btn_date_range,  btn_trip_type, btn_search;
@@ -77,6 +75,8 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
 
         //Init Filter Variables
         flight_Purposes = new ArrayList<String>();
+        date_dep_start = Integer.MIN_VALUE;
+        date_dep_end = Integer.MAX_VALUE;
     }//onCreate
 
     @Override
@@ -129,15 +129,14 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
             int day = c_start_end.get(Calendar.DAY_OF_MONTH);
             int month = c_start_end.get(Calendar.MONTH);
             int year = c_start_end.get(Calendar.YEAR);
+
             dp_start_end = new DatePickerDialog(SearchPostActivity.this, new DatePickerDialog.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker view, int mYear, int mMonth, int dayOfMonth) {
                     String date = dayOfMonth + "/" + (mMonth + 1) + "/" + mYear;
                     btn_date_specific.setText(date);
                     btn_date_range.setText("גמיש בתאריכי היציאה");
-                    c_start_end.set(mYear,mMonth,dayOfMonth,0,0,0);
-                    date_dep_start = c_start_end.getTimeInMillis();
-
+                    date_dep_start = dayOfMonth+(mMonth+1)*100+ mYear*10000;
                     //Toast.makeText(getApplicationContext(), dayOfMonth+ "/" + (mMonth+1) + "/"+ mYear, Toast.LENGTH_LONG).show();
                 }//onDateSet
             }, day, month, year);
@@ -154,19 +153,16 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
                 public void onPositiveButtonClick(Pair<Long, Long> selection) {
                     Long start_time_Long = selection.first;
                     Date start_time_date = new Date(start_time_Long);
-                    date_dep_start = start_time_Long;
-
                     Long end_time_Long = selection.second;
                     Date end_time_date = new Date(end_time_Long);
-                    date_dep_end = end_time_Long;
-
-
                     Calendar c = Calendar.getInstance();
                     SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
-                    //picked_dates = Date_Range_To_DatesList(start_time_date,end_time_date,sdf2);
-
                     String first_date = sdf2.format(start_time_date);
                     String end_date = sdf2.format(end_time_date);
+                    if(first_date != null)
+                        date_dep_start = Date_To_Int(first_date);
+                    if(end_date != null)
+                        date_dep_end = Date_To_Int(end_date);
                     btn_date_range.setText(end_date + "-" + first_date);
                     btn_date_specific.setText("תאריך מדוייק");
                     //Toast.makeText(getApplicationContext(), first_date+" "+end_date, Toast.LENGTH_LONG).show();
@@ -237,30 +233,18 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
             startActivity(intent);
         }//else if
     }//onClick
-
     /*
-        From Range to List of Dates
+    Simple convert function from dd/mm/yyyy format to yyyymmdd Integer
      */
-    public static ArrayList<String> Date_Range_To_DatesList(
-            Date startDate, Date endDate, SimpleDateFormat sdf2) {
-        ArrayList<String> datesInRange = new ArrayList<String>();
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(startDate);
+    private int Date_To_Int(String date) {
+        String[] partial = date.split("/");
+        int day = Integer.parseInt(partial[0]);
+        int month = Integer.parseInt(partial[1]);
+        int year = Integer.parseInt(partial[2]);
+        return (day+(month+1)*100+ year*10000);
+    }//Date_To_Int
 
-        Calendar endCalendar = new GregorianCalendar();
-        endCalendar.setTime(endDate);
 
-        while (calendar.before(endCalendar)) {
-            String result = sdf2.format(calendar.getTime());
-            datesInRange.add(result);
-            calendar.add(Calendar.DATE, 1);
-        }//while
-        //While Skipping last day
-        String result = sdf2.format(calendar.getTime());
-        datesInRange.add(result);
-        calendar.add(Calendar.DATE, 1);
-        return datesInRange;
-    }
 
 
 

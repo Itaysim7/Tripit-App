@@ -9,11 +9,11 @@ import java.util.Date;
 
 public class FilterObj implements Serializable {
     private String destination;
-    private Long date_dep_start, date_dep_end;
+    private int date_dep_start, date_dep_end;
     private ArrayList<String> flight_Purposes;
 
 
-    public FilterObj(String destination,  Long date_dep_start, Long date_dep_end,ArrayList<String> flight_Purposes) {
+    public FilterObj(String destination,  int date_dep_start, int date_dep_end,ArrayList<String> flight_Purposes) {
         this.destination = destination;
         this.date_dep_start = date_dep_start;
         this.date_dep_end = date_dep_end;
@@ -26,22 +26,13 @@ public class FilterObj implements Serializable {
         return flight_Purposes;
     }
 
-    public Timestamp getDate_dep_end() {
-        if(date_dep_end == null)
-            return null;
-        Date start_time_date = new Date(date_dep_end);
-        Timestamp timestamp = new Timestamp(start_time_date);
-        System.out.println(timestamp.toDate().toString());
-        return timestamp;
+    public int getDate_dep_end() {
+        return date_dep_end;
     }
 
 
-    public Timestamp getDate_dep_start() {
-        if(date_dep_start == null)
-            return null;
-        Date start_time_date = new Date(date_dep_start);
-        Timestamp timestamp = new Timestamp(start_time_date);
-        return timestamp;
+    public int getDate_dep_start() {
+        return date_dep_start;
     }
 
 

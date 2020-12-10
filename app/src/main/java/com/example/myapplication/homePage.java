@@ -74,22 +74,20 @@ public class homePage extends AppCompatActivity {
             FilterObj filter = (FilterObj) bundle.getSerializable("filter");
             String destination = filter.getDestination();
             if(destination != null) {
-                System.out.println("Destination:\t"+destination);
                 query = query.whereEqualTo("destination", destination);
             }
-            Timestamp date_dep_start = filter.getDate_dep_start();
+            int date_dep_start = filter.getDate_dep_start();
+            int date_dep_end = filter.getDate_dep_end();
 
-            Timestamp date_dep_end = filter.getDate_dep_end();
-            if(date_dep_end == null) {//Specific
-                System.out.println("Start:\t"+date_dep_start.toDate().toString());
+            if(date_dep_end == Integer.MAX_VALUE && date_dep_start != Integer.MIN_VALUE) {//Specific
+                System.out.println("Specific");
                 query = query.whereEqualTo("departure_date", date_dep_start);
             }//if
-            else {//Not specific
-                System.out.println("Start:\t"+date_dep_start.toDate().toString());
-                System.out.println("End:\t"+date_dep_end.toDate().toString());
+            if(date_dep_end != Integer.MAX_VALUE && date_dep_start != Integer.MIN_VALUE) {//Not specific
+                System.out.println("Not Specific");
                 query = query.whereGreaterThanOrEqualTo("departure_date", date_dep_start);
                 query = query.whereLessThanOrEqualTo("departure_date", date_dep_end);
-            }//if
+            }//else
             if(filter.get_Flight_Purposes() != null) {
                 ArrayList<String> trip_type = new ArrayList<String>(filter.get_Flight_Purposes());
                 System.out.println("Trip type:\t"+trip_type.toString());
