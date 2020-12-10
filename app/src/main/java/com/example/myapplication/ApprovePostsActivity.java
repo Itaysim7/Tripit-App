@@ -98,8 +98,7 @@ public class ApprovePostsActivity extends AppCompatActivity {
                 holder.yes_txt.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        model.setApproval(1);
-                        db.collection("Posts").document(model.getId()).set(model);
+                        db.collection("Posts").document(model.getId()).update("approval",1);
                     }
                 });
                 holder.no_txt.setOnClickListener(new View.OnClickListener() {

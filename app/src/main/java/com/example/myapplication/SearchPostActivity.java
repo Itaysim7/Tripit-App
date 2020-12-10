@@ -160,9 +160,9 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
                     String first_date = sdf2.format(start_time_date);
                     String end_date = sdf2.format(end_time_date);
                     if(first_date != null)
-                        date_dep_start = Date_To_Int(first_date);
+                        date_dep_start = Date_To_Int(first_date)-100;
                     if(end_date != null)
-                        date_dep_end = Date_To_Int(end_date);
+                        date_dep_end = Date_To_Int(end_date)-100;
                     btn_date_range.setText(end_date + "-" + first_date);
                     btn_date_specific.setText("תאריך מדוייק");
                     //Toast.makeText(getApplicationContext(), first_date+" "+end_date, Toast.LENGTH_LONG).show();
