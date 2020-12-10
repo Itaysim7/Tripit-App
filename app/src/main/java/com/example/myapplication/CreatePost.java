@@ -359,7 +359,6 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         //update the user
         reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid()).child("myPosts");
         reference.push().setValue(id);
-        //user.updateMyPosts(id);
     }
 
 

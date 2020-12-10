@@ -124,8 +124,8 @@ public class homePage extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         holder.Star.setText("סומן בכוכב");
-                        //reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid()).child("myPosts");
-                        //reference.push().setValue(id);
+                        reference = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("favPosts");
+                        reference.push().setValue(model.getId());
                     }
                 });
             }
@@ -167,6 +167,10 @@ public class homePage extends AppCompatActivity {
         if(id==R.id.myProfile)
         {
             Intent intent=new Intent(this,ProfileActivity.class);
+            startActivity(intent);
+        }
+        if(id == R.id.savePost){
+            Intent intent=new Intent(this,FavPostsActivity.class);
             startActivity(intent);
         }
         if(id==R.id.logOut)

@@ -17,15 +17,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/appTheme">
-
+        <activity android:name=".FavPostsActivity"></activity>
         <activity
             android:name=".ProfileActivity"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".SearchPostActivity" />
-
-        <activity android:name=".ApprovePostsActivity"></activity>
+        <activity android:name=".ApprovePostsActivity" />
         <activity android:name=".AdminHomeActivity" />
-
         <activity android:name=".CreatePost" />
         <!--
                Set to true if your a      pp is Standalone, that is, it does not require the handheld

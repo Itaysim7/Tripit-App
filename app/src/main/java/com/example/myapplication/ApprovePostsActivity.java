@@ -104,8 +104,7 @@ public class ApprovePostsActivity extends AppCompatActivity {
                 holder.no_txt.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //reference= FirebaseDatabase.getInstance().getReference("users").child(model.getId()).child("myPosts");
-                        //reference.setValue()
+                        reference= FirebaseDatabase.getInstance().getReference("users").child(model.getId()).child("myPosts");
                         db.collection("Posts").document(model.getId()).delete();
                     }
                 });

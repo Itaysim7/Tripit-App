@@ -38,5 +38,6 @@
     <string name="gender_chooser">בחר מין מועדף</string>
     <string name="age_range_chooser">בחר טווח גילאים מועדף</string>
     <string name="search">חפש</string>
+    <string name="your_favourite_posts">רשימת הפוסטים שהתעניינת בהם:</string>
 
 </resources>

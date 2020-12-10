@@ -15,6 +15,7 @@ public class UsersObj {
     private int age;
     private int admin;
     private HashMap<String, String> myPosts;
+    private HashMap<String, String> favPosts;
 
     public UsersObj() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -29,12 +30,8 @@ public class UsersObj {
         this.age =age;
         this.admin = admin;
         this.myPosts = myPosts;
-
+        this.favPosts = null;
     }
-
-//    public void updateMyPosts(String post_id){
-//        myPosts = post_id;
-//    }
 
     public String getEmail() {
         return email;
@@ -88,4 +85,7 @@ public class UsersObj {
         return myPosts;
     }
 
+    public HashMap<String, String> getFavPosts() {
+        return favPosts;
+    }
 }
