@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,8 +28,10 @@ import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -37,6 +40,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
 
 public class ApprovePostsActivity extends AppCompatActivity {
 
@@ -46,7 +50,9 @@ public class ApprovePostsActivity extends AppCompatActivity {
     private DatabaseReference reference;
     private CollectionReference DocRef;
     private FirebaseAuth mAuth;
-    private String id;
+    private String id,uri;
+    private UsersObj user;
+
 
     private TextView yes_txt;
     private TextView no_txt;
@@ -94,7 +100,12 @@ public class ApprovePostsActivity extends AppCompatActivity {
                 holder.list_gender.setText("מין: "+model.getGender());
                 holder.list_description.setText("תיאור: "+model.getDescription());
                 holder.list_type.setText("מטרות הטיול: "+model.getType_trip());
-
+                String user_id=model.getUser_id();
+                //set photo
+                getUri(user_id);
+                if(uri!=null&&!uri.equals("default"))
+                    Picasso.get().load(uri).into(holder.list_image_url);
+                //approve post
                 holder.yes_txt.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -170,6 +181,7 @@ public class ApprovePostsActivity extends AppCompatActivity {
         private TextView list_gender;
         private TextView list_description;
         private TextView list_type;
+        private ImageView list_image_url;
         private TextView yes_txt;
         private TextView no_txt;
 
@@ -182,6 +194,7 @@ public class ApprovePostsActivity extends AppCompatActivity {
             list_gender = itemView.findViewById(R.id.list_gender);
             list_description = itemView.findViewById(R.id.list_description);
             list_type = itemView.findViewById(R.id.list_type);
+            list_image_url=itemView.findViewById(R.id.list_image_url);
 
             yes_txt = itemView.findViewById(R.id.yes_txt);
             no_txt = itemView.findViewById(R.id.no_txt);
@@ -219,5 +232,27 @@ public class ApprovePostsActivity extends AppCompatActivity {
             }
         });
         adapter.startListening();
+    }
+    private void getUri(String user_id)
+    {
+        reference = FirebaseDatabase.getInstance().getReference("users").child(user_id);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                user = snapshot.getValue(UsersObj.class);
+                //set image
+                if (user.getImageUrl().equals("default"))
+                {
+                    uri="default";
+                }
+                else {
+                    uri=user.getImageUrl();
+                }
+            }//onDataChange
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

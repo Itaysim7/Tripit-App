@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -31,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.squareup.picasso.Picasso;
 
 public class AdminHomeActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -41,7 +43,9 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
     private FirestorePagingAdapter adapter;
     private FirebaseFirestore db;
     private Button goToPosts;
+    private UsersObj user_for_post;
     private UsersObj user;
+    private String uri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +93,11 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
                 holder.list_gender.setText("מין השותף: "+model.getGender());
                 holder.list_description.setText("תיאור: "+model.getDescription());
                 holder.list_type.setText("מטרות הטיול: "+model.getType_trip());
+                String user_id=model.getUser_id();
+                //set photo
+                getUri(user_id);
+                if(uri!=null&&!uri.equals("default"))
+                    Picasso.get().load(uri).into(holder.list_image_url);
             }
         };
 
@@ -100,8 +109,8 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                user = snapshot.getValue(UsersObj.class);
-                if(user != null && user.getFullName().equals("default")){
+                user_for_post = snapshot.getValue(UsersObj.class);
+                if(user_for_post != null && user_for_post.getFullName().equals("default")){
 
                 }
 
@@ -121,10 +130,6 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
             startActivity(intent);
         }
     }
-
-
-
-
 
 
     @Override
@@ -178,6 +183,8 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
         private TextView list_gender;
         private TextView list_description;
         private TextView list_type;
+        private ImageView list_image_url;
+
         public PostsViewHolder(@NonNull View itemView)
         {
             super(itemView);
@@ -188,6 +195,8 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
             list_gender=itemView.findViewById(R.id.list_gender);
             list_description=itemView.findViewById(R.id.list_description);
             list_type=itemView.findViewById(R.id.list_type);
+            list_image_url=itemView.findViewById(R.id.list_image_url);
+
         }
     }
 
@@ -202,6 +211,28 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
     protected void onStart() {
         super.onStart();
         adapter.startListening();
+    }
+    private void getUri(String user_id)
+    {
+        reference = FirebaseDatabase.getInstance().getReference("users").child(user_id);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                user_for_post = snapshot.getValue(UsersObj.class);
+                //set image
+                if (user_for_post.getImageUrl().equals("default"))
+                {
+                    uri="default";
+                }
+                else {
+                    uri=user_for_post.getImageUrl();
+                }
+            }//onDataChange
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 }

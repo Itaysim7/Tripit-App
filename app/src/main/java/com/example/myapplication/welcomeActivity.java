@@ -9,7 +9,7 @@ import android.widget.Button;
 
 public class welcomeActivity extends AppCompatActivity implements View.OnClickListener
 {
-    private Button btn_admin_login,btn_user_login,btn_home;
+    private Button btn_admin_login,btn_user_login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,11 +17,9 @@ public class welcomeActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_welcome);
         btn_admin_login = findViewById(R.id.adminButton);
         btn_user_login = findViewById(R.id.userButton);
-        btn_home = findViewById(R.id.home);
 
         btn_admin_login.setOnClickListener(this);
         btn_user_login.setOnClickListener(this);
-        btn_home.setOnClickListener(this);
     }
 
 
@@ -38,11 +36,6 @@ public class welcomeActivity extends AppCompatActivity implements View.OnClickLi
             Intent intent=new Intent(this,userActivity.class);
             startActivity(intent);
         }
-        else if(v== btn_home)
-        {
-            Intent intent=new Intent(this,homePage.class);
-            startActivity(intent);
-        }//else if
     }
 
 }
