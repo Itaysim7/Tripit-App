@@ -15,12 +15,13 @@ public class welcomeActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+        //Find view by ID
         btn_admin_login = findViewById(R.id.adminButton);
         btn_user_login = findViewById(R.id.userButton);
-
+        //Listeners
         btn_admin_login.setOnClickListener(this);
         btn_user_login.setOnClickListener(this);
-    }
+    }//OnCreate
 
 
 
@@ -35,7 +36,7 @@ public class welcomeActivity extends AppCompatActivity implements View.OnClickLi
         {
             Intent intent=new Intent(this,userActivity.class);
             startActivity(intent);
-        }
-    }
+        }//else if
+    }//on CLick
 
 }

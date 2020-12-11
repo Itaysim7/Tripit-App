@@ -1,9 +1,8 @@
 package com.example.myapplication;
+/*
+    Simple Class that represent the User Object with all his fields.
+ */
 
-import android.media.Image;
-import android.net.Uri;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class UsersObj {

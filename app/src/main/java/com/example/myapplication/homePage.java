@@ -5,14 +5,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.sax.StartElementListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,12 +22,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -42,28 +36,33 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.StorageTask;
 import com.squareup.picasso.Picasso;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class homePage extends AppCompatActivity {
-
+    //FireBase/Store:
     private FirebaseFirestore db;
-    private StorageTask uploadTask;
+    private Query query;
+    private FirebaseAuth mAuth;
     private DatabaseReference reference;
+    //Upload Images:
+    private StorageTask uploadTask;
+    //Saving Data of Users as objects:
+    private UsersObj user;
+    //Adapters for posts:
     private RecyclerView mFirestoreList;
     private FirestorePagingAdapter adapter;
-    private TextView helloTxt;
-    private FirebaseAuth mAuth;
-    private Query query;
-    private UsersObj user;
     private String uri;
+    //Layout - variables:
+    private TextView helloTxt;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
-
+        //Toolbars:
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
@@ -78,30 +77,31 @@ public class homePage extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 user = snapshot.getValue(UsersObj.class);
-            }
+            }//onDataChange
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.d("Failed", error.getMessage());
-            }
+            }//onCancelled
         });
-
+        //Hello Message:
         TextView helloTxt = findViewById(R.id.hello);
         helloTxt.setText("שלום "+fUser.getEmail()+" ממליצים לך לערוך את הפרופיל שלך");
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         mFirestoreList=findViewById(R.id.firestore_list);
-
+        //Basic Query:
         Query query = db.collection("Posts").whereEqualTo("approval", 1);//Query for the post that admin approve
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
+        //Compound Query By Premade Indexes: serializing queries by user inputs
         if(bundle != null) {
             Toast.makeText(getApplicationContext(), "Inside", Toast.LENGTH_LONG).show();
             FilterObj filter = (FilterObj) bundle.getSerializable("filter");
             String destination = filter.getDestination();
             if(destination != null) {
                 query = query.whereEqualTo("destination", destination);
-            }
+            }//if
             int date_dep_start = filter.getDate_dep_start();
             int date_dep_end = filter.getDate_dep_end();
 
@@ -121,7 +121,7 @@ public class homePage extends AppCompatActivity {
             }//if
         }//if
 
-
+        //How it will displayed:
         PagedList.Config config=new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
         //recyclerOptions
         FirestorePagingOptions<PostsModel> options=new FirestorePagingOptions.Builder<PostsModel>()
@@ -147,7 +147,7 @@ public class homePage extends AppCompatActivity {
                 holder.list_type.setText("מטרות הטיול: "+model.getType_trip());
                 String user_id=model.getUser_id();
                 //set photo
-                getUri(user_id);
+                set_Image_Uri(user_id);
                 if(uri!=null && !uri.equals("default"))
                     Picasso.get().load(uri).into(holder.list_image_url);
                 //star
@@ -171,21 +171,33 @@ public class homePage extends AppCompatActivity {
 //                    }
 //                });
             }
-        };
-
+        };//Adapter
+        //Setting for recycleview: where filling the posts
         mFirestoreList.setHasFixedSize(true);
         mFirestoreList.setLayoutManager(new LinearLayoutManager(this));
         mFirestoreList.setAdapter(adapter);
 
+    }//oncreate
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+    //---------------------ToolBar functions--------------------------------
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.toolbar_munu, menu);
         return true;
-    }
+    }//onCreateOptionsMenu
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
@@ -226,6 +238,33 @@ public class homePage extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    //Set image for the post from profile imageURL
+    private void set_Image_Uri(String user_id)
+    {
+        reference = FirebaseDatabase.getInstance().getReference("users").child(user_id);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                user = snapshot.getValue(UsersObj.class);
+                //set image
+                if (user.getImageUrl().equals("default"))
+                {
+                    uri="default";
+                }
+                else {
+                    uri=user.getImageUrl();
+                }
+            }//onDataChange
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }//set Image URi
+    /*
+        Inner class for Fitting the data for each posts that will present in the homepage
+     */
     private class PostsViewHolder extends RecyclerView.ViewHolder
     {
         private TextView list_departure_date;
@@ -250,40 +289,7 @@ public class homePage extends AppCompatActivity {
             list_type=itemView.findViewById(R.id.list_type);
             list_image_url=itemView.findViewById(R.id.list_image_url);
             Star = itemView.findViewById(R.id.Star);
-        }
-    }
+        }//Constructor
+    }//PostViewr
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        adapter.stopListening();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        adapter.startListening();
-    }
-    private void getUri(String user_id)
-    {
-        reference = FirebaseDatabase.getInstance().getReference("users").child(user_id);
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                user = snapshot.getValue(UsersObj.class);
-                //set image
-                if (user.getImageUrl().equals("default"))
-                {
-                    uri="default";
-                }
-                else {
-                    uri=user.getImageUrl();
-                }
-            }//onDataChange
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
 }

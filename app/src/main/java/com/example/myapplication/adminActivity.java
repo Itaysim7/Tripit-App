@@ -30,13 +30,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class adminActivity extends AppCompatActivity implements View.OnClickListener {
+    //Finals:
     private static final String TAG = "adminActivity";
-
+    //Fire Base/Store:
     private FirebaseUser fUser;
     private DatabaseReference reference;
     private FirebaseAuth mAuth;
+    //Store the information of the user from the DB:
     public UsersObj user;
-
+    //Layout - Variables:
     private EditText emailEditText, passwordEditText;
     private Button login;
 
@@ -49,7 +51,7 @@ public class adminActivity extends AppCompatActivity implements View.OnClickList
         mAuth = FirebaseAuth.getInstance();
         fUser = mAuth.getCurrentUser();
 
-        //find id
+        //find view by id
         emailEditText = findViewById(R.id.username);
         passwordEditText = findViewById(R.id.password);
         login = findViewById(R.id.login);
@@ -60,7 +62,7 @@ public class adminActivity extends AppCompatActivity implements View.OnClickList
         login.setOnClickListener(this);
 
 
-    }
+    }//onCreate
 
     public void onClick(View v) {
         if (v == login) {
@@ -74,7 +76,7 @@ public class adminActivity extends AppCompatActivity implements View.OnClickList
                 validation(email, password);
             }//else - email and password is not empty
         }//else if
-    }
+    }//onClick
 
     public void validation(String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password)
@@ -108,13 +110,13 @@ public class adminActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(getApplicationContext(), "Not Authorized to Enter!", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(getApplicationContext(), welcomeActivity.class);
                     startActivity(intent);
-                }
-            }
+                }//if
+            }//onDataChange
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.d("Failed", error.getMessage());
-            }
+            }//onCancelled
         });
         Intent loginIntent = new Intent(this, AdminHomeActivity.class);
         startActivity(loginIntent);

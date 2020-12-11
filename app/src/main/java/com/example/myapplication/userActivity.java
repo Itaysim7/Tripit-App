@@ -1,10 +1,8 @@
 package com.example.myapplication;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -27,12 +25,10 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -45,38 +41,38 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Arrays;
 
 public class userActivity extends AppCompatActivity implements View.OnClickListener {
+    //Finals:
     private static final String TAG = "userActivity";
     private static final int RC_SIGN_IN = 1;
+    //For Shared Preference - Username & Password
     private static final String PREFS_NAME = "preferences";
     private static final String KEY_NAME = "key_username";
     private static final String KEY_PASS = "key_password";
     private static final String KEY_CHECKBOX = "key_checkbox";
+    //Globals:
     private String email,pass;
     private boolean checkBox = false;
+    //Shared Preference
     private SharedPreferences sp;
+    //FireBase/Store
+    private UsersObj user;
     private FirebaseDatabase database;
     private DatabaseReference mDatebase;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private AccessTokenTracker accessTokenTracker;
-
+    //Layout - connectivity
     private TextView not_register;
     private EditText emailEditText, passwordEditText;
-    private Button login;
+    private Button login,mButtonFacebook, signInButton_Google;
     private CheckBox save_Credentials;
-
-    private Button mButtonFacebook;
+    //Facebook - credential
     private CallbackManager callbackManager;
     private LoginManager loginManager;
-    private UsersObj user;
-
-    private Button signInButton;
+    //Google - credential
     private GoogleSignInClient mGoogleSignInClient;
 
 
@@ -102,6 +98,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
         passwordEditText.setOnClickListener(this);
         login.setOnClickListener(this);
         save_Credentials.setOnClickListener(this);
+        //For save - credentials
         loadPreferences();
         save_Credentials.setChecked(checkBox);
 
@@ -117,15 +114,14 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
         mButtonFacebook.setOnClickListener(this);
 
         //For the google login:
-        signInButton = findViewById(R.id.buttonForGoogle);
+        signInButton_Google = findViewById(R.id.buttonForGoogle);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        signInButton.setOnClickListener(this);
-
-    }
+        signInButton_Google.setOnClickListener(this);
+    }//onCreate
 
     @Override
     public void onClick(View v) {
@@ -153,29 +149,31 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
                     Arrays.asList("email", "public_profile", "user_birthday"));
         }//else if
 
-        else if(v == signInButton){
-            signIn();
+        else if(v == signInButton_Google){
+            signIn_withGoogle();
         }//else if
     }//OnClick
     @Override
+
     public void onPause() {
         super.onPause();
         savePreferences(checkBox);
+    }//onPause
 
-    }
     @Override
     public void onResume() {
         super.onResume();
         loadPreferences();
-    }
-
+    }//onResume
+    /*
+        Save the preference - user credentials
+     */
     private void savePreferences(boolean checkBox) {
         sp = getSharedPreferences(PREFS_NAME,
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
-
         // Edit and commit
-        if(checkBox)
+        if(checkBox)//If checkbox was clicked
         {
             email = emailEditText.getText().toString();
             pass = passwordEditText.getText().toString();
@@ -193,8 +191,10 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
 
         editor.putBoolean(KEY_CHECKBOX, this.checkBox);
         editor.commit();
-    }
-
+    }//savePreference
+    /*
+        Loading data from SharedPreference
+     */
     private void loadPreferences() {
 
         sp = getSharedPreferences(PREFS_NAME,
@@ -206,20 +206,20 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
         pass = sp.getString(KEY_PASS, "");
         emailEditText.setText(email);
         passwordEditText.setText(pass);
-
-
-    }
+    }//loadPreferences
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        //For Facebook:
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+        //Google:
         if(requestCode == RC_SIGN_IN){
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
-        }
-    }
+        }//if
+    }//onActivityResult
 
 
 
@@ -231,7 +231,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
         if(currentUser == null)
             return;
         updateUI(currentUser);
-    }
+    }//onStart
 
     public void validation(String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password)
@@ -279,7 +279,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "OnSuccess"+loginResult);
                 handleFacebookToken(loginResult.getAccessToken());
-            }
+            }//onSuccess
 
             @Override
             public void onCancel() {
@@ -290,8 +290,8 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
             public void onError(FacebookException error) {
                 // here write code when get error
                 Log.v("LoginScreen", "----onError: " + error.getMessage());
-            }
-        });
+            }//onError
+        });//facebookLogin
 
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -301,18 +301,18 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
                     updateUI(user);
                 else
                     updateUI(null);
-            }
-        };
+            }//onAuthStateChanged
+        };//AuthStateListener
 
         accessTokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
                 if(currentAccessToken == null){
                     mAuth.signOut();
-                }
-            }
-        };
-    }
+                }//if
+            }//onCurrentAccessTokenChanged
+        };//AccessTokenTracker
+    }//facebookLogin
 
     private void handleFacebookToken(AccessToken token){
         Log.d(TAG, "handleFacebookToken " + token);
@@ -324,20 +324,20 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
                     Log.d(TAG, "sign in with credential: successful");
                     FirebaseUser user = mAuth.getCurrentUser();
                     updateUI(user);
-                }
+                }//if
                 else{
                     Log.d(TAG, "sign in with credential: failed", task.getException());
                     Toast.makeText(userActivity.this, "Authentication Failed!", Toast.LENGTH_SHORT).show();
                     updateUI(null);
-                }
-            }
+                }//else
+            }//onComplete
         });
     }
 
 
     //-----------------------Login with Google functions--------------------
 
-    private void signIn() {
+    private void signIn_withGoogle() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }//signIn
@@ -348,12 +348,12 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
             GoogleSignInAccount acc = completedTask.getResult(ApiException.class);
             Toast.makeText(userActivity.this,"Signed In Successfully",Toast.LENGTH_SHORT).show();
             FirebaseGoogleAuth(acc);
-        }
+        }//try
         catch (ApiException e){
             Toast.makeText(userActivity.this,"Sign In Failed",Toast.LENGTH_SHORT).show();
             FirebaseGoogleAuth(null);
-        }
-    }
+        }//catch
+    }//handleSignInResult
 
     private void FirebaseGoogleAuth(GoogleSignInAccount acct) {
         //check if the account is null

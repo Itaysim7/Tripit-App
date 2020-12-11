@@ -11,7 +11,6 @@ import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,13 +19,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -102,7 +98,7 @@ public class ApprovePostsActivity extends AppCompatActivity {
                 holder.list_type.setText("מטרות הטיול: "+model.getType_trip());
                 String user_id=model.getUser_id();
                 //set photo
-                getUri(user_id);
+                get_Image_Uri(user_id);
                 if(uri!=null&&!uri.equals("default"))
                     Picasso.get().load(uri).into(holder.list_image_url);
                 //approve post
@@ -233,7 +229,7 @@ public class ApprovePostsActivity extends AppCompatActivity {
         });
         adapter.startListening();
     }
-    private void getUri(String user_id)
+    private void get_Image_Uri(String user_id)
     {
         reference = FirebaseDatabase.getInstance().getReference("users").child(user_id);
         reference.addValueEventListener(new ValueEventListener() {
