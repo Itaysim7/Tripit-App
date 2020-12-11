@@ -188,7 +188,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     //-----------------------------Upload Image Function ------------------------------
     /**
-    * Allows the user to select an image from his phone
+     * Allows the user to select an image from his phone
      */
     private void openImage(){
         Intent intent = new Intent();
