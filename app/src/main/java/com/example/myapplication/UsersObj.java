@@ -87,4 +87,20 @@ public class UsersObj {
     public HashMap<String, String> getFavPosts() {
         return favPosts;
     }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void setMyPosts(HashMap<String, String> myPosts) {
+        this.myPosts = myPosts;
+    }
+
+    public void setFavPosts(HashMap<String, String> favPosts) {
+        this.favPosts = favPosts;
+    }
 }

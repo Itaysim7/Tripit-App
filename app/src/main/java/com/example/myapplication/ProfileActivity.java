@@ -49,8 +49,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener{
@@ -142,7 +140,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         holder.list_gender.setText("מין השותף: "+model.getGender());
                         holder.list_description.setText("תיאור: "+model.getDescription());
                         holder.list_type.setText("מטרות הטיול: "+model.getType_trip());
-                        holder.star.setVisibility(View.INVISIBLE);
+                        //holder.star.setVisibility(View.INVISIBLE);
                     }
                 };
 

@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -146,10 +147,25 @@ public class homePage extends AppCompatActivity {
                 holder.list_description.setText("תיאור: "+model.getDescription());
                 holder.list_type.setText("מטרות הטיול: "+model.getType_trip());
                 String user_id=model.getUser_id();
-                //set photo
-                set_Image_Uri(user_id);
-                if(uri!=null && !uri.equals("default"))
-                    Picasso.get().load(uri).into(holder.list_image_url);
+                //Set image for the post from profile imageURL
+                reference = FirebaseDatabase.getInstance().getReference("users").child(user_id);
+                reference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        user = snapshot.getValue(UsersObj.class);
+                        //set image
+                        if (user.getImageUrl().equals("default"))
+                        {
+                        }
+                        else {
+                            Glide.with(homePage.this).load(user.getImageUrl()).into(holder.list_image_url);
+                        }
+                    }//onDataChange
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
                 //star
 
 
@@ -238,30 +254,6 @@ public class homePage extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    //Set image for the post from profile imageURL
-    private void set_Image_Uri(String user_id)
-    {
-        reference = FirebaseDatabase.getInstance().getReference("users").child(user_id);
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                user = snapshot.getValue(UsersObj.class);
-                //set image
-                if (user.getImageUrl().equals("default"))
-                {
-                    uri="default";
-                }
-                else {
-                    uri=user.getImageUrl();
-                }
-            }//onDataChange
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }//set Image URi
     /*
         Inner class for Fitting the data for each posts that will present in the homepage
      */

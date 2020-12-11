@@ -36,15 +36,19 @@ import com.squareup.picasso.Picasso;
 
 public class AdminHomeActivity extends AppCompatActivity implements View.OnClickListener{
 
+    //FireBase/Store:
     private DatabaseReference reference;
     private FirebaseUser fUser;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    //Adapters for posts:
     private RecyclerView mFirestoreList;
     private FirestorePagingAdapter adapter;
-    private FirebaseFirestore db;
-    private Button goToPosts;
+    //Saving Data of Users as objects:
     private UsersObj user_for_post;
     private UsersObj user;
+
+    private Button goToPosts;
     private String uri;
 
     @Override
@@ -68,7 +72,7 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
         goToPosts.setOnClickListener(this);
 
         //Query for the posts that the admin did not approve yet
-        Query query=db.collection("Posts").whereNotEqualTo("approval",0);
+        Query query=db.collection("Posts").whereEqualTo("approval",1);
         PagedList.Config config=new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
 
         //recyclerOptions
@@ -94,10 +98,25 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
                 holder.list_description.setText("תיאור: "+model.getDescription());
                 holder.list_type.setText("מטרות הטיול: "+model.getType_trip());
                 String user_id=model.getUser_id();
-                //set photo
-                getUri(user_id);
-                if(uri!=null&&!uri.equals("default"))
-                    Picasso.get().load(uri).into(holder.list_image_url);
+                //Set image for the post from profile imageURL
+                reference = FirebaseDatabase.getInstance().getReference("users").child(user_id);
+                reference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        user_for_post = snapshot.getValue(UsersObj.class);
+                        //set image
+                        if (user_for_post.getImageUrl().equals("default"))
+                        {
+                        }
+                        else {
+                            Glide.with(AdminHomeActivity.this).load(user_for_post.getImageUrl()).into(holder.list_image_url);
+                        }
+                    }//onDataChange
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
         };
 
@@ -109,8 +128,8 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                user_for_post = snapshot.getValue(UsersObj.class);
-                if(user_for_post != null && user_for_post.getFullName().equals("default")){
+                user = snapshot.getValue(UsersObj.class);
+                if(user != null && user.getFullName().equals("default")){
 
                 }
 
@@ -131,13 +150,27 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+
+    //---------------------ToolBar functions--------------------------------
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.toolbar_munu, menu);
         return true;
-    }
+    }//onCreateOptionsMenu
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -174,6 +207,10 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
         return super.onOptionsItemSelected(item);
     }
 
+
+    /*
+        Inner class for Fitting the data for each posts that will present in the homepage
+     */
     private class PostsViewHolder extends RecyclerView.ViewHolder
     {
         private TextView list_departure_date;
@@ -198,41 +235,6 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
             list_image_url=itemView.findViewById(R.id.list_image_url);
 
         }
-    }
-
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        adapter.stopListening();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        adapter.startListening();
-    }
-    private void getUri(String user_id)
-    {
-        reference = FirebaseDatabase.getInstance().getReference("users").child(user_id);
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                user_for_post = snapshot.getValue(UsersObj.class);
-                //set image
-                if (user_for_post.getImageUrl().equals("default"))
-                {
-                    uri="default";
-                }
-                else {
-                    uri=user_for_post.getImageUrl();
-                }
-            }//onDataChange
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
 
 }

@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,18 +39,20 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
-public class ApprovePostsActivity extends AppCompatActivity {
-
+public class ApprovePostsActivity extends AppCompatActivity
+{
+    //FireBase/Store:
     private FirebaseFirestore db;
-    private RecyclerView mFirestoreList;
-    private FirestorePagingAdapter adapter;
     private DatabaseReference reference;
     private CollectionReference DocRef;
     private FirebaseAuth mAuth;
-    private String id,uri;
+    //Saving Data of Users as objects:
     private UsersObj user;
-
-
+    //Adapters for posts:
+    private RecyclerView mFirestoreList;
+    private FirestorePagingAdapter adapter;
+    private String id,uri;
+    //Layout - variables:
     private TextView yes_txt;
     private TextView no_txt;
 
@@ -57,7 +60,7 @@ public class ApprovePostsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_approve_posts);
-
+        //Toolbars:
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
@@ -97,10 +100,25 @@ public class ApprovePostsActivity extends AppCompatActivity {
                 holder.list_description.setText("תיאור: "+model.getDescription());
                 holder.list_type.setText("מטרות הטיול: "+model.getType_trip());
                 String user_id=model.getUser_id();
-                //set photo
-                get_Image_Uri(user_id);
-                if(uri!=null&&!uri.equals("default"))
-                    Picasso.get().load(uri).into(holder.list_image_url);
+                //Set image for the post from profile imageURL
+                reference = FirebaseDatabase.getInstance().getReference("users").child(user_id);
+                reference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        user = snapshot.getValue(UsersObj.class);
+                        //set image
+                        if (user.getImageUrl().equals("default"))
+                        {
+                        }
+                        else {
+                            Glide.with(ApprovePostsActivity.this).load(user.getImageUrl()).into(holder.list_image_url);
+                        }
+                    }//onDataChange
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
                 //approve post
                 holder.yes_txt.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -117,84 +135,9 @@ public class ApprovePostsActivity extends AppCompatActivity {
                 });
             }
         };
-
-
         mFirestoreList.setHasFixedSize(true);
         mFirestoreList.setLayoutManager(new LinearLayoutManager(this));
         mFirestoreList.setAdapter(adapter);
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.toolbar_munu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        int id=item.getItemId();
-        //menu item click handling
-        if(id==R.id.newPost)
-        {
-            Intent intent=new Intent(this,CreatePost.class);
-            startActivity(intent);
-        }
-        if(id==R.id.Search)
-        {
-            Intent intent=new Intent(this,SearchPostActivity.class);
-            startActivity(intent);
-        }
-        if(id==R.id.home)
-        {
-            Intent intent=new Intent(this,homePage.class);
-            startActivity(intent);
-        }
-        if(id==R.id.myProfile)
-        {
-            Intent intent=new Intent(this,ProfileActivity.class);
-            startActivity(intent);
-        }
-        if(id==R.id.logOut)
-        {
-            mAuth.signOut();
-            finish();
-            Intent intent = new Intent(getApplicationContext(), welcomeActivity.class);
-            startActivity(intent);
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private class PostsViewHolder extends RecyclerView.ViewHolder{
-        private static final String TAG="RegisterActivity";
-        private TextView list_departure_date;
-        private TextView list_return_date;
-        private TextView list_destination;
-        private TextView list_age;
-        private TextView list_gender;
-        private TextView list_description;
-        private TextView list_type;
-        private ImageView list_image_url;
-        private TextView yes_txt;
-        private TextView no_txt;
-
-        public PostsViewHolder(@NonNull View itemView) {
-            super(itemView);
-            list_departure_date = itemView.findViewById(R.id.list_departure_date);
-            list_return_date = itemView.findViewById(R.id.list_return_date);
-            list_destination = itemView.findViewById(R.id.list_destination);
-            list_age = itemView.findViewById(R.id.list_age);
-            list_gender = itemView.findViewById(R.id.list_gender);
-            list_description = itemView.findViewById(R.id.list_description);
-            list_type = itemView.findViewById(R.id.list_type);
-            list_image_url=itemView.findViewById(R.id.list_image_url);
-
-            yes_txt = itemView.findViewById(R.id.yes_txt);
-            no_txt = itemView.findViewById(R.id.no_txt);
-        }
     }
 
     @Override
@@ -229,26 +172,81 @@ public class ApprovePostsActivity extends AppCompatActivity {
         });
         adapter.startListening();
     }
-    private void get_Image_Uri(String user_id)
-    {
-        reference = FirebaseDatabase.getInstance().getReference("users").child(user_id);
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                user = snapshot.getValue(UsersObj.class);
-                //set image
-                if (user.getImageUrl().equals("default"))
-                {
-                    uri="default";
-                }
-                else {
-                    uri=user.getImageUrl();
-                }
-            }//onDataChange
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+    //---------------------ToolBar functions--------------------------------
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.toolbar_munu, menu);
+        return true;
+    }//onCreateOptionsMenu
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        int id=item.getItemId();
+        //menu item click handling
+        if(id==R.id.newPost)
+        {
+            Intent intent=new Intent(this,CreatePost.class);
+            startActivity(intent);
+        }
+        if(id==R.id.Search)
+        {
+            Intent intent=new Intent(this,SearchPostActivity.class);
+            startActivity(intent);
+        }
+        if(id==R.id.home)
+        {
+            Intent intent=new Intent(this,AdminHomeActivity.class);
+            startActivity(intent);
+        }
+        if(id==R.id.myProfile)
+        {
+            Intent intent=new Intent(this,ProfileActivity.class);
+            startActivity(intent);
+        }
+        if(id==R.id.logOut)
+        {
+            mAuth.signOut();
+            finish();
+            Intent intent = new Intent(getApplicationContext(), welcomeActivity.class);
+            startActivity(intent);
+
+        }
+        return super.onOptionsItemSelected(item);
+    }//onOptionsItemSelected
+
+    /*
+        Inner class for Fitting the data for each posts that will present in the homepage
+     */
+    private class PostsViewHolder extends RecyclerView.ViewHolder{
+        private static final String TAG="RegisterActivity";
+        private TextView list_departure_date;
+        private TextView list_return_date;
+        private TextView list_destination;
+        private TextView list_age;
+        private TextView list_gender;
+        private TextView list_description;
+        private TextView list_type;
+        private ImageView list_image_url;
+        private TextView yes_txt;
+        private TextView no_txt;
+
+        public PostsViewHolder(@NonNull View itemView) {
+            super(itemView);
+            list_departure_date = itemView.findViewById(R.id.list_departure_date);
+            list_return_date = itemView.findViewById(R.id.list_return_date);
+            list_destination = itemView.findViewById(R.id.list_destination);
+            list_age = itemView.findViewById(R.id.list_age);
+            list_gender = itemView.findViewById(R.id.list_gender);
+            list_description = itemView.findViewById(R.id.list_description);
+            list_type = itemView.findViewById(R.id.list_type);
+            list_image_url=itemView.findViewById(R.id.list_image_url);
+
+            yes_txt = itemView.findViewById(R.id.yes_txt);
+            no_txt = itemView.findViewById(R.id.no_txt);
+        }
     }
 }

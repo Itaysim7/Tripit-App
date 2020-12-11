@@ -26,7 +26,7 @@
             android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/image_url"
+            android:id="@+id/list_image_url"
             android:layout_width="103dp"
             android:layout_height="138dp"
             android:layout_gravity="right"
