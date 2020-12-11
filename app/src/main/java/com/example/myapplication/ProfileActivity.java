@@ -40,8 +40,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
@@ -54,6 +57,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     //variables for the photo upload
     private StorageReference storageReference;
+    private static final String TAG = "ProfileActivity";
     private static final int IMAGE_REQUEST = 1;
     private Uri imageUri;
     private StorageTask uploadTask;
@@ -103,47 +107,51 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 } else{
                     about_myself_txt.setText(user.getDescription());
                 }
-                if(user.getMyPosts() == null){
-                    myPosts.setText("לא קיימים פוסטים להצגה.");
-                }else{
-                    ArrayList<String> value = new ArrayList<>();
-                    for (String key: user.getMyPosts().keySet()) {
-                        value.add(user.getMyPosts().get(key));
+                //find the posts this user uploaded
+                query = db.collection("Posts").whereEqualTo("user_id", fUser.getUid());
+                query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (error != null) {
+                            Log.w(TAG, "Listen failed.", error);
+                            return;
+                        }
+                        if(value.isEmpty())
+                            myPosts.setText("לא קיימים פוסטים להצגה.");
+                    }
+                });
+                PagedList.Config config = new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
+
+                //recyclerOptions
+                FirestorePagingOptions<PostsModel> options = new FirestorePagingOptions.Builder<PostsModel>()
+                        .setQuery(query, config, PostsModel.class).build();
+                adapter = new FirestorePagingAdapter<PostsModel, PostsViewHolder>(options) {
+                    @NonNull
+                    @Override
+                    public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_single, parent, false);
+                        return new PostsViewHolder(view);
                     }
 
+                    @Override
+                    protected void onBindViewHolder(@NonNull PostsViewHolder holder, int position, @NonNull PostsModel model) { //set data
+                        holder.list_departure_date.setText("תאריך יציאה: "+model.getDeparture_date());
+                        holder.list_return_date.setText("תאריך חזרה: "+model.getReturn_date());
+                        holder.list_destination.setText("יעד: "+model.getDestination());
+                        holder.list_age.setText("גיל השותף: "+model.getAge());
+                        holder.list_gender.setText("מין השותף: "+model.getGender());
+                        holder.list_description.setText("תיאור: "+model.getDescription());
+                        holder.list_type.setText("מטרות הטיול: "+model.getType_trip());
+                        holder.star.setVisibility(View.INVISIBLE);
+                    }
+                };
 
-                    query = db.collection("Posts").whereIn("id", value);
-                    PagedList.Config config = new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
+                mFirestoreList.setHasFixedSize(true);
+                mFirestoreList.setLayoutManager(new LinearLayoutManager(ProfileActivity.this));
+                mFirestoreList.setAdapter(adapter);
+                adapter.startListening();
 
-                    //recyclerOptions
-                    FirestorePagingOptions<PostsModel> options = new FirestorePagingOptions.Builder<PostsModel>()
-                            .setQuery(query, config, PostsModel.class).build();
-                    adapter = new FirestorePagingAdapter<PostsModel, PostsViewHolder>(options) {
-                        @NonNull
-                        @Override
-                        public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_single, parent, false);
-                            return new PostsViewHolder(view);
-                        }
 
-                        @Override
-                        protected void onBindViewHolder(@NonNull PostsViewHolder holder, int position, @NonNull PostsModel model) { //set data
-                            holder.list_departure_date.setText("תאריך יציאה: "+model.getDeparture_date());
-                            holder.list_return_date.setText("תאריך חזרה: "+model.getReturn_date());
-                            holder.list_destination.setText("יעד: "+model.getDestination());
-                            holder.list_age.setText("גיל השותף: "+model.getAge());
-                            holder.list_gender.setText("מין השותף: "+model.getGender());
-                            holder.list_description.setText("תיאור: "+model.getDescription());
-                            holder.list_type.setText("מטרות הטיול: "+model.getType_trip());;
-                        }
-                    };
-
-                    mFirestoreList.setHasFixedSize(true);
-                    mFirestoreList.setLayoutManager(new LinearLayoutManager(ProfileActivity.this));
-                    mFirestoreList.setAdapter(adapter);
-                    adapter.startListening();
-
-                }
 
             }
 
@@ -152,9 +160,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 Log.d("Failed", error.getMessage());
             }
         });
-        //Query for the post that admin approve
-        //query = db.collection("Posts").whereArrayContains("id", user.getMyPosts());
-
         storageReference = FirebaseStorage.getInstance().getReference("uploads");
         image_profile.setOnClickListener(this);
         about_myself_txt.setOnClickListener(this);
@@ -325,6 +330,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         private TextView list_gender;
         private TextView list_description;
         private TextView list_type;
+        private TextView star;
 
         public PostsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -335,6 +341,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             list_gender=itemView.findViewById(R.id.list_gender);
             list_description=itemView.findViewById(R.id.list_description);
             list_type=itemView.findViewById(R.id.list_type);
+            star = findViewById(R.id.Star);
         }
     }
 

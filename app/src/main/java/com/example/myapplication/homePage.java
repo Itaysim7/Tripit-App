@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.sax.StartElementListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -69,16 +70,29 @@ public class homePage extends AppCompatActivity {
         mTitle.setText(toolbar.getTitle());
         getSupportActionBar().setDisplayShowTitleEnabled(false); //delete the default title
 
-        helloTxt = findViewById(R.id.hello);
-        mAuth=FirebaseAuth.getInstance();
-        reference= FirebaseDatabase.getInstance().getReference("users");
-        FirebaseUser user = mAuth.getCurrentUser();
-        helloTxt.setText("שלום "+user.getEmail()+" ממליצים לך לערוך את הפרופיל שלך");
 
-        db=FirebaseFirestore.getInstance();
+        mAuth=FirebaseAuth.getInstance();
+        FirebaseUser fUser = mAuth.getCurrentUser();
+        reference= FirebaseDatabase.getInstance().getReference("users");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                user = snapshot.getValue(UsersObj.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("Failed", error.getMessage());
+            }
+        });
+
+        TextView helloTxt = findViewById(R.id.hello);
+        helloTxt.setText("שלום "+fUser.getEmail()+" ממליצים לך לערוך את הפרופיל שלך");
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         mFirestoreList=findViewById(R.id.firestore_list);
 
-        query=db.collection("Posts").whereEqualTo("approval",1);//Query for the post that admin approve
+        Query query = db.collection("Posts").whereEqualTo("approval", 1);//Query for the post that admin approve
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
         if(bundle != null) {
@@ -105,10 +119,10 @@ public class homePage extends AppCompatActivity {
                 System.out.println("Trip type:\t"+trip_type.toString());
                 query = query.whereArrayContainsAny("type_trip", trip_type);
             }//if
-
         }//if
-        PagedList.Config config=new PagedList.Config.Builder()
-                .setInitialLoadSizeHint(8).setPageSize(2).build();
+
+
+        PagedList.Config config=new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
         //recyclerOptions
         FirestorePagingOptions<PostsModel> options=new FirestorePagingOptions.Builder<PostsModel>()
                 .setQuery(query,config,PostsModel.class).build();
@@ -134,17 +148,28 @@ public class homePage extends AppCompatActivity {
                 String user_id=model.getUser_id();
                 //set photo
                 getUri(user_id);
-                if(uri!=null&&!uri.equals("default"))
+                if(uri!=null && !uri.equals("default"))
                     Picasso.get().load(uri).into(holder.list_image_url);
                 //star
-                holder.Star.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        holder.Star.setText("סומן בכוכב");
-                        reference = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("favPosts");
-                        reference.push().setValue(model.getId());
-                    }
-                });
+
+
+//                if(holder.user.getFavPosts() != null) {
+//                    for (String key : holder.user.getFavPosts().keySet()) {
+//                        if (holder.user.getFavPosts().get(key).equals(model.getId())) {
+//                            holder.Star.setText("סומן בכוכב");
+//                        }
+//                    }
+//                }
+//                holder.Star.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        if(holder.Star.getText().equals("סמן בכוכב")) {
+//                            holder.Star.setText("סומן בכוכב");
+//                            reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid()).child("favPosts");
+//                            reference.push().setValue(model.getId());
+//                        }
+//                    }
+//                });
             }
         };
 
@@ -212,6 +237,7 @@ public class homePage extends AppCompatActivity {
         private TextView list_type;
         private ImageView list_image_url;
         private TextView Star;
+        private UsersObj user;
 
         public PostsViewHolder(@NonNull View itemView) {
             super(itemView);
