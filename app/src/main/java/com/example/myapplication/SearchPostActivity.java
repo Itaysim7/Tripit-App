@@ -142,7 +142,7 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
                     date_dep_start = dayOfMonth+(mMonth+1)*100+ mYear*10000;
                     //Toast.makeText(getApplicationContext(), dayOfMonth+ "/" + (mMonth+1) + "/"+ mYear, Toast.LENGTH_LONG).show();
                 }//onDateSet
-            }, day, month, year);
+            }, year, month, day);
             dp_start_end.show();
         }//If
         else if (v == btn_date_range) //Case of range of dates

@@ -189,7 +189,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                     text_dep_date.setText(departure_date);
                     dep_date =dayOfMonth+(mMonth+1)*100+ mYear*10000;
                 }
-            },day,month,year);
+            },year,month,day);
             dpd_dep.show();
         }
         else if(view==btn_ret_date)
@@ -207,7 +207,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                     text_ret_date.setText(return_date);
                     ret_date =dayOfMonth+(mMonth+1)*100+ mYear*10000;
                 }
-            },day,month,year);
+            },year,month,day);
             dpd_ret.show();
         }
         else if(view==btn_type_trip)
