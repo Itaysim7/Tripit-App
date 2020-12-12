@@ -199,12 +199,16 @@ public class ApprovePostsActivity extends AppCompatActivity
         }
         if(id==R.id.home)
         {
-            Intent intent=new Intent(this,AdminHomeActivity.class);
+            Intent intent=new Intent(this,homePage.class);
             startActivity(intent);
         }
         if(id==R.id.myProfile)
         {
             Intent intent=new Intent(this,ProfileActivity.class);
+            startActivity(intent);
+        }
+        if(id == R.id.savePost){
+            Intent intent=new Intent(this,FavPostsActivity.class);
             startActivity(intent);
         }
         if(id==R.id.logOut)
@@ -213,7 +217,6 @@ public class ApprovePostsActivity extends AppCompatActivity
             finish();
             Intent intent = new Intent(getApplicationContext(), welcomeActivity.class);
             startActivity(intent);
-
         }
         return super.onOptionsItemSelected(item);
     }//onOptionsItemSelected

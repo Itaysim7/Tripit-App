@@ -13,14 +13,13 @@ public class UsersObj {
     private String gender;
     private int age;
     private int admin;
-    private HashMap<String, String> myPosts;
     private HashMap<String, String> favPosts;
 
     public UsersObj() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public UsersObj(String email, String imageUrl, String description, String fullName, String gender, int age, int admin, HashMap<String,String> myPosts) {
+    public UsersObj(String email, String imageUrl, String description, String fullName, String gender, int age, int admin) {
         this.email = email;
         this.imageUrl = imageUrl;
         this.description = description;
@@ -28,7 +27,6 @@ public class UsersObj {
         this.gender = gender;
         this.age =age;
         this.admin = admin;
-        this.myPosts = myPosts;
         this.favPosts = null;
     }
 
@@ -80,10 +78,6 @@ public class UsersObj {
         this.admin = admin;
     }
 
-    public HashMap<String, String> getMyPosts() {
-        return myPosts;
-    }
-
     public HashMap<String, String> getFavPosts() {
         return favPosts;
     }
@@ -94,10 +88,6 @@ public class UsersObj {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
-    }
-
-    public void setMyPosts(HashMap<String, String> myPosts) {
-        this.myPosts = myPosts;
     }
 
     public void setFavPosts(HashMap<String, String> favPosts) {

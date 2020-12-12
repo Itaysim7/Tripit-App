@@ -111,6 +111,10 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
             Intent intent=new Intent(this,ProfileActivity.class);
             startActivity(intent);
         }
+        if(id == R.id.savePost){
+            Intent intent=new Intent(this,FavPostsActivity.class);
+            startActivity(intent);
+        }
         if(id==R.id.logOut)
         {
             mAuth.signOut();
@@ -120,7 +124,6 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
         }
         return super.onOptionsItemSelected(item);
     }
-
     @Override
     public void onClick(View v) {
         if (v == btn_date_specific) // Case of specific date

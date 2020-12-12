@@ -106,7 +106,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     about_myself_txt.setText(user.getDescription());
                 }
                 //find the posts this user uploaded
-                query = db.collection("Posts").whereEqualTo("user_id", fUser.getUid());
+                query = db.collection("Posts").whereEqualTo("user_id", fUser.getUid()).whereEqualTo("approval",1);
+                //Check if the user uploaded posts. If not, change the text.
                 query.addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -148,9 +149,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 mFirestoreList.setLayoutManager(new LinearLayoutManager(ProfileActivity.this));
                 mFirestoreList.setAdapter(adapter);
                 adapter.startListening();
-
-
-
             }
 
             @Override
@@ -173,6 +171,18 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        //adapter.stopListening();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
     public void onClick(View v) {
         if (v == image_profile){
             openImage();
@@ -182,7 +192,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-
+    //-----------------------------Change Description Function-------------------------
     private void changeText() {
         String newDescription = about_myself_txt.getText().toString();
         user.setDescription(newDescription);
@@ -275,7 +285,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-
     //------------------------Toolbar functions-------------------------------------
 
     @Override
@@ -286,7 +295,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         int id=item.getItemId();
         //menu item click handling
         if(id==R.id.newPost)
@@ -307,6 +317,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         if(id==R.id.myProfile)
         {
             Intent intent=new Intent(this,ProfileActivity.class);
+            startActivity(intent);
+        }
+        if(id == R.id.savePost){
+            Intent intent=new Intent(this,FavPostsActivity.class);
             startActivity(intent);
         }
         if(id==R.id.logOut)
@@ -341,18 +355,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             list_type=itemView.findViewById(R.id.list_type);
             star = findViewById(R.id.Star);
         }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        //adapter.stopListening();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
     }
 
 }

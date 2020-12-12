@@ -73,18 +73,6 @@ public class homePage extends AppCompatActivity {
 
         mAuth=FirebaseAuth.getInstance();
         FirebaseUser fUser = mAuth.getCurrentUser();
-        reference= FirebaseDatabase.getInstance().getReference("users");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                user = snapshot.getValue(UsersObj.class);
-            }//onDataChange
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("Failed", error.getMessage());
-            }//onCancelled
-        });
         //Hello Message:
         TextView helloTxt = findViewById(R.id.hello);
         helloTxt.setText("שלום "+fUser.getEmail()+" ממליצים לך לערוך את הפרופיל שלך");
@@ -147,6 +135,7 @@ public class homePage extends AppCompatActivity {
                 holder.list_description.setText("תיאור: "+model.getDescription());
                 holder.list_type.setText("מטרות הטיול: "+model.getType_trip());
                 String user_id=model.getUser_id();
+
                 //Set image for the post from profile imageURL
                 reference = FirebaseDatabase.getInstance().getReference("users").child(user_id);
                 reference.addValueEventListener(new ValueEventListener() {
@@ -154,11 +143,18 @@ public class homePage extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         user = snapshot.getValue(UsersObj.class);
                         //set image
-                        if (user.getImageUrl().equals("default"))
-                        {
-                        }
-                        else {
+                        if(user.getImageUrl().equals("default")) {
+                            holder.list_image_url.setImageResource(R.drawable.user_image);
+                        } else {
                             Glide.with(homePage.this).load(user.getImageUrl()).into(holder.list_image_url);
+                        }
+
+                        if(user.getFavPosts() != null) {
+                            for (String key : user.getFavPosts().keySet()) {
+                                if (user.getFavPosts().get(key).equals(model.getId())) {
+                                    holder.Star.setText("סומן בכוכב");
+                                }
+                            }
                         }
                     }//onDataChange
                     @Override
@@ -166,26 +162,17 @@ public class homePage extends AppCompatActivity {
 
                     }
                 });
-                //star
 
-
-//                if(holder.user.getFavPosts() != null) {
-//                    for (String key : holder.user.getFavPosts().keySet()) {
-//                        if (holder.user.getFavPosts().get(key).equals(model.getId())) {
-//                            holder.Star.setText("סומן בכוכב");
-//                        }
-//                    }
-//                }
-//                holder.Star.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        if(holder.Star.getText().equals("סמן בכוכב")) {
-//                            holder.Star.setText("סומן בכוכב");
-//                            reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid()).child("favPosts");
-//                            reference.push().setValue(model.getId());
-//                        }
-//                    }
-//                });
+                holder.Star.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(holder.Star.getText().equals("סמן בכוכב")) {
+                            holder.Star.setText("סומן בכוכב");
+                            reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid()).child("favPosts");
+                            reference.push().setValue(model.getId());
+                        }
+                    }
+                });
             }
         };//Adapter
         //Setting for recycleview: where filling the posts
@@ -268,7 +255,6 @@ public class homePage extends AppCompatActivity {
         private TextView list_type;
         private ImageView list_image_url;
         private TextView Star;
-        private UsersObj user;
 
         public PostsViewHolder(@NonNull View itemView) {
             super(itemView);

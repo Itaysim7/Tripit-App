@@ -365,7 +365,12 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
                     if (task.isSuccessful()) {
                         Toast.makeText(userActivity.this, "Successful", Toast.LENGTH_SHORT).show();
                         FirebaseUser user = mAuth.getCurrentUser();
-                        register(user);
+                        if(mDatebase.child(user.getUid()) == null)
+                            register(user);
+                        Intent loginIntent=new Intent(userActivity.this, homePage.class);
+                        loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(loginIntent);
+                        finish();
                     } else {
                         Toast.makeText(userActivity.this, "Failed", Toast.LENGTH_SHORT).show();
                         updateUI(null);
@@ -378,20 +383,9 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
         }
     }//FirebaseGoogleAuth
 
-    public void register(FirebaseUser firebaseUser)
-    {
-        user = new UsersObj(firebaseUser.getEmail(),"default","empty","default","default",0,0, null);
-        mDatebase.child(firebaseUser.getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    Intent loginIntent=new Intent(userActivity.this, homePage.class);
-                    loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(loginIntent);
-                    finish();
-                }
-            }
-        });
+    public void register(FirebaseUser firebaseUser) {
+        user = new UsersObj(firebaseUser.getEmail(),"default","empty","default","default",0,0);
+        mDatebase.child(firebaseUser.getUid()).setValue(user);
     }
 
 }

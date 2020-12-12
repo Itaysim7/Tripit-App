@@ -157,6 +157,10 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
             Intent intent=new Intent(this,ProfileActivity.class);
             startActivity(intent);
         }
+        if(id == R.id.savePost){
+            Intent intent=new Intent(this,FavPostsActivity.class);
+            startActivity(intent);
+        }
         if(id==R.id.logOut)
         {
             firebaseAuth.signOut();
@@ -356,9 +360,6 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                     }
                 });
 
-        //update the user
-        reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid()).child("myPosts");
-        reference.push().setValue(id);
     }
 
 

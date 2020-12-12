@@ -173,7 +173,8 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
     }//onCreateOptionsMenu
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         int id=item.getItemId();
         //menu item click handling
         if(id==R.id.newPost)
@@ -196,13 +197,16 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
             Intent intent=new Intent(this,ProfileActivity.class);
             startActivity(intent);
         }
+        if(id == R.id.savePost){
+            Intent intent=new Intent(this,FavPostsActivity.class);
+            startActivity(intent);
+        }
         if(id==R.id.logOut)
         {
             mAuth.signOut();
             finish();
             Intent intent = new Intent(getApplicationContext(), welcomeActivity.class);
             startActivity(intent);
-
         }
         return super.onOptionsItemSelected(item);
     }

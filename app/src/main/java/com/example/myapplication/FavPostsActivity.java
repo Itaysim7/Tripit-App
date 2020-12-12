@@ -16,8 +16,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -73,8 +75,6 @@ public class FavPostsActivity extends AppCompatActivity {
                     for (String key: user.getFavPosts().keySet()) {
                         value.add(user.getFavPosts().get(key));
                     }
-
-
                     query = db.collection("Posts").whereIn("id", value);
                     PagedList.Config config = new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
 
@@ -100,6 +100,22 @@ public class FavPostsActivity extends AppCompatActivity {
                             holder.list_type.setText("מטרות הטיול: "+model.getType_trip());
                             holder.star.setVisibility(View.INVISIBLE);
 
+                            reference = FirebaseDatabase.getInstance().getReference("users").child(model.getUser_id());
+                            reference.addValueEventListener(new ValueEventListener() {
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    user = snapshot.getValue(UsersObj.class);
+                                    //set image
+                                    if(user.getImageUrl().equals("default")) {
+                                        holder.list_image_url.setImageResource(R.drawable.user_image);
+                                    } else {
+                                        Glide.with(FavPostsActivity.this).load(user.getImageUrl()).into(holder.list_image_url);
+                                    }
+                                }//onDataChange
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
                         }
                     };
 
@@ -122,6 +138,19 @@ public class FavPostsActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+
     //------------------------Toolbar functions-------------------------------------
 
     @Override
@@ -132,7 +161,8 @@ public class FavPostsActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         int id=item.getItemId();
         //menu item click handling
         if(id==R.id.newPost)
@@ -153,6 +183,10 @@ public class FavPostsActivity extends AppCompatActivity {
         if(id==R.id.myProfile)
         {
             Intent intent=new Intent(this,ProfileActivity.class);
+            startActivity(intent);
+        }
+        if(id == R.id.savePost){
+            Intent intent=new Intent(this,FavPostsActivity.class);
             startActivity(intent);
         }
         if(id==R.id.logOut)
@@ -176,6 +210,7 @@ public class FavPostsActivity extends AppCompatActivity {
         private TextView list_description;
         private TextView list_type;
         private TextView star;
+        private ImageView list_image_url;
 
         public PostsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -186,20 +221,9 @@ public class FavPostsActivity extends AppCompatActivity {
             list_gender=itemView.findViewById(R.id.list_gender);
             list_description=itemView.findViewById(R.id.list_description);
             list_type=itemView.findViewById(R.id.list_type);
+            list_image_url=itemView.findViewById(R.id.list_image_url);
             star = itemView.findViewById(R.id.Star);
         }
     }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-    }
-
 
 }

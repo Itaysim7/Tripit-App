@@ -72,7 +72,7 @@ public class RegisterActivity extends AppCompatActivity
                         Toast.makeText(getApplicationContext(),"These passwords did not match, please try again",Toast.LENGTH_LONG).show();
                         return;
                     }
-                    user=new UsersObj(email,"default","empty", "default","default", 0,0, null);
+                    user=new UsersObj(email,"default","empty", "default","default", 0,0);
                     registerUser(email,password);
                 }
             }
