@@ -1,4 +1,4 @@
-1. שמירת ססמא - userActivity + adminActivity - דרך: Shared Preferences
+1. שמירת ססמא - userActivity + adminActivity - דרך: Shared Preferences  - בוצע
 2.שחזור ססמא - userActivity + adminActivity 
 3.בדיקת ססמא חזקה - userActivity + adminActivity 
 4.בדיקת תאריך יציאה וחזרה (סנכרון זמנים) - createPost
@@ -8,3 +8,4 @@
 8.Alert לשדות שחייב למלא אם הוא לא מילא וכו...
 9.UI - טמפלטים של posts ולדאוג לעיצוב חדשני יותר
 10.שינוי תיעוד באמצעות params ל- JavaDoc
+11. הרשאת מצלמה לצלם מהפרופיל.
