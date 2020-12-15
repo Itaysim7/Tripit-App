@@ -188,10 +188,10 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                     departure_date=dayOfMonth+ "/" + (mMonth+1) + "/"+ mYear;
                     text_dep_date.setText(departure_date);
                     dep_date =dayOfMonth+(mMonth+1)*100+ mYear*10000;
-                }
+                }//onDateSet
             },year,month,day);
             dpd_dep.show();
-        }
+        }//if
         else if(view==btn_ret_date)
         {
             cal_ret=Calendar.getInstance();
