@@ -138,7 +138,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         holder.list_departure_date.setText("תאריך יציאה: "+model.getDeparture_date());
                         holder.list_return_date.setText("תאריך חזרה: "+model.getReturn_date());
                         holder.list_destination.setText("יעד: "+model.getDestination());
-                        holder.list_age.setText("גיל: "+model.getAge());
+                        holder.list_age.setText("טווח גילאים: "+model.getAge());
                         holder.list_gender.setText("מין: "+model.getGender());
                         holder.list_description.setText("תיאור: "+model.getDescription());
                         holder.list_type.setText("מטרות הטיול שלי: "+model.getType_trip());

@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="130dp"
-            android:text="גיל:"
+            android:text="טווח גילאים:"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
