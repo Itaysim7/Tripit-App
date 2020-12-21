@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -65,7 +66,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseAuth.AuthStateListener authStateListener;
     private AccessTokenTracker accessTokenTracker;
     //Layout - connectivity
-    private TextView not_register;
+    private TextView not_register,forgot_password;
     private EditText emailEditText, passwordEditText;
     private Button login,mButtonFacebook, signInButton_Google;
     private CheckBox save_Credentials;
@@ -77,7 +78,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-
+    final Context context = this;
 
 
     @Override
@@ -91,6 +92,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
         passwordEditText = (EditText) findViewById(R.id.password);
         login = (Button) findViewById(R.id.login);
         save_Credentials = (CheckBox)findViewById(R.id.checkBox);
+        forgot_password = (TextView)findViewById(R.id.forgot_password);
 
         //Listeners
         not_register.setOnClickListener(this);
@@ -98,6 +100,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
         passwordEditText.setOnClickListener(this);
         login.setOnClickListener(this);
         save_Credentials.setOnClickListener(this);
+        forgot_password.setOnClickListener(this);
         //For save - credentials
         loadPreferences();
         save_Credentials.setChecked(checkBox);
@@ -129,6 +132,11 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(this, RegisterActivity.class);
             startActivity(intent);
         }//if
+        else if(v == forgot_password)
+        {
+            Intent intent = new Intent(this, forgot_password.class);
+            startActivity(intent);
+        }//else if
         else if(v == save_Credentials)
         {
             checkBox = save_Credentials.isChecked();
