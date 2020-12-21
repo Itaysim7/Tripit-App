@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -72,7 +73,7 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
         goToPosts.setOnClickListener(this);
 
         //Query for the posts that the admin did not approve yet
-        Query query=db.collection("Posts").whereEqualTo("approval",false);
+        Query query=db.collection("Posts").whereEqualTo("approval",true);
         PagedList.Config config=new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
 
         //recyclerOptions
@@ -97,6 +98,82 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
                 holder.list_gender.setText("מין: "+model.getGender());
                 holder.list_description.setText("תיאור: "+model.getDescription());
                 holder.list_type.setText("מטרות הטיול שלי: "+model.getType_trip());
+                //Image for background by destination
+                switch(model.getDestination())
+                {
+                    case "ארצות הברית":
+                        holder.list_layout.setBackgroundResource(R.drawable.usa);
+                        holder.list_layout.getBackground().setAlpha(80);
+                        break;
+                    case "גרמניה":
+                        holder.list_layout.setBackgroundResource(R.drawable.germany);
+                        holder.list_layout.getBackground().setAlpha(80);
+                        break;
+                    case "צרפת":
+                        holder.list_layout.setBackgroundResource(R.drawable.paris);
+                        holder.list_layout.getBackground().setAlpha(80);
+                        break;
+                    case "יוון":
+                        holder.list_layout.setBackgroundResource(R.drawable.polynesia);
+                        holder.list_layout.getBackground().setAlpha(80);
+                        break;
+                    case "הפיליפינים":
+                        holder.list_layout.setBackgroundResource(R.drawable.maldives);
+                        holder.list_layout.getBackground().setAlpha(80);
+                        break;
+                    case "הולנד":
+                        holder.list_layout.setBackgroundResource(R.drawable.holland);
+                        holder.list_layout.getBackground().setAlpha(80);
+                        break;
+                    case "הממלכה המאוחדת":
+                        holder.list_layout.setBackgroundResource(R.drawable.london);
+                        holder.list_layout.getBackground().setAlpha(80);
+                        break;
+                    case "איטליה":
+                        holder.list_layout.setBackgroundResource(R.drawable.italy);
+                        holder.list_layout.getBackground().setAlpha(80);
+                        break;
+                    default:
+                        break;
+                }
+                //Image for background by destination
+                switch(model.getDestination())
+                {
+                    case "ארצות הברית":
+                        holder.list_layout.setBackgroundResource(R.drawable.usa);
+                        holder.list_layout.getBackground().setAlpha(80);
+                        break;
+                    case "גרמניה":
+                        holder.list_layout.setBackgroundResource(R.drawable.germany);
+                        holder.list_layout.getBackground().setAlpha(80);
+                        break;
+                    case "צרפת":
+                        holder.list_layout.setBackgroundResource(R.drawable.paris);
+                        holder.list_layout.getBackground().setAlpha(80);
+                        break;
+                    case "יוון":
+                        holder.list_layout.setBackgroundResource(R.drawable.polynesia);
+                        holder.list_layout.getBackground().setAlpha(80);
+                        break;
+                    case "הפיליפינים":
+                        holder.list_layout.setBackgroundResource(R.drawable.maldives);
+                        holder.list_layout.getBackground().setAlpha(80);
+                        break;
+                    case "הולנד":
+                        holder.list_layout.setBackgroundResource(R.drawable.holland);
+                        holder.list_layout.getBackground().setAlpha(80);
+                        break;
+                    case "הממלכה המאוחדת":
+                        holder.list_layout.setBackgroundResource(R.drawable.london);
+                        holder.list_layout.getBackground().setAlpha(80);
+                        break;
+                    case "איטליה":
+                        holder.list_layout.setBackgroundResource(R.drawable.italy);
+                        holder.list_layout.getBackground().setAlpha(80);
+                        break;
+                    default:
+                        break;
+                }
                 String user_id=model.getUser_id();
                 //Set image for the post from profile imageURL
                 reference = FirebaseDatabase.getInstance().getReference("users").child(user_id);
@@ -225,6 +302,7 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
         private TextView list_description;
         private TextView list_type;
         private ImageView list_image_url;
+        private RelativeLayout list_layout;
 
         public PostsViewHolder(@NonNull View itemView)
         {
@@ -237,7 +315,7 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
             list_description=itemView.findViewById(R.id.list_description);
             list_type=itemView.findViewById(R.id.list_type);
             list_image_url=itemView.findViewById(R.id.list_image_url);
-
+            list_layout = itemView.findViewById(R.id.list_layout);
         }
     }
 
