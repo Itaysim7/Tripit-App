@@ -80,7 +80,7 @@ public class homePage extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         mFirestoreList=findViewById(R.id.firestore_list);
         //Basic Query:
-        Query query = db.collection("Posts").whereEqualTo("approval", 1);//Query for the post that admin approve
+        Query query = db.collection("Posts").whereEqualTo("approval", true);//Query for the post that admin approve
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
         //Compound Query By Premade Indexes: serializing queries by user inputs

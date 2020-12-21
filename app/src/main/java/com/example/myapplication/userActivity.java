@@ -392,7 +392,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
     }//FirebaseGoogleAuth
 
     public void register(FirebaseUser firebaseUser) {
-        user = new UsersObj(firebaseUser.getEmail(),"default","empty","default","default",0,0);
+        user = new UsersObj(firebaseUser.getEmail(),"default","empty","default","default",0,false);
         mDatebase.child(firebaseUser.getUid()).setValue(user);
     }
 

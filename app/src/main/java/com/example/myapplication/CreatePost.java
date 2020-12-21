@@ -327,7 +327,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         String id= UUID.randomUUID().toString(); //Create Random Post ID
         Map<String,Object> post_map=new HashMap<>();
         post_map.put("id",id);
-        post_map.put("approval",0);
+        post_map.put("approval",false);
         post_map.put("user_id",current_user_id);
         post_map.put("timestamp",FieldValue.serverTimestamp());
         post_map.put("destination",dest);

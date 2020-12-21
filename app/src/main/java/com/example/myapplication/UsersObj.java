@@ -12,14 +12,14 @@ public class UsersObj {
     private String fullName;
     private String gender;
     private int age;
-    private int admin;
+    private boolean admin;
     private HashMap<String, String> favPosts;
 
     public UsersObj() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public UsersObj(String email, String imageUrl, String description, String fullName, String gender, int age, int admin) {
+    public UsersObj(String email, String imageUrl, String description, String fullName, String gender, int age, boolean admin) {
         this.email = email;
         this.imageUrl = imageUrl;
         this.description = description;
@@ -70,11 +70,11 @@ public class UsersObj {
         this.age = age;
     }
 
-    public int getAdmin() {
+    public boolean getAdmin() {
         return admin;
     }
 
-    public void setAdmin(int admin) {
+    public void setAdmin(boolean admin) {
         this.admin = admin;
     }
 

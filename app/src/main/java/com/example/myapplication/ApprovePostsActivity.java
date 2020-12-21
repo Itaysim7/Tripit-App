@@ -75,7 +75,7 @@ public class ApprovePostsActivity extends AppCompatActivity
 
 
         //Query for the posts that admin did not approve yet
-        Query query=db.collection("Posts").whereNotEqualTo("approval",1);
+        Query query=db.collection("Posts").whereNotEqualTo("approval",true);
         PagedList.Config config=new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
 
         //recyclerOptions
@@ -123,7 +123,7 @@ public class ApprovePostsActivity extends AppCompatActivity
                 holder.yes_txt.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        db.collection("Posts").document(model.getId()).update("approval",1);
+                        db.collection("Posts").document(model.getId()).update("approval",true);
                     }
                 });
                 holder.no_txt.setOnClickListener(new View.OnClickListener() {

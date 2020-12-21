@@ -100,8 +100,8 @@ public class adminActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 UsersObj user = snapshot.getValue(UsersObj.class);
-                if(user.getAdmin() == 0){
-                    Toast.makeText(getApplicationContext(), "Not Authorized to Enter!", Toast.LENGTH_LONG).show();
+                if(user.getAdmin()){
+                    Toast.makeText(getApplicationContext(), "אין למשתמש זה אישור להכנס.", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(getApplicationContext(), welcomeActivity.class);
                     startActivity(intent);
                 }//if

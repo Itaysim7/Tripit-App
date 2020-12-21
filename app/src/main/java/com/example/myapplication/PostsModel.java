@@ -14,13 +14,13 @@ public class PostsModel
     private String description;
     private String id;
     private ArrayList<String> type_trip;
-    private int approval;
+    private boolean approval;
     private int clicks;
     private Timestamp timestamp;
     private String user_id;
 
     private PostsModel(int departure_date, int return_date, String destination, String age, String gender, String description,
-                       String id,ArrayList<String> type_trip,int approval,int clicks,Timestamp timestamp,String user_id) {
+                       String id,ArrayList<String> type_trip,boolean approval,int clicks,Timestamp timestamp,String user_id) {
         this.departure_date = departure_date;
         this.return_date = return_date;
         this.destination = destination;
@@ -57,7 +57,7 @@ public class PostsModel
         this.user_id = user_id;
     }
 
-    public void setApproval(int approval) {
+    public void setApproval(boolean approval) {
         this.approval = approval;
     }
 
@@ -129,7 +129,7 @@ public class PostsModel
         }
         return text;
     }
-    public int getApproval() {
+    public boolean getApproval() {
         return approval;
     }
 
