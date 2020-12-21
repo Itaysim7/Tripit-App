@@ -98,7 +98,7 @@ public class ApprovePostsActivity extends AppCompatActivity
                 holder.list_age.setText("גיל: "+model.getAge());
                 holder.list_gender.setText("מין: "+model.getGender());
                 holder.list_description.setText("תיאור: "+model.getDescription());
-                holder.list_type.setText("מטרות הטיול: "+model.getType_trip());
+                holder.list_type.setText("מטרות הטיול שלי: "+model.getType_trip());
                 String user_id=model.getUser_id();
                 //Set image for the post from profile imageURL
                 reference = FirebaseDatabase.getInstance().getReference("users").child(user_id);

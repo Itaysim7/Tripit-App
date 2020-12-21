@@ -51,8 +51,19 @@
             android:layout_width="255dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="55dp"
             android:text="תאריך חזרה:"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/partner"
+            android:layout_width="213dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:layout_marginEnd="30dp"
+            android:text="העדפותיי לשותף:"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -62,8 +73,8 @@
             android:layout_width="255dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="90dp"
-            android:text="מין השותף:"
+            android:layout_marginTop="105dp"
+            android:text="מין:"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -73,8 +84,8 @@
             android:layout_width="255dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="120dp"
-            android:text="גיל השותף:"
+            android:layout_marginTop="130dp"
+            android:text="גיל:"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -85,7 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:layout_marginTop="150dp"
-            android:text="מטרות הטיול:"
+            android:text="מטרות הטיול שלי:"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />

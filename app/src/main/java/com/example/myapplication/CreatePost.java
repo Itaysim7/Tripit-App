@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -48,7 +49,7 @@ import java.util.UUID;
 
 public class CreatePost extends AppCompatActivity implements View.OnClickListener
 {
-    private String age_text = "",departure_date="",return_date="",gender="",current_user_id="";
+    private String age_text = "לא צוין",departure_date="",return_date="",gender="לא משנה",current_user_id="";
     private EditText description;
     private CountryCodePicker ccp;
     private Uri post_image_uri;
@@ -286,32 +287,46 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         }
         else if(view==btn_age)
         {
-            AlertDialog.Builder mBuilder=new AlertDialog.Builder(CreatePost.this);
-            mBuilder.setTitle("הכנס גיל");
-            final EditText age_input=new EditText(this);
-            // Specify the type of input expected
-            age_input.setInputType(InputType.TYPE_CLASS_NUMBER);
-            mBuilder.setView(age_input);
-            // Set up the buttons
-            mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    age_text = age_input.getText().toString();
-                    btn_age.setText(age_text);
-                }
-            });
-            mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-            mBuilder.show();
+            LayoutInflater factory = LayoutInflater.from(this);
+            //text_entry is an Layout XML file containing two text field to display in alert dialog
+            final View textEntryView = factory.inflate(R.layout.age_dialog, null);
+            final EditText min_age = (EditText) textEntryView.findViewById(R.id.min_age);
+            final EditText max_age = (EditText) textEntryView.findViewById(R.id.max_age);
+            final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setTitle("הכנס טווח גילאים:              ").setView(textEntryView).setPositiveButton("אישור",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                            int whichButton)
+                        {
+                            age_text = min_age.getText().toString()+"-"+max_age.getText().toString();
+                            btn_age.setText(age_text);
+                        }
+                    }).setNegativeButton("ביטול",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                            int whichButton)
+                        {
+                            dialog.cancel();
+                        }
+                    });
+            alert.show();
         }
         else if(view==btn_publish)
         {
             String dest=ccp.getSelectedCountryName();
             String desc=description.getText().toString();
+            //check if the user insert departure date
+            if(dep_date==-1)
+            {
+                Toast.makeText(CreatePost.this, "חייב להכניס תאריך יציאה", Toast.LENGTH_LONG).show();
+                return;
+            }
+            //check if dep_date<ret_date
+            if(ret_date!=-1&&ret_date<=dep_date)
+            {
+                Toast.makeText(CreatePost.this, "תאריך החזרה חייב להיות אחרי תאריך היציאה", Toast.LENGTH_LONG).show();
+                return;
+            }
             uploadData(dest,desc);
         }
     }

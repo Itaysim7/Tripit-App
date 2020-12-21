@@ -130,10 +130,10 @@ public class homePage extends AppCompatActivity {
                 holder.list_departure_date.setText("תאריך יציאה: "+model.getDeparture_date());
                 holder.list_return_date.setText("תאריך חזרה: "+model.getReturn_date());
                 holder.list_destination.setText("יעד: "+model.getDestination());
-                holder.list_age.setText("גיל השותף: "+model.getAge());
-                holder.list_gender.setText("מין השותף: "+model.getGender());
+                holder.list_age.setText("גיל: "+model.getAge());
+                holder.list_gender.setText("מין: "+model.getGender());
                 holder.list_description.setText("תיאור: "+model.getDescription());
-                holder.list_type.setText("מטרות הטיול: "+model.getType_trip());
+                holder.list_type.setText("מטרות הטיול שלי: "+model.getType_trip());
                 String user_id=model.getUser_id();
 
                 //Set image for the post from profile imageURL
