@@ -16,11 +16,11 @@ public class PostsModel
     private ArrayList<String> type_trip;
     private boolean approval;
     private int clicks;
-    private Timestamp timestamp;
+    private long timestamp;
     private String user_id;
 
     private PostsModel(int departure_date, int return_date, String destination, String age, String gender, String description,
-                       String id,ArrayList<String> type_trip,boolean approval,int clicks,Timestamp timestamp,String user_id) {
+                       String id,ArrayList<String> type_trip,boolean approval,int clicks,long timestamp,String user_id) {
         this.departure_date = departure_date;
         this.return_date = return_date;
         this.destination = destination;
@@ -49,7 +49,7 @@ public class PostsModel
         this.clicks = clicks;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -127,6 +127,7 @@ public class PostsModel
             }
             text=text.substring(0,text.length()-2);
         }
+        text="לא צוין";
         return text;
     }
     public boolean getApproval() {
@@ -141,7 +142,7 @@ public class PostsModel
         return clicks;
     }
 
-    public Timestamp getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 

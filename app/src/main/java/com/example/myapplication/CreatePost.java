@@ -49,7 +49,7 @@ import java.util.UUID;
 
 public class CreatePost extends AppCompatActivity implements View.OnClickListener
 {
-    private String age_text = "לא צוין",departure_date="",return_date="",gender="לא משנה",current_user_id="";
+    private String age_text = "לא צוין",departure_date="",return_date="",gender="לא משנה",current_user_id="",min_age_string="",max_age_string="";
     private EditText description;
     private CountryCodePicker ccp;
     private Uri post_image_uri;
@@ -298,7 +298,9 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                         public void onClick(DialogInterface dialog,
                                             int whichButton)
                         {
-                            age_text = min_age.getText().toString()+"-"+max_age.getText().toString();
+                            min_age_string=min_age.getText().toString();
+                            max_age_string=max_age.getText().toString();
+                            age_text = min_age_string+"-"+max_age_string;
                             btn_age.setText(age_text);
                         }
                     }).setNegativeButton("ביטול",
@@ -327,6 +329,25 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                 Toast.makeText(CreatePost.this, "תאריך החזרה חייב להיות אחרי תאריך היציאה", Toast.LENGTH_LONG).show();
                 return;
             }
+            //check if min_age<max_age and if the user insert integer
+            if(min_age_string!=""&&max_age_string!="")
+            {
+                try
+                {
+                    int min=Integer.parseInt( min_age_string );
+                    int max=Integer.parseInt( max_age_string );
+                    if(max<min)
+                    {
+                        Toast.makeText(CreatePost.this, "הגיל המינימלי חייב להיות קטן מהגיל המקסימלי", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                }
+                catch( Exception e )
+                {
+                    Toast.makeText(CreatePost.this, "שדה גיל אינו מספר", Toast.LENGTH_LONG).show();
+                    return;
+                }
+            }
             uploadData(dest,desc);
         }
     }
@@ -344,7 +365,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         post_map.put("id",id);
         post_map.put("approval",false);
         post_map.put("user_id",current_user_id);
-        post_map.put("timestamp",FieldValue.serverTimestamp());
+        post_map.put("timestamp",System.currentTimeMillis());
         post_map.put("destination",dest);
         post_map.put("departure_date",dep_date);
         post_map.put("return_date",ret_date);
@@ -375,6 +396,19 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                     }
                 });
 
+    }
+
+
+    private long getTime()
+    {
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+        long sum=minute+hour*100+day*10000+month*1000000+year*100000000;
+        return sum;
     }
 
 

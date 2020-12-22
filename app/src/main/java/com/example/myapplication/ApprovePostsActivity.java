@@ -76,7 +76,7 @@ public class ApprovePostsActivity extends AppCompatActivity
 
 
         //Query for the posts that admin did not approve yet
-        Query query=db.collection("Posts").whereNotEqualTo("approval",true);
+        Query query=db.collection("Posts").whereEqualTo("approval",false).orderBy("timestamp",Query.Direction.ASCENDING).limit(20);
         PagedList.Config config=new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
 
         //recyclerOptions
