@@ -39,7 +39,7 @@
         android:id="@+id/activity_register_subtitle"
         android:layout_width="355dp"
         android:layout_height="75dp"
-        android:layout_marginTop="170dp"
+        android:layout_marginTop="150dp"
         android:fontFamily="sans-serif-thin"
         android:text="הצטרפו אלינו,\nונתחיל לתכנן ביחד את החוויה המטורפת הבאה שלכם!"
         android:textColor="#FFFFFF"
@@ -49,11 +49,26 @@
         app:layout_constraintTop_toTopOf="@id/profile"/>
 
     <EditText
+        android:id="@+id/fullname"
+        style="@style/Widget.AppCompat.Light.AutoCompleteTextView"
+        android:layout_width="330dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="230dp"
+        android:background="#66D7DFD6"
+        android:hint="@string/fullname"
+        android:inputType="textEmailAddress"
+        android:selectAllOnFocus="true"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/profile"/>
+
+    <EditText
         android:id="@+id/email"
         style="@style/Widget.AppCompat.Light.AutoCompleteTextView"
         android:layout_width="330dp"
-        android:layout_height="61dp"
-        android:layout_marginTop="250dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="300dp"
         android:background="#66D7DFD6"
         android:hint="@string/prompt_email"
         android:inputType="textEmailAddress"
@@ -66,7 +81,7 @@
     <EditText
         android:id="@+id/password"
         android:layout_width="330dp"
-        android:layout_height="61dp"
+        android:layout_height="55dp"
         android:layout_marginTop="20dp"
         android:background="#66D7DFD6"
         android:hint="@string/prompt_password"
@@ -81,7 +96,7 @@
     <EditText
         android:id="@+id/repeat_password"
         android:layout_width="330dp"
-        android:layout_height="61dp"
+        android:layout_height="55dp"
         android:layout_marginTop="20dp"
         android:background="#66D7DFD6"
         android:hint="@string/prompt_repeat_password"
@@ -97,7 +112,7 @@
         android:id="@+id/register_now"
         android:layout_width="330dp"
         android:layout_height="81dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="20dp"
         android:backgroundTint="#AD1457"
         android:text="@string/register"
         android:textColor="@color/white"

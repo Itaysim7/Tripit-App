@@ -23,7 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity
 {
-    private EditText emailEditText,passwordEditText,password2EditText;
+    private EditText emailEditText,passwordEditText,password2EditText,fullNameEditText;
     private Button register_now_btn;
     private DatabaseReference reference;
     private FirebaseAuth mAuth;
@@ -36,6 +36,7 @@ public class RegisterActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        fullNameEditText= findViewById(R.id.fullname);
         emailEditText = findViewById(R.id.email);
         passwordEditText = findViewById(R.id.password);
         password2EditText = findViewById(R.id.repeat_password);
@@ -56,23 +57,24 @@ public class RegisterActivity extends AppCompatActivity
                 {
                     String email=emailEditText.getText().toString();
                     String password=passwordEditText.getText().toString();
-                    if(TextUtils.isEmpty(email)||TextUtils.isEmpty(password))
+                    String fullName=fullNameEditText.getText().toString();
+                    if(TextUtils.isEmpty(email)||TextUtils.isEmpty(password)||TextUtils.isEmpty(fullName))
                     {
-                        Toast.makeText(getApplicationContext(),"Enter email or password",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"אתה חייב למלא את כלל השדות",Toast.LENGTH_LONG).show();
                         return;
                     }
                     if(password.length()<6)
                     {
-                        Toast.makeText(getApplicationContext(),"Password length must be at least 6",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"אורך הסיסמה חייב להיות לפחות 6",Toast.LENGTH_LONG).show();
                         return;
                     }
                     String password2=password2EditText.getText().toString();
                     if(!password.equals(password2))//if the password different
                     {
-                        Toast.makeText(getApplicationContext(),"These passwords did not match, please try again",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"הסיסמאות אינן תואמות, נסה שוב",Toast.LENGTH_LONG).show();
                         return;
                     }
-                    user=new UsersObj(email,"default","empty", "default","default", 0,false);
+                    user=new UsersObj(email,"default","empty", fullName,"default", 0,false);
                     registerUser(email,password);
                 }
             }

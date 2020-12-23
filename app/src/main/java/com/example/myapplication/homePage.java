@@ -174,12 +174,14 @@ public class homePage extends AppCompatActivity {
                         break;
                 }
                 String user_id=model.getUser_id();
-                //Set image for the post from profile imageURL
+                //Set image and fullName for the post from profile imageURL
                 reference = FirebaseDatabase.getInstance().getReference("users").child(user_id);
                 reference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         user = snapshot.getValue(UsersObj.class);
+                        //set fullName
+                        holder.list_fullName.setText(user.getFullName());
                         //set image
                         if(user.getImageUrl().equals("default")) {
                             holder.list_image_url.setImageResource(R.drawable.user_image);
@@ -284,6 +286,7 @@ public class homePage extends AppCompatActivity {
      */
     private class PostsViewHolder extends RecyclerView.ViewHolder
     {
+        private TextView list_fullName;
         private TextView list_departure_date;
         private TextView list_return_date;
         private TextView list_destination;
@@ -297,6 +300,7 @@ public class homePage extends AppCompatActivity {
 
         public PostsViewHolder(@NonNull View itemView) {
             super(itemView);
+            list_fullName=itemView.findViewById(R.id.list_fullName);
             list_departure_date=itemView.findViewById(R.id.list_departure_date);
             list_return_date=itemView.findViewById(R.id.list_return_date);
             list_destination=itemView.findViewById(R.id.list_destination);

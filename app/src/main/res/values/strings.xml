@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Tripit</string>
     <string name="prompt_username">שם משתמש</string>
+    <string name="fullname">שם פרטי ושם משפחה</string>
     <string name="prompt_password">סיסמה</string>
     <string name="prompt_email">כתובת דואר אלקטרוני</string>
     <string name="prompt_repeat_password">חזור על הסיסמה שנית</string>

@@ -12,19 +12,22 @@
     <RelativeLayout
         android:id="@+id/list_layout"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="275dp"
         android:background="@drawable/gradient">
 
+
+
         <TextView
-            android:id="@+id/list_destination"
-            android:layout_width="255dp"
+            android:id="@+id/list_fullName"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_gravity="right"
+            android:layout_marginStart="210dp"
             android:layout_marginTop="10dp"
-            android:text="יעד:"
+            android:text="שם מלא:"
             android:textColor="@color/black"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"  />
 
         <ImageView
             android:id="@+id/list_image_url"
@@ -32,16 +35,26 @@
             android:layout_height="138dp"
             android:layout_gravity="right"
             android:layout_marginStart="268dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="35dp"
             android:scaleType="fitXY"
             android:src="@drawable/profile" />
 
+        <TextView
+            android:id="@+id/list_destination"
+            android:layout_width="255dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="30dp"
+            android:text="יעד:"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
         <TextView
             android:id="@+id/list_departure_date"
             android:layout_width="255dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="55dp"
             android:text="תאריך יציאה:"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -52,7 +65,7 @@
             android:layout_width="255dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="55dp"
+            android:layout_marginTop="80dp"
             android:text="תאריך חזרה:"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -60,13 +73,13 @@
 
         <TextView
             android:id="@+id/partner"
-            android:layout_width="213dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
-            android:layout_marginEnd="30dp"
+            android:layout_width="250dp"
+            android:layout_height="37dp"
+            android:layout_marginTop="105dp"
+            android:layout_marginEnd="0dp"
             android:text="העדפותיי לשותף:"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
@@ -74,7 +87,7 @@
             android:layout_width="255dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="105dp"
+            android:layout_marginTop="135dp"
             android:text="מין:"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -85,7 +98,7 @@
             android:layout_width="255dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="130dp"
+            android:layout_marginTop="155dp"
             android:text="טווח גילאים:"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -96,7 +109,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="175dp"
             android:text="מטרות הטיול שלי:"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -106,7 +119,7 @@
             android:id="@+id/list_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="180dp"
+            android:layout_marginTop="200dp"
             android:layout_marginEnd="10dp"
             android:text="פרטים נוספים:"
             android:textColor="@color/black"
