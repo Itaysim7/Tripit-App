@@ -73,7 +73,7 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
         goToPosts.setOnClickListener(this);
 
         //Query for the posts that the admin did not approve yet
-        Query query=db.collection("Posts").whereEqualTo("approval",true);
+        Query query=db.collection("Posts").whereEqualTo("approval",true).orderBy("timestamp",Query.Direction.DESCENDING).limit(100);
         PagedList.Config config=new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
 
         //recyclerOptions

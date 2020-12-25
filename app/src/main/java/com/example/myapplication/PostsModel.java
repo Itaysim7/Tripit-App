@@ -127,7 +127,8 @@ public class PostsModel
             }
             text=text.substring(0,text.length()-2);
         }
-        text="לא צוין";
+        else
+            text="לא צוין";
         return text;
     }
     public boolean getApproval() {

@@ -106,8 +106,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     about_myself_txt.setText(user.getDescription());
                 }
                 //find the posts this user uploaded
-                query = db.collection("Posts").whereEqualTo("user_id", fUser.getUid()).whereEqualTo("approval",true
-                );
+                query = db.collection("Posts").whereEqualTo("user_id", fUser.getUid()).whereEqualTo("approval",true).orderBy("timestamp",Query.Direction.DESCENDING).limit(100);
                 //Check if the user uploaded posts. If not, change the text.
                 query.addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
