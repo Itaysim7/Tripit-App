@@ -106,7 +106,7 @@ public class homePage extends AppCompatActivity {
                 query = query.whereArrayContainsAny("type_trip", trip_type);
             }//if
         }//if
-
+        query=query.orderBy("timestamp",Query.Direction.DESCENDING).limit(100);
         //How it will displayed:
         PagedList.Config config = new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
         //recyclerOptions
