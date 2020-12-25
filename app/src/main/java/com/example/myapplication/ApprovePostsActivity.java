@@ -47,15 +47,13 @@ public class ApprovePostsActivity extends AppCompatActivity
     private DatabaseReference reference;
     private CollectionReference DocRef;
     private FirebaseAuth mAuth;
+
     //Saving Data of Users as objects:
     private UsersObj user;
+
     //Adapters for posts:
     private RecyclerView mFirestoreList;
     private FirestorePagingAdapter adapter;
-    private String id,uri;
-    //Layout - variables:
-    private TextView yes_txt;
-    private TextView no_txt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,8 +144,8 @@ public class ApprovePostsActivity extends AppCompatActivity
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         user = snapshot.getValue(UsersObj.class);
                         //set image
-                        if (user.getImageUrl().equals("default"))
-                        {
+                        if (user.getImageUrl().equals("default")) {
+                            holder.list_image_url.setImageResource(R.drawable.user_image);
                         }
                         else {
                             Glide.with(ApprovePostsActivity.this).load(user.getImageUrl()).into(holder.list_image_url);
@@ -168,7 +166,6 @@ public class ApprovePostsActivity extends AppCompatActivity
                 holder.no_txt.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        reference= FirebaseDatabase.getInstance().getReference("users").child(model.getId()).child("myPosts");
                         db.collection("Posts").document(model.getId()).delete();
                     }
                 });

@@ -14,4 +14,10 @@
     inner_frame_layout_padding (below variable) on round screens.
     -->
     <dimen name="inner_frame_layout_padding">5dp</dimen>
+
+    <!--
+    This is for the photo in the profile activity.
+    -->
+    <dimen name = "contact_photo_height">450dp</dimen>
+    <dimen name= "distance_from_right_side">30dp</dimen>
 </resources>
