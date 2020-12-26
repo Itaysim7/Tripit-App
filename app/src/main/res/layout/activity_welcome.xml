@@ -23,11 +23,11 @@
         android:layout_width="259dp"
         android:layout_height="102dp"
         android:layout_marginStart="64dp"
-        android:layout_marginTop="36dp"
-        android:fontFamily="monospace"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/heebo_extra_bold"
         android:gravity="center_horizontal|center_vertical"
         android:text="ברוכים הבאים!"
-        android:textColor="#FFFFFF"
+        android:textColor="#171616"
         android:textSize="36sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/icon" />
@@ -36,38 +36,50 @@
         android:id="@+id/ContinueAsText"
         android:layout_width="168dp"
         android:layout_height="46dp"
-        android:layout_marginTop="264dp"
-        android:layout_marginEnd="64dp"
-        android:fontFamily="monospace"
+        android:layout_marginTop="260dp"
+        android:layout_marginEnd="48dp"
+        android:fontFamily="@font/heebo_extra_bold"
         android:gravity="center_horizontal|center_vertical"
         android:text="המשיכו בתור:"
-        android:textColor="#414768"
+        android:textColor="#615F5F"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <android.widget.Button
+
         android:id="@+id/userButton"
+
+        style="@style/BlueButton"
         android:layout_width="223sp"
         android:layout_height="81sp"
         android:layout_marginStart="92dp"
         android:layout_marginTop="84dp"
-        android:backgroundTint="#AD1457"
+        android:background="@drawable/button_selector"
+        android:backgroundTint="#DFDDDD"
+        android:fontFamily="@font/heebo_medium"
         android:text="משתמש"
+        android:textColor="#615F5F"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ContinueAsText" />
 
-    <Button
+    <android.widget.Button
         android:id="@+id/adminButton"
+        style="@style/BlueButton"
         android:layout_width="223sp"
         android:layout_height="81sp"
         android:layout_marginStart="92dp"
         android:layout_marginTop="8dp"
-        android:backgroundTint="#AD1457"
+        android:background="@drawable/button_selector"
+        android:backgroundTint="#DFDDDD"
+
+        android:fontFamily="@font/heebo_bold"
         android:text="מנהל"
+
+        android:textColor="#615F5F"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"

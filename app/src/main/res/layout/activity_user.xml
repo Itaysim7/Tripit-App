@@ -22,8 +22,8 @@
         android:layout_height="55dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="144dp"
-        android:layout_marginEnd="24dp"
         android:background="#66D7DFD6"
+        android:fontFamily="@font/heebo_bold"
         android:hint="@string/prompt_email"
         android:inputType="textEmailAddress"
         android:selectAllOnFocus="true"
@@ -37,6 +37,7 @@
         android:layout_height="49dp"
         android:layout_marginTop="20dp"
         android:background="#66D7DFD6"
+        android:fontFamily="@font/heebo_bold"
         android:hint="@string/prompt_password"
         android:imeActionLabel="@string/action_sign_in"
         android:imeOptions="actionDone"
@@ -52,6 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="68dp"
         android:layout_marginTop="10dp"
+        android:fontFamily="@font/heebo_medium"
         android:text="@string/or"
         android:textColor="@color/black"
         android:textSize="20dp"
@@ -61,104 +63,109 @@
 
     <!--EditText for register-->
 
+    <!--EditText for not register-->
+
+    <!--Button for sign-in-->
+
     <TextView
         android:id="@+id/register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="9dp"
+        android:fontFamily="@font/heebo_medium"
         android:text="@string/action_register"
-        android:textColor="#E60C3F"
+        android:textColor="#FD1100"
         android:textSize="26dp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/buttonForGoogle"
-        app:layout_constraintTop_toBottomOf="@+id/buttonForGoogle" />
-    <!--EditText for not register-->
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonForGoogle"
+        tools:layout_editor_absoluteX="131dp" />
+
     <TextView
         android:id="@+id/notRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="110dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/heebo_medium"
         android:text="@string/not_register"
-        android:textColor="#E60C3F"
+        android:textColor="#070707"
         android:textSize="26dp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/buttonForGoogle"
+        app:layout_constraintStart_toEndOf="@+id/register"
         app:layout_constraintTop_toBottomOf="@+id/buttonForGoogle" />
 
-    <!--Button for sign-in-->
-    <Button
+    <android.widget.Button
         android:id="@+id/login"
+        style="@style/BlueButton"
         android:layout_width="323dp"
         android:layout_height="81dp"
         android:layout_marginTop="56dp"
-        android:backgroundTint="#AD1457"
+        android:background="@drawable/button_selector"
+        android:backgroundTint="#DFDDDD"
+        android:fontFamily="@font/heebo_bold"
         android:text="@string/action_sign_in"
-        android:textColor="@color/white"
+        android:textColor="#615F5F"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/password"
         app:layout_constraintTop_toBottomOf="@+id/password" />
     <!--Button for facebook-->
     <!--Button for google-->
-    <Button
+
+
+    <com.shaishavgandhi.loginbuttons.FacebookButton
         android:id="@+id/buttonForFacebook"
-        android:layout_width="246dp"
-        android:layout_height="83dp"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="48dp"
-        android:backgroundTint="@color/white"
-        android:text="@string/facebook"
-        android:textColor="#283593"
-        android:textSize="22dp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/login"
-        app:layout_constraintTop_toBottomOf="@+id/login" />
-    <Button
-        android:id="@+id/white_btn_for_facebook"
-        android:layout_width="80dp"
-        android:layout_height="83dp"
-        android:backgroundTint="@color/white"
-        android:layout_marginTop="48dp"
-        android:enabled="false"
-        tools:layout_editor_absoluteX="29dp"
-        tools:layout_editor_absoluteY="458dp"
-        app:layout_constraintStart_toStartOf="@+id/login"
-        app:layout_constraintTop_toBottomOf="@+id/login"/>
-
-    <Button
-        android:id="@+id/buttonForGoogle"
-        android:layout_width="246dp"
-        android:layout_height="83dp"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="150dp"
-        android:backgroundTint="@color/white"
-        android:enabled="true"
-        android:text="@string/Google"
+        android:layout_width="308dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="96dp"
+        android:layout_marginEnd="57dp"
+        android:fontFamily="@font/heebo_extra_bold"
+        android:text="Sign in with Facebook"
+        android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="22dp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/login"
-        app:layout_constraintTop_toBottomOf="@+id/login" />
+        app:iconCenterAligned="false"
+        app:iconPadding="30dp"
+        app:iconSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/or"
+        app:roundedCorner="true"
+        app:roundedCornerRadius="30dp"
+        app:transparentBackground="true"
+        tools:ignore="MissingConstraints" />
 
-    <Button
-        android:id="@+id/white_btn_for_google"
-        android:layout_width="80dp"
-        android:layout_height="83dp"
-        android:backgroundTint="@color/white"
-        android:layout_marginTop="150dp"
-        android:enabled="false"
-        tools:layout_editor_absoluteX="29dp"
-        tools:layout_editor_absoluteY="458dp"
-        app:layout_constraintStart_toStartOf="@+id/white_btn_for_facebook"
-        app:layout_constraintTop_toBottomOf="@+id/login"/>
+    <com.shaishavgandhi.loginbuttons.GoogleButton
+        android:id="@+id/buttonForGoogle"
+        android:layout_width="308dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="57dp"
+        android:capitalize="none"
+        android:fontFamily="@font/heebo_extra_bold"
+        android:text="@string/Google"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:iconCenterAligned="false"
+        app:iconPadding="30dp"
+        app:iconSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonForFacebook"
+        app:roundedCorner="true"
+        app:roundedCornerRadius="30dp"
+        app:transparentBackground="true" />
 
     <CheckBox
         android:id="@+id/checkBox"
         android:layout_width="136dp"
         android:layout_height="31dp"
         android:layout_marginTop="60dp"
+        android:fontFamily="@font/heebo_medium"
         android:layoutDirection="rtl"
         android:text="@string/remmber_me"
         android:textSize="20dp"
@@ -170,6 +177,7 @@
         android:layout_width="167dp"
         android:layout_height="32dp"
         android:layout_marginTop="10dp"
+        android:fontFamily="@font/heebo_medium"
         android:padding="3dp"
         android:text="שכחתי ססמה"
         android:textColor="@color/black"
@@ -188,49 +196,31 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/globe" />
     <!--user image-->
+    <!--lock image-->
     <ImageView
         android:id="@+id/user"
         android:layout_width="39dp"
         android:layout_height="28dp"
-        android:layout_marginStart="250dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginStart="284dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="@+id/username"
         app:layout_constraintTop_toTopOf="@+id/username"
         app:srcCompat="@drawable/user_image" />
-    <!--lock image-->
-    <ImageView
-        android:id="@+id/lock"
-        android:layout_width="33dp"
-        android:layout_height="28dp"
-        android:layout_marginStart="252dp"
-        android:layout_marginTop="15dp"
-        app:layout_constraintStart_toStartOf="@+id/password"
-        app:layout_constraintTop_toTopOf="@+id/password"
-        app:srcCompat="@drawable/lock" />
 
     <!--facebook image-->
 
     <!--google image-->
 
-    <ImageView
-        android:id="@+id/facebook"
-        android:layout_width="49dp"
-        android:layout_height="65dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="135dp"
-        app:layout_constraintStart_toStartOf="@+id/login"
-        app:layout_constraintTop_toTopOf="@+id/login"
-        app:srcCompat="@drawable/facebook" />
 
     <ImageView
-        android:id="@+id/google"
-        android:layout_width="55dp"
-        android:layout_height="57dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="@+id/login"
-        app:layout_constraintTop_toTopOf="@+id/buttonForGoogle"
-        app:srcCompat="@drawable/google" />
+        android:id="@+id/lock"
+        android:layout_width="33dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="288dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="@+id/password"
+        app:layout_constraintTop_toTopOf="@+id/password"
+        app:srcCompat="@drawable/lock" />
 
     <ProgressBar
         android:id="@+id/loading"

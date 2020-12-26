@@ -4,14 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/maldives2"
     tools:context=".SearchPostActivity">
 
-    <Button
+    <android.widget.Button
         android:id="@+id/search_date_range_input"
         android:layout_width="178dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
+        android:background="@drawable/button_gradient_3"
+        android:fontFamily="@font/heebo_bold"
         android:text="@string/date_range_search"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,6 +32,7 @@
         android:layout_width="232dp"
         android:layout_height="27dp"
         android:layout_marginTop="16dp"
+        android:fontFamily="@font/heebo_bold"
         android:text="@string/destination"
         android:textAlignment="center"
         android:textSize="20sp"
@@ -52,11 +56,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_destination" />
+
     <TextView
         android:id="@+id/btn_search_date"
         android:layout_width="159dp"
         android:layout_height="31dp"
         android:layout_marginTop="24dp"
+        android:fontFamily="@font/heebo_bold"
         android:text="@string/search_flight"
         android:textAlignment="center"
         android:textSize="20sp"
@@ -64,13 +70,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/autocomp_destination" />
 
-    <Button
+    <android.widget.Button
         android:id="@+id/search_date_specific_input"
         android:layout_width="178dp"
         android:layout_height="45dp"
         android:layout_marginStart="28dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="44dp"
+        android:background="@drawable/button_gradient_3"
+        android:fontFamily="@font/heebo_bold"
         android:text="@string/date_specific_search"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -78,11 +86,13 @@
         app:layout_constraintStart_toEndOf="@+id/search_date_range_input"
         app:layout_constraintTop_toBottomOf="@+id/btn_search_date" />
 
-    <Button
+    <android.widget.Button
         android:id="@+id/btn_trip_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
+        android:background="@drawable/button_gradient_3"
+        android:fontFamily="@font/heebo_bold"
         android:text="@string/chooseYourOptions"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -90,15 +100,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_date_specific_input" />
 
-    <Button
+    <android.widget.Button
         android:id="@+id/btn_search"
         android:layout_width="166dp"
         android:layout_height="64dp"
         android:layout_marginBottom="16dp"
+        android:background="@drawable/button_gradient_3"
         android:text="@string/search"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.065"
+        app:layout_constraintHorizontal_bias="0.273"
         app:layout_constraintStart_toStartOf="parent" />
 
 

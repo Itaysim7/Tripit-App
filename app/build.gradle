@@ -29,6 +29,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.shaishavgandhi:login-buttons:1.0.0'
     implementation 'com.facebook.android:facebook-android-sdk:5.0.0'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'androidx.appcompat:appcompat:1.2.0'

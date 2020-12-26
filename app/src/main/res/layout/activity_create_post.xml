@@ -26,9 +26,10 @@
             android:id="@+id/destination"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/heebo_bold"
             android:text="@string/destination"
             android:textAlignment="center"
-            android:textSize="24dp"/>
+            android:textSize="24dp" />
 
         <com.hbb20.CountryCodePicker
             android:id="@+id/ccp"
@@ -56,6 +57,7 @@
                 android:layout_marginStart="45dp"
                 android:layout_marginTop="20dp"
                 android:background="#66D7DFD6"
+                android:fontFamily="@font/heebo_bold"
                 android:text="@string/date_flight2"
                 android:textAlignment="center"
                 android:textSize="28dp"
@@ -69,6 +71,7 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="20dp"
                 android:background="#66D7DFD6"
+                android:fontFamily="@font/heebo_bold"
                 android:text="@string/date_flight1"
                 android:textAlignment="center"
                 android:textSize="28dp"
@@ -82,28 +85,30 @@
             android:layout_height="wrap_content"
             android:weightSum="2">
 
-            <Button
+            <android.widget.Button
+
                 android:id="@+id/btn_for_return_Date"
                 android:layout_width="126dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="60dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/button_gradient_3"
+                android:fontFamily="@font/heebo_bold"
                 android:text="@string/choose"
                 android:textSize="20dp" />
 
-            <Button
+            <android.widget.Button
                 android:id="@+id/btn_for_departure_Date"
                 android:layout_width="126dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="50dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/button_gradient_3"
+                android:fontFamily="@font/heebo_bold"
                 android:text="@string/choose"
                 android:textSize="20dp" />
 
         </LinearLayout>
-
 
 
         <TextView
@@ -113,19 +118,21 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:background="#66D7DFD6"
+            android:fontFamily="@font/heebo_bold"
             android:text="@string/flight_purposes"
             android:textAlignment="center"
             android:textSize="28dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <android.widget.Button
             android:id="@+id/btn_for_flight_purposes"
             android:layout_width="126dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="150dp"
             android:layout_marginTop="10dp"
-            android:background="#9AA5A3"
+            android:background="@drawable/button_gradient_3"
+            android:fontFamily="@font/heebo_bold"
             android:text="@string/choose"
             android:textSize="20dp" />
 
@@ -135,23 +142,25 @@
             android:layout_height="wrap_content"
             android:weightSum="2">
 
-            <Button
+            <android.widget.Button
                 android:id="@+id/btn_for_age"
                 android:layout_width="126dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="60dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/button_gradient_3"
+                android:fontFamily="@font/heebo_bold"
                 android:text="גיל"
                 android:textSize="20dp" />
 
-            <Button
+            <android.widget.Button
                 android:id="@+id/btn_for_gender"
                 android:layout_width="118dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="50dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/button_gradient_3"
+                android:fontFamily="@font/heebo_bold"
                 android:text="מין"
                 android:textSize="20dp" />
 
@@ -161,29 +170,31 @@
 
         <EditText
             android:id="@+id/description"
-            android:alpha="0.8"
             android:layout_width="350dp"
             android:layout_height="180dp"
             android:layout_marginStart="25dp"
             android:layout_marginTop="20dp"
+            android:alpha="0.8"
             android:background="@color/white"
+            android:fontFamily="@font/heebo_light"
             android:gravity="start"
+            android:inputType="textMultiLine"
             android:maxLength="200"
             android:paddingLeft="60dp"
             android:paddingRight="10dp"
+            android:scrollbars="vertical"
             android:text="ספר על עצמך..."
-            android:inputType="textMultiLine"
             android:textColor="@color/black"
-            android:textSize="20dp"
-            android:scrollbars="vertical"/>
+            android:textSize="20dp" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/publish"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:layout_marginStart="20dp"
-            android:background="#D32F2F"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_gradient_4"
+            android:fontFamily="@font/heebo_extra_bold"
             android:text="פרסם"
             android:textSize="20dp"
             android:textStyle="bold" />
