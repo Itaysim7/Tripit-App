@@ -8,6 +8,7 @@ import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -20,15 +21,22 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.webkit.MimeTypeMap;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
+import com.github.ksoichiro.android.observablescrollview.ObservableListView;
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
+import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -51,26 +59,31 @@ import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import java.util.HashMap;
 
-public class ProfileActivity extends AppCompatActivity implements View.OnClickListener{
+public class ProfileActivity extends AppCompatActivity implements View.OnClickListener, EditPostsDialog.EditPostsListener{
 
     //variables for the photo upload
     private StorageReference storageReference;
     private static final String TAG = "ProfileActivity";
     private static final int IMAGE_REQUEST = 1;
     private Uri imageUri;
-    private StorageTask uploadTask;
+    private StorageTask<UploadTask.TaskSnapshot> uploadTask;
+
+
     private DatabaseReference reference;
     private FirebaseUser fUser;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private RecyclerView mFirestoreList;
-    private FirestorePagingAdapter adapter;
+    private FirestorePagingAdapter<PostsModel, PostsViewHolder> adapter;
     private UsersObj user;
     private Query query;
 
     private ImageView image_profile;
-    private EditText about_myself_txt;
+    private TextView about_myself_txt;
     private TextView myPosts;
+    private TextView name_age_txt;
+    private Button edit_profile_btn;
+    private ScrollView mScrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +93,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         image_profile = findViewById(R.id.image_profile_view);
         about_myself_txt = findViewById(R.id.About_Myself_Txt);
         myPosts = findViewById(R.id.My_Posts);
+        name_age_txt = findViewById(R.id.name_and_age_txt);
+        edit_profile_btn = findViewById(R.id.Edit_profile_btn);
+        mScrollView = findViewById(R.id.scrollView);
+
+        mScrollView.getViewTreeObserver().addOnScrollChangedListener(new ScrollPositionObserver());
 
         //firebase
         mAuth = FirebaseAuth.getInstance();
@@ -93,8 +111,15 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 user = snapshot.getValue(UsersObj.class);
+                //Set name
+                String intro = user.getFullName();
+                if(user.getAge() != 0){
+                    intro = intro + ", " + user.getAge();
+                }
+                name_age_txt.setText(intro);
+
                 //set image
-                if(user.getImageUrl().equals("default")) {
+                if(user != null && user.getImageUrl().equals("default")) {
                     image_profile.setImageResource(R.drawable.user_image);
                 } else{
                     Glide.with(ProfileActivity.this).load(user.getImageUrl()).into(image_profile);
@@ -128,20 +153,38 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     @NonNull
                     @Override
                     public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_single, parent, false);
+                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_items_in_profile, parent, false);
                         return new PostsViewHolder(view);
                     }
 
+                    @SuppressLint("SetTextI18n")
                     @Override
                     protected void onBindViewHolder(@NonNull PostsViewHolder holder, int position, @NonNull PostsModel model) { //set data
-                        holder.list_departure_date.setText("תאריך יציאה: "+model.getDeparture_date());
-                        holder.list_return_date.setText("תאריך חזרה: "+model.getReturn_date());
-                        holder.list_destination.setText("יעד: "+model.getDestination());
-                        holder.list_age.setText("טווח גילאים: "+model.getAge());
-                        holder.list_gender.setText("מין: "+model.getGender());
-                        holder.list_description.setText("תיאור: "+model.getDescription());
-                        holder.list_type.setText("מטרות הטיול שלי: "+model.getType_trip());
-                        //holder.star.setVisibility(View.INVISIBLE);
+                        holder.list_departure_date.setText("תאריך יציאה: " + model.getDeparture_date());
+                        holder.list_return_date.setText("תאריך חזרה: " + model.getReturn_date());
+                        holder.list_destination.setText("יעד: " + model.getDestination());
+                        holder.list_age.setText("טווח גילאים: " + model.getAge());
+                        holder.list_gender.setText("מין: " + model.getGender());
+                        holder.list_description.setText("תיאור: " + model.getDescription());
+                        holder.list_type.setText("מטרות הטיול שלי: " + model.getType_trip());
+
+                        holder.edit_btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                openDialog(model);
+                            }
+                        });
+                        holder.delete_btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                db.collection("Posts").document(model.getId()).delete();
+                            }
+                        });
+                    }
+
+                    public void openDialog(PostsModel model){
+                        EditPostsDialog dialog = new EditPostsDialog(model);
+                        dialog.show(getSupportFragmentManager(), "Edit Post");
                     }
                 };
 
@@ -156,9 +199,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 Log.d("Failed", error.getMessage());
             }
         });
+
         storageReference = FirebaseStorage.getInstance().getReference("uploads");
         image_profile.setOnClickListener(this);
-        about_myself_txt.setOnClickListener(this);
+        edit_profile_btn.setOnClickListener(this);
 
 
         //Toolbar
@@ -169,6 +213,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         getSupportActionBar().setDisplayShowTitleEnabled(false); //delete the default title
 
     }
+
 
     @Override
     protected void onStop() {
@@ -187,9 +232,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         if (v == image_profile){
             openImage();
         }
-        if(v == about_myself_txt){
-            changeText();
+
+        if(v == edit_profile_btn){
+
         }
+//        if(v == about_myself_txt){
+//            changeText();
+//        }
     }
 
     //-----------------------------Change Description Function-------------------------
@@ -227,38 +276,41 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     +"."+getFileExtension(imageUri));
 
             uploadTask = fileReference.putFile(imageUri);
-            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if(!task.isSuccessful()) throw task.getException();
-                    return fileReference.getDownloadUrl();
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if(task.isSuccessful()){
-                        Uri downloadUri = task.getResult();
-                        String mUri = downloadUri.toString();
+            try {
+                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) throw task.getException();
+                        return fileReference.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Uri downloadUri = task.getResult();
+                            String mUri = downloadUri.toString();
 
-                        fUser = mAuth.getCurrentUser();
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put("imageUrl",mUri);
-                        reference.updateChildren(map);
+                            fUser = mAuth.getCurrentUser();
+                            HashMap<String, Object> map = new HashMap<>();
+                            map.put("imageUrl", mUri);
+                            reference.updateChildren(map);
 
+                            pd.dismiss();
+                        } else {
+                            Toast.makeText(ProfileActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                            pd.dismiss();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         pd.dismiss();
                     }
-                    else{
-                        Toast.makeText(ProfileActivity.this,"Failed",Toast.LENGTH_SHORT).show();
-                        pd.dismiss();
-                    }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(ProfileActivity.this, e.getMessage(),Toast.LENGTH_SHORT).show();
-                    pd.dismiss();
-                }
-            });
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         else{
             Toast.makeText(ProfileActivity.this, "No Image Selected",Toast.LENGTH_SHORT).show();
@@ -333,6 +385,38 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         return super.onOptionsItemSelected(item);
     }
 
+
+    //---------------------------Methods for the dialog-------------------------
+    @Override
+    public void ChangeLocation(String location, String id) {
+        db.collection("Posts").document(id).update("destination",location);
+        Refresh();
+    }
+
+    @Override
+    public void ChangeReturnDate(int return_date, String id) {
+        db.collection("Posts").document(id).update("return_date",return_date);
+    }
+
+    @Override
+    public void ChangeDepartureDate(int departure_date, String id) {
+        db.collection("Posts").document(id).update("departure_date",departure_date);
+    }
+
+    @Override
+    public void ChangeGender(int newGender) {
+
+    }
+
+    @Override
+    public void ChangeAges(int StartAge, int EndAge) {
+
+    }
+
+    private void Refresh(){
+        startActivity(getIntent());
+    }
+
     //------------------------Posts Class---------------------------------------
     private class PostsViewHolder extends RecyclerView.ViewHolder {
         private TextView list_departure_date;
@@ -342,7 +426,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         private TextView list_gender;
         private TextView list_description;
         private TextView list_type;
-        private TextView star;
+
+        private Button edit_btn, delete_btn;
 
         public PostsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -353,8 +438,45 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             list_gender=itemView.findViewById(R.id.list_gender);
             list_description=itemView.findViewById(R.id.list_description);
             list_type=itemView.findViewById(R.id.list_type);
-            star = findViewById(R.id.Star);
+
+            edit_btn = itemView.findViewById(R.id.edit_btn);
+            delete_btn = itemView.findViewById(R.id.delete_btn);
         }
     }
+
+
+
+    private class ScrollPositionObserver implements ViewTreeObserver.OnScrollChangedListener {
+        private final int mImageViewHeight;
+
+        public ScrollPositionObserver() {
+            mImageViewHeight = getResources().getDimensionPixelSize(R.dimen.contact_photo_height);
+        }
+
+        @Override
+        public void onScrollChanged() {
+            int baseColor = getColor(R.color.primary);
+            int scrollY = Math.min(Math.max(mScrollView.getScrollY(), 0), mImageViewHeight);
+            float alpha = scrollY / (float) mImageViewHeight;
+
+            // changing position of ImageView
+            image_profile.setTranslationY((float) (scrollY / 8));
+            image_profile.setColorFilter(getColorWithAlpha(alpha, baseColor));
+
+            //Don't let name disappear -
+            int distance_txt = name_age_txt.getTop() - mScrollView.getScrollY();
+            if(distance_txt < 0 )
+                name_age_txt.offsetTopAndBottom(10);
+
+
+        }
+
+        public int getColorWithAlpha(float alpha, int baseColor) {
+            int a = Math.min(255, Math.max(0, (int) (alpha * 255))) << 24;
+            int rgb = 0x00ffffff & baseColor;
+            return a + rgb;
+        }
+    }
+
 
 }

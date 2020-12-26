@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.appcompat.widget.Toolbar;
 import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -53,15 +54,10 @@ public class homePage extends AppCompatActivity {
     //Adapters for posts:
     private RecyclerView mFirestoreList;
     private FirestorePagingAdapter adapter;
-    private String uri;
-    //Layout - variables:
-    private TextView helloTxt;
-
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
         //Toolbars:
@@ -72,57 +68,56 @@ public class homePage extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false); //delete the default title
 
 
-        mAuth=FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
         FirebaseUser fUser = mAuth.getCurrentUser();
         //Hello Message:
         TextView helloTxt = findViewById(R.id.hello);
-        helloTxt.setText("שלום "+fUser.getEmail()+" ממליצים לך לערוך את הפרופיל שלך");
+        helloTxt.setText("שלום " + fUser.getEmail() + " ממליצים לך לערוך את הפרופיל שלך");
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        mFirestoreList=findViewById(R.id.firestore_list);
+        mFirestoreList = findViewById(R.id.firestore_list);
         //Basic Query:
         Query query = db.collection("Posts").whereEqualTo("approval", true);//Query for the post that admin approve
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
         //Compound Query By Premade Indexes: serializing queries by user inputs
-        if(bundle != null) {
+        if (bundle != null) {
             Toast.makeText(getApplicationContext(), "Inside", Toast.LENGTH_LONG).show();
             FilterObj filter = (FilterObj) bundle.getSerializable("filter");
             String destination = filter.getDestination();
-            if(destination != null) {
+            if (destination != null) {
                 query = query.whereEqualTo("destination", destination);
             }//if
             int date_dep_start = filter.getDate_dep_start();
             int date_dep_end = filter.getDate_dep_end();
 
-            if(date_dep_end == Integer.MAX_VALUE && date_dep_start != Integer.MIN_VALUE) {//Specific
+            if (date_dep_end == Integer.MAX_VALUE && date_dep_start != Integer.MIN_VALUE) {//Specific
                 System.out.println("Specific");
                 query = query.whereEqualTo("departure_date", date_dep_start);
             }//if
-            if(date_dep_end != Integer.MAX_VALUE && date_dep_start != Integer.MIN_VALUE) {//Not specific
+            if (date_dep_end != Integer.MAX_VALUE && date_dep_start != Integer.MIN_VALUE) {//Not specific
                 System.out.println("Not Specific");
                 query = query.whereGreaterThanOrEqualTo("departure_date", date_dep_start);
                 query = query.whereLessThanOrEqualTo("departure_date", date_dep_end);
             }//else
-            if(filter.get_Flight_Purposes() != null) {
+            if (filter.get_Flight_Purposes() != null) {
                 ArrayList<String> trip_type = new ArrayList<String>(filter.get_Flight_Purposes());
-                System.out.println("Trip type:\t"+trip_type.toString());
+                System.out.println("Trip type:\t" + trip_type.toString());
                 query = query.whereArrayContainsAny("type_trip", trip_type);
             }//if
         }//if
         query=query.orderBy("timestamp",Query.Direction.DESCENDING).limit(100);
         //How it will displayed:
-        PagedList.Config config=new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
+        PagedList.Config config = new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
         //recyclerOptions
-        FirestorePagingOptions<PostsModel> options=new FirestorePagingOptions.Builder<PostsModel>()
-                .setQuery(query,config,PostsModel.class).build();
-        adapter= new FirestorePagingAdapter<PostsModel, PostsViewHolder>(options) {
+        FirestorePagingOptions<PostsModel> options = new FirestorePagingOptions.Builder<PostsModel>()
+                .setQuery(query, config, PostsModel.class).build();
+        adapter = new FirestorePagingAdapter<PostsModel, PostsViewHolder>(options) {
             @NonNull
             @Override
-            public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
-            {
-                View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_single,parent,false);
-                return new PostsViewHolder(view) ;
+            public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_single, parent, false);
+                return new PostsViewHolder(view);
             }
 
             @Override
@@ -183,13 +178,13 @@ public class homePage extends AppCompatActivity {
                         //set fullName
                         holder.list_fullName.setText(user.getFullName());
                         //set image
-                        if(user.getImageUrl().equals("default")) {
+                        if (user.getImageUrl().equals("default")) {
                             holder.list_image_url.setImageResource(R.drawable.user_image);
                         } else {
                             Glide.with(homePage.this).load(user.getImageUrl()).into(holder.list_image_url);
                         }
 
-                        if(user.getFavPosts() != null) {
+                        if (user.getFavPosts() != null) {
                             for (String key : user.getFavPosts().keySet()) {
                                 if (user.getFavPosts().get(key).equals(model.getId())) {
                                     holder.Star.setText("סומן בכוכב");
@@ -197,6 +192,7 @@ public class homePage extends AppCompatActivity {
                             }
                         }
                     }//onDataChange
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
 
@@ -206,7 +202,7 @@ public class homePage extends AppCompatActivity {
                 holder.Star.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(holder.Star.getText().equals("סמן בכוכב")) {
+                        if (holder.Star.getText().equals("סמן בכוכב")) {
                             holder.Star.setText("סומן בכוכב");
                             reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid()).child("favPosts");
                             reference.push().setValue(model.getId());
@@ -243,36 +239,30 @@ public class homePage extends AppCompatActivity {
     }//onCreateOptionsMenu
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        int id=item.getItemId();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
         //menu item click handling
-        if(id==R.id.newPost)
-        {
-            Intent intent=new Intent(this,CreatePost.class);
+        if (id == R.id.newPost) {
+            Intent intent = new Intent(this, CreatePost.class);
             startActivity(intent);
         }
-        if(id==R.id.Search)
-        {
-            Intent intent=new Intent(this,SearchPostActivity.class);
+        if (id == R.id.Search) {
+            Intent intent = new Intent(this, SearchPostActivity.class);
             startActivity(intent);
         }
-        if(id==R.id.home)
-        {
-            Intent intent=new Intent(this,homePage.class);
+        if (id == R.id.home) {
+            Intent intent = new Intent(this, homePage.class);
             startActivity(intent);
         }
-        if(id==R.id.myProfile)
-        {
-            Intent intent=new Intent(this,ProfileActivity.class);
+        if (id == R.id.myProfile) {
+            Intent intent = new Intent(this, ProfileActivity.class);
             startActivity(intent);
         }
-        if(id == R.id.savePost){
-            Intent intent=new Intent(this,FavPostsActivity.class);
+        if (id == R.id.savePost) {
+            Intent intent = new Intent(this, FavPostsActivity.class);
             startActivity(intent);
         }
-        if(id==R.id.logOut)
-        {
+        if (id == R.id.logOut) {
             mAuth.signOut();
             finish();
             Intent intent = new Intent(getApplicationContext(), welcomeActivity.class);
