@@ -341,6 +341,16 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                         Toast.makeText(CreatePost.this, "הגיל המינימלי חייב להיות קטן מהגיל המקסימלי", Toast.LENGTH_LONG).show();
                         return;
                     }
+                    if(min<16)
+                    {
+                        Toast.makeText(CreatePost.this, "הגיל המינימלי הוא 16", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    if(max>120)
+                    {
+                        Toast.makeText(CreatePost.this, "הגיל המקסימלי הוא 120", Toast.LENGTH_LONG).show();
+                        return;
+                    }
                 }
                 catch( Exception e )
                 {
