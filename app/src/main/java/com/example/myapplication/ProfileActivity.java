@@ -57,9 +57,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ProfileActivity extends AppCompatActivity implements View.OnClickListener, EditPostsDialog.EditPostsListener{
+public class ProfileActivity extends AppCompatActivity
+        implements View.OnClickListener, EditPostsDialog.EditPostsListener, EditProfileDialog.EditProfileListener {
 
     //variables for the photo upload
     private StorageReference storageReference;
@@ -234,11 +237,16 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         if(v == edit_profile_btn){
-
+            openEditProfileDialog();
         }
 //        if(v == about_myself_txt){
 //            changeText();
 //        }
+    }
+
+    private void openEditProfileDialog() {
+        EditProfileDialog dialog = new EditProfileDialog();
+        dialog.show(getSupportFragmentManager(), "Edit Profile");
     }
 
     //-----------------------------Change Description Function-------------------------
@@ -386,11 +394,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
 
-    //---------------------------Methods for the dialog-------------------------
+    //---------------------------Methods for the posts dialog-------------------------
     @Override
     public void ChangeLocation(String location, String id) {
         db.collection("Posts").document(id).update("destination",location);
-        Refresh();
     }
 
     @Override
@@ -404,18 +411,37 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @Override
-    public void ChangeGender(int newGender) {
-
+    public void ChangeGender(String newGender, String id) {
+        db.collection("Posts").document(id).update("gender", newGender);
     }
 
     @Override
-    public void ChangeAges(int StartAge, int EndAge) {
-
+    public void ChangeAges(String StartAge, String EndAge, String id) {
+        String range = StartAge+"-"+EndAge;
+        db.collection("Posts").document(id).update("age",range);
     }
 
-    private void Refresh(){
-        startActivity(getIntent());
+    @Override
+    public void ChangeDescription(String Description, String id) {
+        if(Description.equals(""))
+            Description = "ספר על עצמך";
+        db.collection("Posts").document(id).update("description", Description);
     }
+
+    @Override
+    public void ChangeTripType(ArrayList<String> trip_types, String id) {
+        db.collection("Posts").document(id).update("type_trip", trip_types);
+    }
+
+    //----------------------------------Methods for the edit profile dialog---------------------
+
+    @Override
+    public void ChangeName(String newName) {
+        reference.child("fullName").setValue(newName);
+    }
+
+
+
 
     //------------------------Posts Class---------------------------------------
     private class PostsViewHolder extends RecyclerView.ViewHolder {
@@ -445,7 +471,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
 
-
+    //------------------------Class Responsible for Changes when Scrolling----------------------
     private class ScrollPositionObserver implements ViewTreeObserver.OnScrollChangedListener {
         private final int mImageViewHeight;
 
@@ -460,7 +486,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             float alpha = scrollY / (float) mImageViewHeight;
 
             // changing position of ImageView
-            image_profile.setTranslationY((float) (scrollY / 8));
+            //image_profile.setTranslationY((float) (scrollY / 8));
             image_profile.setColorFilter(getColorWithAlpha(alpha, baseColor));
 
             //Don't let name disappear -

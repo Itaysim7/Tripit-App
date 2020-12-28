@@ -43,6 +43,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
+import java.util.Date;
 
 public class userActivity extends AppCompatActivity implements View.OnClickListener {
     //Finals:
@@ -392,7 +393,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
     }//FirebaseGoogleAuth
 
     public void register(FirebaseUser firebaseUser) {
-        user = new UsersObj(firebaseUser.getEmail(),"default","empty","default","default",0,false);
+        user = new UsersObj(firebaseUser.getEmail(),"default","empty","default","default",new Date(),false);
         mDatebase.child(firebaseUser.getUid()).setValue(user);
     }
 

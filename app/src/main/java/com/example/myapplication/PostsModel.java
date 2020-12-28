@@ -95,11 +95,19 @@ public class PostsModel
         return dep;
     }
 
+    public int getDeparture_date_int(){
+        return departure_date;
+    }
+
     public String getReturn_date()
     {
         String ret=intToStringDate(return_date);
         return ret;
     }
+    public int getReturn_date_int(){
+        return return_date;
+    }
+
     public String getDestination() {
         return destination;
     }

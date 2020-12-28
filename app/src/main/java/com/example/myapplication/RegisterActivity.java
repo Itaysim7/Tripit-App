@@ -21,6 +21,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Date;
+
 public class RegisterActivity extends AppCompatActivity
 {
     private EditText emailEditText,passwordEditText,password2EditText,fullNameEditText;
@@ -74,7 +76,8 @@ public class RegisterActivity extends AppCompatActivity
                         Toast.makeText(getApplicationContext(),"הסיסמאות אינן תואמות, נסה שוב",Toast.LENGTH_LONG).show();
                         return;
                     }
-                    user=new UsersObj(email,"default","empty", fullName,"default", 0,false);
+                    Date date = new Date();
+                    user=new UsersObj(email,"default","empty", fullName,"default", date,false);
                     registerUser(email,password);
                 }
             }

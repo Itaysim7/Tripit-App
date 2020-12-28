@@ -126,6 +126,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
 
     }
 
+    //---------------------Toolbar Functions---------------------------
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();

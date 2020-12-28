@@ -3,6 +3,7 @@ package com.example.myapplication;
     Simple Class that represent the User Object with all his fields.
  */
 
+import java.util.Date;
 import java.util.HashMap;
 
 public class UsersObj {
@@ -12,6 +13,7 @@ public class UsersObj {
     private String fullName;
     private String gender;
     private int age;
+    private Date birthday;
     private boolean admin;
     private HashMap<String, String> favPosts;
 
@@ -19,13 +21,13 @@ public class UsersObj {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public UsersObj(String email, String imageUrl, String description, String fullName, String gender, int age, boolean admin) {
+    public UsersObj(String email, String imageUrl, String description, String fullName, String gender, Date date, boolean admin) {
         this.email = email;
         this.imageUrl = imageUrl;
         this.description = description;
         this.fullName = fullName;
         this.gender = gender;
-        this.age =age;
+        this.birthday = date;
         this.admin = admin;
         this.favPosts = null;
     }
@@ -92,5 +94,13 @@ public class UsersObj {
 
     public void setFavPosts(HashMap<String, String> favPosts) {
         this.favPosts = favPosts;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
     }
 }
