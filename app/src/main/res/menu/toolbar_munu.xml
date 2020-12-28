@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/newPost" android:title="הוספת פוסט                     "  app:showAsAction="collapseActionView"/>
-    <item android:id="@+id/home" android:icon="@drawable/homepage" android:title="דף הבית                            " app:showAsAction="collapseActionView"/>
+    <item android:id="@+id/home"  android:title="דף הבית                            " app:showAsAction="collapseActionView"/>
     <item android:id="@+id/Search" android:icon="@drawable/search" android:title="חיפוש" app:showAsAction="always" />
     <item android:id="@+id/myProfile" android:title="הפרופיל שלי                      " app:showAsAction="collapseActionView" />
     <item android:id="@+id/savePost" android:title="פוסטים שמורים                " app:showAsAction="collapseActionView" />

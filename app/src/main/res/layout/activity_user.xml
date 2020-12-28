@@ -134,7 +134,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:roundedCorner="true"
         app:roundedCornerRadius="30dp"
-        app:transparentBackground="true"
+        app:transparentBackground="false"
         app:layout_constraintStart_toStartOf="@+id/login"
         app:layout_constraintTop_toBottomOf="@+id/login"
         tools:ignore="MissingConstraints" />
@@ -158,7 +158,7 @@
         app:layout_constraintTop_toBottomOf="@+id/buttonForFacebook"
         app:roundedCorner="true"
         app:roundedCornerRadius="30dp"
-        app:transparentBackground="true" />
+        app:transparentBackground="false" />
 
     <CheckBox
         android:id="@+id/checkBox"
