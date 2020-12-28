@@ -13,7 +13,7 @@ public class UsersObj {
     private String fullName;
     private String gender;
     private int age;
-    private Date birthday;
+    private int birthday;
     private boolean admin;
     private HashMap<String, String> favPosts;
 
@@ -21,7 +21,7 @@ public class UsersObj {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public UsersObj(String email, String imageUrl, String description, String fullName, String gender, Date date, boolean admin) {
+    public UsersObj(String email, String imageUrl, String description, String fullName, String gender, int date, boolean admin) {
         this.email = email;
         this.imageUrl = imageUrl;
         this.description = description;
@@ -96,11 +96,25 @@ public class UsersObj {
         this.favPosts = favPosts;
     }
 
-    public Date getBirthday() {
-        return birthday;
+    public String getBirthday() {
+        String bday = intToStringDate(this.birthday);
+        return bday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(int birthday) {
         this.birthday = birthday;
+    }
+
+    private String intToStringDate(int time) {
+        if(time != -1) {
+            String day=""+(time%100);
+            time=time/100;
+            String month=""+(time%100);
+            time=time/100;//year
+            String s =day+"/"+month+"/"+time;
+            return s;
+        }//if
+        else
+            return "";
     }
 }

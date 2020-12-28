@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -94,17 +95,54 @@ public class EditPostsDialog extends AppCompatDialogFragment implements View.OnC
                         if(!location.equals(model.getDestination()))
                             listener.ChangeLocation(location, model.getId());
 
+                        //check if dep_date<ret_date
+                        if(ret_date<=dep_date){
+                            Toast.makeText(getContext(), "תאריך החזרה חייב להיות אחרי תאריך היציאה", Toast.LENGTH_LONG).show();
+                            dep_date = model.getDeparture_date_int();
+                            ret_date = model.getReturn_date_int();
+                        }
+
                         if(dep_date != model.getDeparture_date_int())
                             listener.ChangeDepartureDate(dep_date, model.getId());
 
                         if(ret_date != model.getReturn_date_int())
                             listener.ChangeReturnDate(ret_date, model.getId());
 
-                        String age1;
-                        String age2;
-                        //if(min_age.getText() != null)
-                        age1 = min_age.getText().toString();
-                        age2 = max_age.getText().toString();
+                        String age1 = min_age.getText().toString();
+                        String age2 = max_age.getText().toString();
+                        int min = 0, max = 0;
+                        if(!age1.equals("") || !age2.equals("")) {
+                            if (!age1.equals("")) {
+                                try {
+                                    min = Integer.parseInt(age1);
+                                } catch (Exception e) {
+                                    Toast.makeText(getContext(), "שדה גיל אינו מספר", Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+                            }
+                            if (!age2.equals("")) {
+                                try {
+                                    max = Integer.parseInt(age2);
+                                } catch (Exception e) {
+                                    Toast.makeText(getContext(), "שדה גיל אינו מספר", Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+                            }
+
+                            if (max < min) {
+                                Toast.makeText(getContext(), "הגיל המינימלי חייב להיות קטן מהגיל המקסימלי", Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                            if (min < 16) {
+                                Toast.makeText(getContext(), "הגיל המינימלי הוא 16", Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                            if (max > 120) {
+                                Toast.makeText(getContext(), "הגיל המקסימלי הוא 120", Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                        }
+
                         listener.ChangeAges(age1,age2, model.getId());
                         listener.ChangeGender(gender, model.getId());
 
@@ -155,8 +193,7 @@ public class EditPostsDialog extends AppCompatDialogFragment implements View.OnC
             }, year, month, day);
             dpd_ret.show();
         }//if v == ret_date_txt
-        else if(v == btn_gender)
-        {
+        else if(v == btn_gender) {
             String [] list_gender=new String[]{"אישה", "גבר", "לא משנה"};
             AlertDialog.Builder mBuilder=new AlertDialog.Builder(getContext());
             mBuilder.setTitle("בחר עם איזה מין אתה מעוניין לטייל");

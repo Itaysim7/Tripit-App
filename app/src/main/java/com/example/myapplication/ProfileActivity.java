@@ -54,6 +54,7 @@ import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class ProfileActivity extends AppCompatActivity
@@ -240,7 +241,7 @@ public class ProfileActivity extends AppCompatActivity
     }
 
     private void openEditProfileDialog() {
-        EditProfileDialog dialog = new EditProfileDialog();
+        EditProfileDialog dialog = new EditProfileDialog(user);
         dialog.show(getSupportFragmentManager(), "Edit Profile");
     }
 
@@ -435,7 +436,20 @@ public class ProfileActivity extends AppCompatActivity
         reference.child("fullName").setValue(newName);
     }
 
+    @Override
+    public void ChangeGenderForProfile(String newGender) {
+        reference.child("gender").setValue(newGender);
+    }
 
+    @Override
+    public void ChangeProfileDescription(String newDescription) {
+        reference.child("description").setValue(newDescription);
+    }
+
+    @Override
+    public void ChangeBirthdayDate(int date) {
+        reference.child("Birthday").setValue(date);
+    }
 
 
     //------------------------Posts Class---------------------------------------

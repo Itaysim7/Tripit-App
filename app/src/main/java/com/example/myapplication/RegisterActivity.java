@@ -76,8 +76,7 @@ public class RegisterActivity extends AppCompatActivity
                         Toast.makeText(getApplicationContext(),"הסיסמאות אינן תואמות, נסה שוב",Toast.LENGTH_LONG).show();
                         return;
                     }
-                    Date date = new Date();
-                    user=new UsersObj(email,"default","empty", fullName,"default", date,false);
+                    user=new UsersObj(email,"default","empty", fullName,"default", 0,false);
                     registerUser(email,password);
                 }
             }
