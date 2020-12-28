@@ -12,7 +12,6 @@ import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,7 +36,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.StorageTask;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -179,9 +177,9 @@ public class homePage extends AppCompatActivity {
                         holder.list_fullName.setText(user.getFullName());
                         //set image
                         if (user.getImageUrl().equals("default")) {
-                            holder.list_image_url.setImageResource(R.drawable.user_image);
+                            Glide.with(homePage.this).load(R.drawable.profile).circleCrop().into(holder.list_image_url);
                         } else {
-                            Glide.with(homePage.this).load(user.getImageUrl()).into(holder.list_image_url);
+                            Glide.with(homePage.this).load(user.getImageUrl()).circleCrop().into(holder.list_image_url);
                         }
 
                         if (user.getFavPosts() != null) {

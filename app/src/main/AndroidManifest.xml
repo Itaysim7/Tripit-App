@@ -17,15 +17,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/appTheme">
-        <activity android:name=".forgot_password"></activity>
-        <activity android:name=".FavPostsActivity" />
+        <activity android:name="com.example.myapplication.forgot_password"></activity>
+        <activity android:name="com.example.myapplication.FavPostsActivity" />
         <activity
-            android:name=".ProfileActivity"
+            android:name="com.example.myapplication.ProfileActivity"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".SearchPostActivity" />
-        <activity android:name=".ApprovePostsActivity" />
-        <activity android:name=".AdminHomeActivity" />
-        <activity android:name=".CreatePost" />
+        <activity android:name="com.example.myapplication.SearchPostActivity" />
+        <activity android:name="com.example.myapplication.ApprovePostsActivity" />
+        <activity android:name="com.example.myapplication.AdminHomeActivity" />
+        <activity android:name="com.example.myapplication.CreatePost" />
         <!--
                Set to true if your a      pp is Standalone, that is, it does not require the handheld
                app to run.
@@ -42,7 +42,7 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
         <activity
-            android:name=".RegisterActivity"
+            android:name="com.example.myapplication.RegisterActivity"
             android:label="@string/title_activity_register">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,10 +50,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".userActivity" />
-        <activity android:name=".adminActivity" />
-        <activity android:name=".homePage" />
-        <activity android:name=".welcomeActivity">
+        <activity android:name="com.example.myapplication.userActivity" />
+        <activity android:name="com.example.myapplication.adminActivity" />
+        <activity android:name="com.example.myapplication.homePage" />
+        <activity android:name="com.example.myapplication.welcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

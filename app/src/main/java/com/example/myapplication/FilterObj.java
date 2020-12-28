@@ -1,11 +1,8 @@
 package com.example.myapplication;
 
 
-import com.google.firebase.Timestamp;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class FilterObj implements Serializable {
     private String destination;
