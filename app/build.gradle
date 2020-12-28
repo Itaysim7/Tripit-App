@@ -52,7 +52,6 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     implementation 'com.github.ksoichiro:android-observablescrollview:1.6.0'
-
     implementation 'com.hbb20:ccp:2.4.2'
 
     // Import the Firebase BoM

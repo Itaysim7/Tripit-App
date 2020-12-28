@@ -12,15 +12,10 @@
     <color name="colorPrimary">#00796b</color>
     <color name="colorPrimaryDark">#00695C</color>
     <color name="colorAccent">#FF4081</color>
-
-
     <color name="colorPrimaryLight">#ff5c8d</color>
-
     <color name="colorAccentDark">#005cb2</color>
     <color name="colorAccentLight">#6ab7ff</color>
     <color name="colorOnPrimary">@color/white</color>
     <color name="colorRipple">@color/white_2</color>
-
-
     <color name="white_2">#33FFFFFF</color>
 </resources>
