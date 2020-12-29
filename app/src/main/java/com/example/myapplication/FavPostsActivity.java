@@ -94,10 +94,20 @@ public class FavPostsActivity extends AppCompatActivity {
                             holder.list_departure_date.setText("תאריך יציאה: "+model.getDeparture_date());
                             holder.list_return_date.setText("תאריך חזרה: "+model.getReturn_date());
                             holder.list_destination.setText("יעד: "+model.getDestination());
-                            holder.list_age.setText("גיל השותף: "+model.getAge());
                             holder.list_gender.setText("מין השותף: "+model.getGender());
                             holder.list_description.setText("תיאור: "+model.getDescription());
                             holder.list_type.setText("מטרות הטיול: "+model.getType_trip());
+                            //set age
+                            int min_age=model.getMin_age();
+                            int max_age=model.getMax_age();
+                            if(min_age==-1&&max_age==-1)
+                                holder.list_age.setText("טווח גילאים: לא צוין ");
+                            if (min_age==-1)
+                                holder.list_age.setText("טווח גילאים: עד " + max_age);
+                            if (max_age==-1)
+                                holder.list_age.setText("טווח גילאים: לפחות " + min_age);
+                            if(min_age!=-1&&max_age!=-1)
+                                holder.list_age.setText("טווח גילאים: " + min_age+"-"+max_age);
                             holder.star.setVisibility(View.INVISIBLE);
 
                             reference = FirebaseDatabase.getInstance().getReference("users").child(model.getUser_id());

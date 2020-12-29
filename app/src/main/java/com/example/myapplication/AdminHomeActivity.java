@@ -93,10 +93,20 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
                 holder.list_departure_date.setText("תאריך יציאה: "+model.getDeparture_date());
                 holder.list_return_date.setText("תאריך חזרה: "+model.getReturn_date());
                 holder.list_destination.setText("יעד: "+model.getDestination());
-                holder.list_age.setText("טווח גילאים: "+model.getAge());
                 holder.list_gender.setText("מין: "+model.getGender());
                 holder.list_description.setText("תיאור: "+model.getDescription());
                 holder.list_type.setText("מטרות הטיול שלי: "+model.getType_trip());
+                //set age
+                int min_age=model.getMin_age();
+                int max_age=model.getMax_age();
+                if(min_age==-1&&max_age==-1)
+                    holder.list_age.setText("טווח גילאים: לא צוין ");
+                if (min_age==-1)
+                    holder.list_age.setText("טווח גילאים: עד " + max_age);
+                if (max_age==-1)
+                    holder.list_age.setText("טווח גילאים: לפחות " + min_age);
+                if(min_age!=-1&&max_age!=-1)
+                    holder.list_age.setText("טווח גילאים: " + min_age+"-"+max_age);
                 //Image for background by destination
                 switch(model.getDestination())
                 {

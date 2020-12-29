@@ -8,7 +8,8 @@ public class PostsModel
     private int departure_date;
     private int return_date;
     private String destination;
-    private String age;
+    private int min_age;
+    private int max_age;
     private String gender;
     private String description;
     private String id;
@@ -18,12 +19,13 @@ public class PostsModel
     private long timestamp;
     private String user_id;
 
-    private PostsModel(int departure_date, int return_date, String destination, String age, String gender, String description,
+    private PostsModel(int departure_date, int return_date, String destination, int min_age, int max_age, String gender, String description,
                        String id,ArrayList<String> type_trip,boolean approval,int clicks,long timestamp,String user_id) {
         this.departure_date = departure_date;
         this.return_date = return_date;
         this.destination = destination;
-        this.age = age;
+        this.min_age = min_age;
+        this.max_age=max_age;
         this.gender = gender;
         this.description = description;
         this.approval =approval;
@@ -68,8 +70,12 @@ public class PostsModel
         this.destination = destination;
     }
 
-    public void setAge(String age) {
-        this.age = age;
+    public void setMax_age(int max_age) {
+        this.max_age = max_age;
+    }
+
+    public void setMin_age(int min_age) {
+        this.min_age = min_age;
     }
 
     public void setGender(String gender) {
@@ -111,9 +117,14 @@ public class PostsModel
         return destination;
     }
 
-    public String getAge() {
-        return age;
+    public int getMin_age() {
+        return min_age;
     }
+
+    public int getMax_age() {
+        return max_age;
+    }
+
 
     public String getGender() {
         return gender;

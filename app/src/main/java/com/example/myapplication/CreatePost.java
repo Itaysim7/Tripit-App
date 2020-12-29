@@ -62,7 +62,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
     private Calendar cal_dep,cal_ret;
     private DatePickerDialog dpd_dep,dpd_ret;
     private ArrayList<String> type_array;
-    private int dep_date=-1,ret_date=-1;
+    private int dep_date=-1,ret_date=-1,min_age_int=-1,max_age_int=-1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -333,19 +333,21 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
             {
                 try
                 {
-                    int min=Integer.parseInt( min_age_string );
-                    int max=Integer.parseInt( max_age_string );
-                    if(max<min)
+                    if(!min_age_string.equals(""))
+                        min_age_int=Integer.parseInt( min_age_string );
+                    if(!max_age_string.equals(""))
+                        max_age_int=Integer.parseInt( max_age_string );
+                    if(max_age_int!=-1&&max_age_int<min_age_int)
                     {
                         Toast.makeText(CreatePost.this, "הגיל המינימלי חייב להיות קטן מהגיל המקסימלי", Toast.LENGTH_LONG).show();
                         return;
                     }
-                    if(min<16)
+                    if(min_age_int!=-1&&min_age_int<16)
                     {
                         Toast.makeText(CreatePost.this, "הגיל המינימלי הוא 16", Toast.LENGTH_LONG).show();
                         return;
                     }
-                    if(max>120)
+                    if(max_age_int>120)
                     {
                         Toast.makeText(CreatePost.this, "הגיל המקסימלי הוא 120", Toast.LENGTH_LONG).show();
                         return;
@@ -378,7 +380,8 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         post_map.put("destination",dest);
         post_map.put("departure_date",dep_date);
         post_map.put("return_date",ret_date);
-        post_map.put("age",age_text);
+        post_map.put("min_age",min_age_int);
+        post_map.put("max_age",max_age_int);
         post_map.put("gender",gender);
         post_map.put("type_trip",type_array);
         post_map.put("description",desc);
