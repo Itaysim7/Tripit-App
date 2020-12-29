@@ -11,7 +11,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:background="@drawable/gradient">
+        android:background="@drawable/maldives2">
 
         <TextView
             android:id="@+id/list_destination"
@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
+            android:fontFamily="@font/heebo_extra_bold"
             android:text="יעד:"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -30,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="30dp"
+            android:fontFamily="@font/heebo_extra_bold"
             android:text="תאריך יציאה:"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -41,6 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="60dp"
+            android:fontFamily="@font/heebo_extra_bold"
             android:text="תאריך חזרה:"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -52,6 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="90dp"
+            android:fontFamily="@font/heebo_extra_bold"
             android:text="מין השותף:"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -63,6 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="120dp"
+            android:fontFamily="@font/heebo_extra_bold"
             android:text="גיל השותף:"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -73,6 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="150dp"
+            android:fontFamily="@font/heebo_extra_bold"
             android:text="מטרות הטיול:"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -83,12 +89,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="180dp"
+            android:fontFamily="@font/heebo_extra_bold"
             android:text="פרטים נוספים:"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <Button
+        <android.widget.Button
             android:id="@+id/edit_btn"
             android:layout_width="80dp"
             android:layout_height="45dp"
@@ -96,9 +103,12 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="8dp"
             android:layout_marginTop="9dp"
+            android:background="@drawable/button_selector"
+            android:backgroundTint="#DFDDDD"
+            android:fontFamily="@font/heebo_extra_bold"
             android:text="ערוך" />
 
-        <Button
+        <android.widget.Button
             android:id="@+id/delete_btn"
             android:layout_width="80dp"
             android:layout_height="45dp"
@@ -106,6 +116,9 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="8dp"
             android:layout_marginTop="51dp"
+            android:background="@drawable/button_selector"
+            android:backgroundTint="#DFDDDD"
+            android:fontFamily="@font/heebo_extra_bold"
             android:text="מחק" />
 
     </RelativeLayout>

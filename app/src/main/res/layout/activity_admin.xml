@@ -34,7 +34,7 @@
         app:layout_constraintStart_toStartOf="@+id/username"
         app:layout_constraintTop_toTopOf="@+id/username"
         app:srcCompat="@drawable/user_image" />
-    <EditText
+    <android.widget.EditText
         android:id="@+id/username"
         style="@style/Widget.AppCompat.Light.AutoCompleteTextView"
         android:layout_width="331dp"
@@ -42,7 +42,8 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="264dp"
         android:fontFamily="@font/heebo_bold"
-        android:background="#66D7DFD6"
+        android:background="@drawable/button_selector"
+        android:backgroundTint="#DFDDDD"
         android:hint="@string/prompt_username"
         android:inputType="text"
         android:selectAllOnFocus="true"
@@ -59,12 +60,13 @@
         app:layout_constraintStart_toStartOf="@+id/password"
         app:layout_constraintTop_toTopOf="@+id/password"
         app:srcCompat="@drawable/lock" />
-    <EditText
+    <android.widget.EditText
         android:id="@+id/password"
-        android:layout_width="330dp"
-        android:layout_height="49dp"
+        android:layout_width="331dp"
+        android:layout_height="55dp"
         android:layout_marginTop="24dp"
-        android:background="#66D7DFD6"
+        android:background="@drawable/button_selector"
+        android:backgroundTint="#DFDDDD"
         android:fontFamily="@font/heebo_bold"
         android:hint="@string/prompt_password"
         android:imeActionLabel="@string/action_sign_in"

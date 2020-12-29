@@ -212,7 +212,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         }
         else if(view==btn_type_trip)
         {
-            AlertDialog.Builder builder=new AlertDialog.Builder(CreatePost.this);
+            AlertDialog.Builder builder=new AlertDialog.Builder(CreatePost.this,R.style.CustomAlertDialog);
             //string array for alert dialog multichoice items(flight Purposes)
             String [] flight_purposes=new String[]{"בטן-גב","טרקים","אומנות","שופינג","סקי","טבע","מורשת","אחרי צבא","קולינרי","אחר"};
             //convert the flightPurposes array to list
@@ -264,7 +264,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         else if(view==btn_gender)
         {
             String [] list_gender=new String[]{"אישה", "גבר", "לא משנה"};
-            AlertDialog.Builder mBuilder=new AlertDialog.Builder(CreatePost.this);
+            AlertDialog.Builder mBuilder=new AlertDialog.Builder(CreatePost.this,R.style.CustomAlertDialog);
             mBuilder.setTitle("בחר עם איזה מין אתה מעוניין לטייל");
             mBuilder.setSingleChoiceItems(list_gender, -1, new DialogInterface.OnClickListener() {
                 @Override
@@ -291,7 +291,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
             final View textEntryView = factory.inflate(R.layout.age_dialog, null);
             final EditText min_age = (EditText) textEntryView.findViewById(R.id.min_age);
             final EditText max_age = (EditText) textEntryView.findViewById(R.id.max_age);
-            final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            final AlertDialog.Builder alert = new AlertDialog.Builder(this,R.style.CustomAlertDialog);
             alert.setTitle("הכנס טווח גילאים:              ").setView(textEntryView).setPositiveButton("אישור",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog,

@@ -42,7 +42,7 @@ public class EditProfileDialog extends AppCompatDialogFragment implements View.O
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),R.style.CustomAlertDialog);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.edit_profile_dialog, null);
 
@@ -132,7 +132,7 @@ public class EditProfileDialog extends AppCompatDialogFragment implements View.O
         }
         if(v == choose_gender_btn){
             String [] list_gender=new String[]{"אישה", "גבר", "לא משנה"};
-            AlertDialog.Builder mBuilder=new AlertDialog.Builder(getContext());
+            AlertDialog.Builder mBuilder=new AlertDialog.Builder(getContext(),R.style.CustomAlertDialog);
             mBuilder.setTitle("בחר עם איזה מין אתה מעוניין לטייל");
             mBuilder.setSingleChoiceItems(list_gender, -1, new DialogInterface.OnClickListener() {
                 @Override

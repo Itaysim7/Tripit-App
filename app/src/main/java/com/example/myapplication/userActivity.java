@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -56,6 +57,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
     //Globals:
     private String email,pass;
     private boolean checkBox = false;
+    private int attempt = 0;
     //Shared Preference
     private SharedPreferences sp;
     //FireBase/Store
@@ -142,15 +144,38 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
             checkBox = save_Credentials.isChecked();
         }//else if
         else if (v == login) {
-            email = emailEditText.getText().toString();
-            pass = passwordEditText.getText().toString();
-            if (TextUtils.isEmpty(email) || TextUtils.isEmpty(pass)) {
-                Toast.makeText(getApplicationContext(), "Enter email or password", Toast.LENGTH_LONG).show();
-                return;
+
+            if(attempt<4)
+            {
+                attempt++;
+                email = emailEditText.getText().toString();
+                pass = passwordEditText.getText().toString();
+                if (TextUtils.isEmpty(email) || TextUtils.isEmpty(pass)) {
+                    Toast.makeText(getApplicationContext(), "הכנס/י אימייל וססמא", Toast.LENGTH_LONG).show();
+                    return;
+                }//if
+                else {
+                    validation(email, pass);
+                }//else - email and password is not empty
             }//if
-            else {
-                validation(email, pass);
-            }//else - email and password is not empty
+            else
+            {
+                Toast.makeText(getApplicationContext(), "הינך חסום זמנית עקב ניסיונות כושלים להתחבר.", Toast.LENGTH_LONG).show();
+                new CountDownTimer(10000, 1000) {
+
+                    public void onTick(long millisUntilFinished) {
+                       // mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
+                        //here you can have your logic to set text to edittext
+                    }
+
+                    public void onFinish() {
+                        attempt = 0;
+                        Toast.makeText(getApplicationContext(), "את/ה יכל/ה לנסות להיכנס עכשיו.", Toast.LENGTH_LONG).show();
+                    }
+
+                }.start();
+
+            }//4 More than 4 attempts
         }//else if
         else if (v == mButtonFacebook) {
             loginManager.logInWithReadPermissions(this,

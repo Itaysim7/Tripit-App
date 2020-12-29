@@ -174,7 +174,7 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
 
         }//else if
         else if (v == btn_trip_type) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(SearchPostActivity.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(SearchPostActivity.this,R.style.CustomAlertDialog);
             //string array for alert dialog multichoice items(flight Purposes)
             String[] flightPurposes = new String[]{"בטן-גב", "טרקים", "אומנות", "שופינג", "סקי", "טבע", "מורשת", "אחרי צבא", "קולינרי", "אחר"};
             //convert the flightPurposes array to list

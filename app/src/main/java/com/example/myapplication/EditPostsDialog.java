@@ -46,7 +46,7 @@ public class EditPostsDialog extends AppCompatDialogFragment implements View.OnC
     @NonNull
     @Override
     public android.app.Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),R.style.CustomAlertDialog);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.edit_posts_dialog, null);
 
@@ -195,7 +195,7 @@ public class EditPostsDialog extends AppCompatDialogFragment implements View.OnC
         }//if v == ret_date_txt
         else if(v == btn_gender) {
             String [] list_gender=new String[]{"אישה", "גבר", "לא משנה"};
-            AlertDialog.Builder mBuilder=new AlertDialog.Builder(getContext());
+            AlertDialog.Builder mBuilder=new AlertDialog.Builder(getContext(),R.style.CustomAlertDialog);
             mBuilder.setTitle("בחר עם איזה מין אתה מעוניין לטייל");
             mBuilder.setSingleChoiceItems(list_gender, -1, new DialogInterface.OnClickListener() {
                 @Override
@@ -216,7 +216,7 @@ public class EditPostsDialog extends AppCompatDialogFragment implements View.OnC
             mDialog.show();
         }
         if(v == btn_type_trip){
-            AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
+            AlertDialog.Builder builder=new AlertDialog.Builder(getContext(),R.style.CustomAlertDialog);
             //string array for alert dialog multichoice items(flight Purposes)
             String [] flight_purposes=new String[]{"בטן-גב","טרקים","אומנות","שופינג","סקי","טבע","מורשת","אחרי צבא","קולינרי","אחר"};
             //convert the flightPurposes array to list

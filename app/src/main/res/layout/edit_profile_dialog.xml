@@ -8,9 +8,10 @@
         android:layout_height="30dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_marginStart="@dimen/distance_from_right_side"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="@dimen/distance_from_right_side"
-        android:layout_marginStart="@dimen/distance_from_right_side"
+        android:fontFamily="@font/heebo_extra_bold"
         android:text=" שם מלא:"
         android:textColor="@color/black"
         android:textSize="18sp" />
@@ -36,6 +37,9 @@
         android:layout_marginStart="80dp"
         android:layout_marginTop="162dp"
         android:layout_marginEnd="130dp"
+        android:fontFamily="@font/heebo_extra_bold"
+        android:background="@drawable/button_selector"
+        android:backgroundTint="#DFDDDD"
         android:text="@string/choose"
         android:textColor="@color/black"
         android:textSize="18sp" />
@@ -50,6 +54,7 @@
         android:layout_marginStart="34dp"
         android:layout_marginTop="121dp"
         android:layout_marginEnd="@dimen/distance_from_right_side"
+        android:fontFamily="@font/heebo_extra_bold"
         android:text="תאריך יום הולדת:"
         android:textColor="@color/black"
         android:textSize="18sp" />
@@ -64,6 +69,7 @@
         android:layout_marginStart="36dp"
         android:layout_marginTop="221dp"
         android:layout_marginEnd="@dimen/distance_from_right_side"
+        android:fontFamily="@font/heebo_extra_bold"
         android:text="מין:"
         android:textColor="@color/black"
         android:textSize="18sp" />
@@ -78,6 +84,9 @@
         android:layout_marginStart="80dp"
         android:layout_marginTop="256dp"
         android:layout_marginEnd="130dp"
+        android:fontFamily="@font/heebo_extra_bold"
+        android:background="@drawable/button_selector"
+        android:backgroundTint="#DFDDDD"
         android:text="לא משנה לי"
         android:textColor="@color/black"
         android:textSize="18sp" />
@@ -93,6 +102,7 @@
         android:layout_marginTop="324dp"
         android:layout_marginEnd="@dimen/distance_from_right_side"
         android:background="@drawable/flag_transparent"
+        android:fontFamily="@font/heebo_light"
         android:gravity="top"
         android:hint="ספר על עצמך:"
         android:textColor="@color/black"
