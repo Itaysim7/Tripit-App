@@ -21,6 +21,7 @@
     <string name="login_admin_title">ברוך הבא בוס.</string>
     <string name="login_admin_problem">יש בעיה בהתחברות?</string>
     <string name="flight_purposes">בחר את מטרות הטיסה שלך</string>
+    <string name="partner_type">באיזה שותף אתה מעוניין?</string>
     <string name="date_flight1">תאריך יציאה</string>
     <string name="date_flight2">תאריך חזרה</string>
     <string name="choose">בחר</string>

@@ -143,6 +143,7 @@ public class ApprovePostsActivity extends AppCompatActivity
                         holder.list_layout.getBackground().setAlpha(80);
                         break;
                     default:
+                        holder.list_layout.getBackground().setAlpha(80);
                         break;
                 }
                 String user_id=model.getUser_id();

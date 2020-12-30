@@ -143,6 +143,7 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
                         holder.list_layout.getBackground().setAlpha(80);
                         break;
                     default:
+                        holder.list_layout.getBackground().setAlpha(80);
                         break;
                 }
                 //Image for background by destination

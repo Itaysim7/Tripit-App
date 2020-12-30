@@ -136,6 +136,19 @@
             android:text="@string/choose"
             android:textSize="20dp" />
 
+        <TextView
+            android:id="@+id/partner"
+            android:layout_width="378dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:background="#66D7DFD6"
+            android:fontFamily="@font/heebo_bold"
+            android:text="@string/partner_type"
+            android:textAlignment="center"
+            android:textSize="28dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
