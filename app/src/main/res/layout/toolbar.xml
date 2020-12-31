@@ -17,13 +17,13 @@
         android:textColor="#BCE9FD"
         android:textSize="30dp"
         android:textStyle="bold" />
+
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="130dp"
-        android:layout_height="50dp"
-        android:layout_marginLeft="60dp"
-        app:srcCompat="@drawable/globe"
-        />
+        android:layout_width="70dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="40dp"
+        app:srcCompat="@drawable/globe" />
 
 
 

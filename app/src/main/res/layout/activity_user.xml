@@ -21,7 +21,7 @@
         android:layout_width="331dp"
         android:layout_height="55dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="144dp"
+        android:layout_marginEnd="40dp"
         android:background="@drawable/button_selector"
         android:backgroundTint="#DFDDDD"
         android:fontFamily="@font/heebo_bold"
@@ -29,8 +29,9 @@
         android:inputType="textEmailAddress"
         android:selectAllOnFocus="true"
         android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/icon" />
     <!--EditText for password-->
     <android.widget.EditText
         android:id="@+id/password"
@@ -73,30 +74,31 @@
         android:id="@+id/register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginStart="50dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="30dp"
         android:fontFamily="@font/heebo_medium"
         android:text="@string/action_register"
         android:textColor="#FD1100"
         android:textSize="26dp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/buttonForGoogle"
-        app:layout_constraintTop_toBottomOf="@+id/buttonForGoogle"
-        tools:layout_editor_absoluteX="131dp" />
+        app:layout_constraintEnd_toStartOf="@+id/notRegister"
+        app:layout_constraintTop_toBottomOf="@+id/buttonForGoogle" />
 
     <android.widget.TextView
         android:id="@+id/notRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="170dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="180dp"
         android:fontFamily="@font/heebo_medium"
         android:text="@string/not_register"
         android:textColor="#070707"
         android:textSize="26dp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/buttonForGoogle"
-        app:layout_constraintTop_toBottomOf="@+id/buttonForGoogle"/>
+        app:layout_constraintTop_toBottomOf="@+id/buttonForGoogle" />
 
     <android.widget.Button
         android:id="@+id/login"
@@ -188,17 +190,21 @@
         app:layout_constraintTop_toBottomOf="@+id/password" />
 
     <!--logo image-->
+    <!--user image-->
+    <!--lock image-->
+
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="130dp"
-        android:layout_height="107dp"
+        android:layout_width="175dp"
+        android:layout_height="158dp"
         android:layout_marginStart="124dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginEnd="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/globe" />
-    <!--user image-->
-    <!--lock image-->
+
     <ImageView
         android:id="@+id/user"
         android:layout_width="39dp"
