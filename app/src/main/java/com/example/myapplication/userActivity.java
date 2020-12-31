@@ -57,7 +57,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
     //Globals:
     private String email,pass;
     private boolean checkBox = false;
-    private int attempt = 0;
+    private int attempt = 1;
     //Shared Preference
     private SharedPreferences sp;
     //FireBase/Store
@@ -169,7 +169,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
                     }
 
                     public void onFinish() {
-                        attempt = 0;
+                        attempt = 1;
                         Toast.makeText(getApplicationContext(), "את/ה יכל/ה לנסות להיכנס עכשיו.", Toast.LENGTH_LONG).show();
                     }
 

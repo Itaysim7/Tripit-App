@@ -47,6 +47,7 @@
         android:inputType="textPassword"
         android:selectAllOnFocus="true"
         android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="@+id/username"
         app:layout_constraintStart_toStartOf="@+id/username"
         app:layout_constraintTop_toBottomOf="@+id/username" />
     <!--EditText for username-->
@@ -74,15 +75,15 @@
         android:id="@+id/register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="30dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
         android:fontFamily="@font/heebo_medium"
         android:text="@string/action_register"
         android:textColor="#FD1100"
         android:textSize="26dp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/notRegister"
-        app:layout_constraintTop_toBottomOf="@+id/buttonForGoogle" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <android.widget.TextView
         android:id="@+id/notRegister"
@@ -113,6 +114,7 @@
         android:textColor="#615F5F"
         android:textSize="20dp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/password"
         app:layout_constraintStart_toStartOf="@+id/password"
         app:layout_constraintTop_toBottomOf="@+id/password" />
     <!--Button for facebook-->
@@ -176,22 +178,22 @@
         app:layout_constraintStart_toStartOf="@+id/password"
         app:layout_constraintTop_toTopOf="@+id/password" />
 
+    <!--logo image-->
+    <!--user image-->
+    <!--lock image-->
+
     <TextView
         android:id="@+id/forgot_password"
         android:layout_width="167dp"
         android:layout_height="32dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="4dp"
         android:fontFamily="@font/heebo_medium"
         android:padding="3dp"
         android:text="שכחתי ססמה"
-        android:textColor="@color/black"
+        android:textColor="#FF0000"
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="@id/password"
         app:layout_constraintTop_toBottomOf="@+id/password" />
-
-    <!--logo image-->
-    <!--user image-->
-    <!--lock image-->
 
     <ImageView
         android:id="@+id/icon"

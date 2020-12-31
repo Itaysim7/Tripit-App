@@ -9,9 +9,9 @@
     <string name="action_sign_in">התחברות</string>
     <string name="or">או התחבר באמצעות</string>
     <string name="not_register">אינך רשום?</string>
-    <string name="action_register"><u>להרשמה</u></string>
-    <string name="register"><u>הרשם עכשיו</u></string>
-    <string name="register_title"><u>הרשמה</u></string>
+    <string name="action_register">להרשמה</string>
+    <string name="register">הרשם עכשיו</string>
+    <string name="register_title">הרשמה</string>
     <string name="facebook">התחבר/י באמצעות Facebook</string>
     <string name="Google">התחבר/י באמצעות Google</string>
     <string name="welcome">"Welcome !"</string>
