@@ -36,10 +36,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:background="#727D83"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/user_image" />
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
                 android:id="@+id/name_and_age_txt"
@@ -47,25 +48,26 @@
                 android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="50dp"
-                android:layout_marginBottom="30dp"
+                android:layout_marginTop="30dp"
                 android:text="אורח"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="@+id/image_profile_view"
+                app:layout_constraintTop_toBottomOf="@+id/image_profile_view"
                 app:layout_constraintEnd_toEndOf="parent" />
 
             <android.widget.Button
                 android:id="@+id/Edit_profile_btn"
-                android:layout_width="150dp"
+                android:layout_width="match_parent"
                 android:layout_height="45dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
                 android:background="@drawable/button_selector"
                 android:backgroundTint="#DFDDDD"
                 android:fontFamily="@font/heebo_extra_bold"
                 android:text="ערוך פרופיל"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/name_and_age_txt" />
+                app:layout_constraintTop_toBottomOf="@id/About_Myself_Txt"/>
 
             <TextView
                 android:id="@+id/About_Myself_Txt"
@@ -73,6 +75,7 @@
                 android:layout_height="75dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="50dp"
+                android:layout_marginStart="50dp"
                 android:autofillHints="ספר על עצמך"
                 android:background="@android:color/transparent"
                 android:fontFamily="sans-serif-medium"
@@ -82,7 +85,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image_profile_view" />
+                app:layout_constraintTop_toBottomOf="@+id/name_and_age_txt" />
 
             <TextView
                 android:id="@+id/My_Posts"
@@ -94,7 +97,7 @@
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/About_Myself_Txt" />
+                app:layout_constraintTop_toBottomOf="@+id/Edit_profile_btn" />
 
 
             <androidx.recyclerview.widget.RecyclerView

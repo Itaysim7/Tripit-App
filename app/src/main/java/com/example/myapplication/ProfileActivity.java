@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,6 +14,8 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -119,7 +123,9 @@ public class ProfileActivity extends AppCompatActivity
 
                 //set image
                 if(user != null && user.getImageUrl().equals("default")) {
-                    image_profile.setImageResource(R.drawable.user_image);
+                    ViewGroup.LayoutParams params = (ViewGroup.LayoutParams) image_profile.getLayoutParams();
+                    params.height = 220;
+                    image_profile.setLayoutParams(params);
                 } else{
                     Glide.with(ProfileActivity.this).load(user.getImageUrl()).into(image_profile);
                 }
@@ -457,7 +463,7 @@ public class ProfileActivity extends AppCompatActivity
 
     @Override
     public void ChangeBirthdayDate(int date) {
-        reference.child("Birthday").setValue(date);
+        reference.child("birthday").setValue(date);
     }
 
 

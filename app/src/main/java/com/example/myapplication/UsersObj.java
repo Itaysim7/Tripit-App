@@ -3,7 +3,6 @@ package com.example.myapplication;
     Simple Class that represent the User Object with all his fields.
  */
 
-import java.util.Date;
 import java.util.HashMap;
 
 public class UsersObj {
@@ -96,7 +95,11 @@ public class UsersObj {
         this.favPosts = favPosts;
     }
 
-    public String getBirthday() {
+    public int getBirthday() {
+        return this.birthday;
+    }
+
+    public String getBirthday_String(){
         String bday = intToStringDate(this.birthday);
         return bday;
     }

@@ -60,7 +60,8 @@ public class EditProfileDialog extends AppCompatDialogFragment implements View.O
         choose_gender_btn.setText(gender);
         name_edit_txt.setText(user.getFullName());
         description_edit_txt.setText(user.getDescription());
-        choose_birthday_btn.setText(user.getBirthday());
+        if(user.getBirthday() != 0)
+            choose_birthday_btn.setText(user.getBirthday_String());
 
         dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
