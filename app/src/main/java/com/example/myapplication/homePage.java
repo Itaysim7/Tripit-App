@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
 
+
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,6 +28,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
+import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -197,7 +200,7 @@ public class homePage extends AppCompatActivity {
                         if (user.getFavPosts() != null) {
                             for (String key : user.getFavPosts().keySet()) {
                                 if (user.getFavPosts().get(key).equals(model.getId())) {
-                                    holder.Star.setText("סומן בכוכב");
+                                    holder.Star.setFavorite(true);
                                 }
                             }
                         }
@@ -208,17 +211,38 @@ public class homePage extends AppCompatActivity {
 
                     }
                 });
+                holder.Star.setOnFavoriteChangeListener(
+                        new MaterialFavoriteButton.OnFavoriteChangeListener() {
+                            @Override
+                            public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
+                                if (favorite) {
+                                    buttonView.setFavorite(favorite);
+                                    reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid()).child("favPosts");
+                                    reference.push().setValue(model.getId());
+                                }//if
+                                else
+                                {
+                                    buttonView.setFavorite(favorite);
+                                    reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid()).child("favPosts");
+                                    com.google.firebase.database.Query query = reference.orderByValue().equalTo(model.getId());
+                                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                                                snapshot.getRef().removeValue();
+                                            }//for
+                                        }//OnDataChange
 
-                holder.Star.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (holder.Star.getText().equals("סמן בכוכב")) {
-                            holder.Star.setText("סומן בכוכב");
-                            reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid()).child("favPosts");
-                            reference.push().setValue(model.getId());
-                        }
-                    }
-                });
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            throw databaseError.toException();
+                                        }
+                                    });
+                                }
+                            }
+                        });
+
+
             }
         };//Adapter
         //Setting for recycleview: where filling the posts
@@ -295,7 +319,7 @@ public class homePage extends AppCompatActivity {
         private TextView list_description;
         private TextView list_type;
         private ImageView list_image_url;
-        private TextView Star;
+        private MaterialFavoriteButton Star;
         private RelativeLayout list_layout;
 
         public PostsViewHolder(@NonNull View itemView) {

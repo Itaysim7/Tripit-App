@@ -34,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.google.android.gms.tasks.Continuation;
@@ -60,9 +61,10 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity
-        implements View.OnClickListener, EditPostsDialog.EditPostsListener, EditProfileDialog.EditProfileListener {
+        implements View.OnClickListener, EditPostsDialog.EditPostsListener,EditProfileDialog.EditProfileListener {
 
     //variables for the photo upload
     private StorageReference storageReference;
@@ -76,8 +78,8 @@ public class ProfileActivity extends AppCompatActivity
     private FirebaseUser fUser;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    private RecyclerView mFirestoreList;
-    private FirestorePagingAdapter<PostsModel, PostsViewHolder> adapter;
+    //private RecyclerView mFirestoreList;
+    //private FirestorePagingAdapter<PostsModel, PostsViewHolder> adapter;
     private UsersObj user;
     private Query query;
 
@@ -87,6 +89,10 @@ public class ProfileActivity extends AppCompatActivity
     private TextView name_age_txt;
     private Button edit_profile_btn;
     private ScrollView mScrollView;
+
+    //change
+    private RecyclerView mFirestoreList;
+    private AdapterProfile adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,9 +116,11 @@ public class ProfileActivity extends AppCompatActivity
         db = FirebaseFirestore.getInstance();
 
         reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid());
-        reference.addValueEventListener(new ValueEventListener() {
+        reference.addValueEventListener(new ValueEventListener()
+        {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
                 user = snapshot.getValue(UsersObj.class);
                 //Set name
                 String intro = user.getFullName();
@@ -120,7 +128,6 @@ public class ProfileActivity extends AppCompatActivity
                     intro = intro + ", " + user.getAge();
                 }
                 name_age_txt.setText(intro);
-
                 //set image
                 if(user != null && user.getImageUrl().equals("default")) {
                     ViewGroup.LayoutParams params = (ViewGroup.LayoutParams) image_profile.getLayoutParams();
@@ -149,65 +156,22 @@ public class ProfileActivity extends AppCompatActivity
                             myPosts.setText("לא קיימים פוסטים להצגה.");
                     }
                 });
-                PagedList.Config config = new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
-
                 //recyclerOptions
-                FirestorePagingOptions<PostsModel> options = new FirestorePagingOptions.Builder<PostsModel>()
-                        .setQuery(query, config, PostsModel.class).build();
-                adapter = new FirestorePagingAdapter<PostsModel, PostsViewHolder>(options) {
-                    @NonNull
-                    @Override
-                    public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_items_in_profile, parent, false);
-                        return new PostsViewHolder(view);
-                    }
-
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    protected void onBindViewHolder(@NonNull PostsViewHolder holder, int position, @NonNull PostsModel model) { //set data
-                        holder.list_departure_date.setText("תאריך יציאה: " + model.getDeparture_date());
-                        holder.list_return_date.setText("תאריך חזרה: " + model.getReturn_date());
-                        holder.list_destination.setText("יעד: " + model.getDestination());
-                        holder.list_gender.setText("מין: " + model.getGender());
-                        holder.list_description.setText("תיאור: " + model.getDescription());
-                        holder.list_type.setText("מטרות הטיול שלי: " + model.getType_trip());
-                        //set age
-                        int min_age=model.getMin_age();
-                        int max_age=model.getMax_age();
-                        if(min_age==-1&&max_age==-1)
-                            holder.list_age.setText("טווח גילאים: לא צוין ");
-                        if (min_age==-1)
-                            holder.list_age.setText("טווח גילאים: עד " + max_age);
-                        if (max_age==-1)
-                            holder.list_age.setText("טווח גילאים: לפחות " + min_age);
-                        if(min_age!=-1&&max_age!=-1)
-                            holder.list_age.setText("טווח גילאים: " + min_age+"-"+max_age);
-                        holder.edit_btn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                openDialog(model);
-                            }
-                        });
-                        holder.delete_btn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                db.collection("Posts").document(model.getId()).delete();
-                            }
-                        });
-                    }
-
-                    public void openDialog(PostsModel model){
-                        EditPostsDialog dialog = new EditPostsDialog(model);
-                        dialog.show(getSupportFragmentManager(), "Edit Post");
-                    }
-                };
-
+                FirestoreRecyclerOptions<PostsModel> options = new FirestoreRecyclerOptions.Builder<PostsModel>()
+                        .setQuery(query, PostsModel.class).build();
+                //Setting for recycleview: where filling the posts
+                adapter=new AdapterProfile(options,ProfileActivity.this);
+                mFirestoreList = findViewById(R.id.firestore_list);
                 mFirestoreList.setHasFixedSize(true);
                 mFirestoreList.setLayoutManager(new LinearLayoutManager(ProfileActivity.this));
-                mFirestoreList.setAdapter(adapter);
                 adapter.startListening();
-            }
+                mFirestoreList.setAdapter(adapter);
 
+//                    public void openDialog(PostsModel model){
+//                        EditPostsDialog dialog = new EditPostsDialog(model);
+//                        dialog.show(getSupportFragmentManager(), "Edit Post");
+//                    }
+                }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.d("Failed", error.getMessage());
@@ -217,7 +181,6 @@ public class ProfileActivity extends AppCompatActivity
         storageReference = FirebaseStorage.getInstance().getReference("uploads");
         image_profile.setOnClickListener(this);
         edit_profile_btn.setOnClickListener(this);
-
 
         //Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -232,13 +195,12 @@ public class ProfileActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-        //adapter.stopListening();
+        adapter.stopListening();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
     }
 
     @Override
@@ -464,34 +426,6 @@ public class ProfileActivity extends AppCompatActivity
     @Override
     public void ChangeBirthdayDate(int date) {
         reference.child("birthday").setValue(date);
-    }
-
-
-    //------------------------Posts Class---------------------------------------
-    private class PostsViewHolder extends RecyclerView.ViewHolder {
-        private TextView list_departure_date;
-        private TextView list_return_date;
-        private TextView list_destination;
-        private TextView list_age;
-        private TextView list_gender;
-        private TextView list_description;
-        private TextView list_type;
-
-        private Button edit_btn, delete_btn;
-
-        public PostsViewHolder(@NonNull View itemView) {
-            super(itemView);
-            list_departure_date=itemView.findViewById(R.id.list_departure_date);
-            list_return_date=itemView.findViewById(R.id.list_return_date);
-            list_destination=itemView.findViewById(R.id.list_destination);
-            list_age=itemView.findViewById(R.id.list_age);
-            list_gender=itemView.findViewById(R.id.list_gender);
-            list_description=itemView.findViewById(R.id.list_description);
-            list_type=itemView.findViewById(R.id.list_type);
-
-            edit_btn = itemView.findViewById(R.id.edit_btn);
-            delete_btn = itemView.findViewById(R.id.delete_btn);
-        }
     }
 
 
