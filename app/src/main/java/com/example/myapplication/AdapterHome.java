@@ -15,6 +15,8 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.github.ivbaranov.mfb.MaterialFavoriteButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 public class AdapterHome extends FirestoreRecyclerAdapter<PostsModel,AdapterHome.ViewHolder>
 {
     private DatabaseReference reference;
+    private FirebaseAuth mAuth;
     private UsersObj user_for_post;
     private Context context;
 
@@ -132,6 +135,38 @@ public class AdapterHome extends FirestoreRecyclerAdapter<PostsModel,AdapterHome
 
             }
         });
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser myUser = mAuth.getCurrentUser();
+        holder.Star.setOnFavoriteChangeListener(
+                new MaterialFavoriteButton.OnFavoriteChangeListener() {
+                    @Override
+                    public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
+                        if (favorite) {
+                            buttonView.setFavorite(favorite);
+                            reference = FirebaseDatabase.getInstance().getReference("users").child(myUser.getUid()).child("favPosts");
+                            reference.push().setValue(model.getId());
+                        }//if
+                        else
+                        {
+                            buttonView.setFavorite(favorite);
+                            reference = FirebaseDatabase.getInstance().getReference("users").child(myUser.getUid()).child("favPosts");
+                            com.google.firebase.database.Query query = reference.orderByValue().equalTo(model.getId());
+                            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                                        snapshot.getRef().removeValue();
+                                    }//for
+                                }//OnDataChange
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    throw databaseError.toException();
+                                }
+                            });
+                        }
+                    }
+                });
 
     }
 

@@ -1,45 +1,23 @@
 package com.example.myapplication;
 
-
-
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-
 import androidx.appcompat.widget.Toolbar;
-import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
-import com.firebase.ui.firestore.paging.FirestorePagingOptions;
-import com.github.ivbaranov.mfb.MaterialFavoriteButton;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.StorageTask;
-
 import java.util.ArrayList;
 
 public class homePage extends AppCompatActivity {
@@ -54,7 +32,7 @@ public class homePage extends AppCompatActivity {
     private UsersObj user;
     //Adapters for posts:
     private RecyclerView mFirestoreList;
-    private FirestorePagingAdapter adapter;
+    private AdapterHome adapter;
 
 
     @Override
@@ -108,146 +86,15 @@ public class homePage extends AppCompatActivity {
             }//if
         }//if
         query=query.orderBy("timestamp",Query.Direction.DESCENDING).limit(100);
-        //How it will displayed:
-        PagedList.Config config = new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
         //recyclerOptions
-        FirestorePagingOptions<PostsModel> options = new FirestorePagingOptions.Builder<PostsModel>()
-                .setQuery(query, config, PostsModel.class).build();
-        adapter = new FirestorePagingAdapter<PostsModel, PostsViewHolder>(options) {
-            @NonNull
-            @Override
-            public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_single, parent, false);
-                return new PostsViewHolder(view);
-            }
-
-            @Override
-            protected void onBindViewHolder(@NonNull PostsViewHolder holder, int position, @NonNull PostsModel model)
-            { //set data
-                holder.list_departure_date.setText("תאריך יציאה: "+model.getDeparture_date());
-                holder.list_return_date.setText("תאריך חזרה: "+model.getReturn_date());
-                holder.list_destination.setText("יעד: "+model.getDestination());
-                holder.list_gender.setText("מין: "+model.getGender());
-                holder.list_description.setText("תיאור: "+model.getDescription());
-                holder.list_type.setText("מטרות הטיול שלי: "+model.getType_trip());
-                //set age
-                int min_age=model.getMin_age();
-                int max_age=model.getMax_age();
-                if(min_age==-1&&max_age==-1)
-                    holder.list_age.setText("טווח גילאים: לא צוין ");
-                if (min_age==-1)
-                    holder.list_age.setText("טווח גילאים: עד " + max_age);
-                if (max_age==-1)
-                    holder.list_age.setText("טווח גילאים: לפחות " + min_age);
-                if(min_age!=-1&&max_age!=-1)
-                    holder.list_age.setText("טווח גילאים: " + min_age+"-"+max_age);
-
-                    //Image for background by destination
-                switch(model.getDestination())
-                {
-                    case "ארצות הברית":
-                        holder.list_layout.setBackgroundResource(R.drawable.usa);
-                        holder.list_layout.getBackground().setAlpha(80);
-                        break;
-                    case "גרמניה":
-                        holder.list_layout.setBackgroundResource(R.drawable.germany);
-                        holder.list_layout.getBackground().setAlpha(80);
-                        break;
-                    case "צרפת":
-                        holder.list_layout.setBackgroundResource(R.drawable.paris);
-                        holder.list_layout.getBackground().setAlpha(80);
-                        break;
-                    case "יוון":
-                        holder.list_layout.setBackgroundResource(R.drawable.polynesia);
-                        holder.list_layout.getBackground().setAlpha(80);
-                        break;
-                    case "הפיליפינים":
-                        holder.list_layout.setBackgroundResource(R.drawable.maldives);
-                        holder.list_layout.getBackground().setAlpha(80);
-                        break;
-                    case "הולנד":
-                        holder.list_layout.setBackgroundResource(R.drawable.holland);
-                        holder.list_layout.getBackground().setAlpha(80);
-                        break;
-                    case "הממלכה המאוחדת":
-                        holder.list_layout.setBackgroundResource(R.drawable.london);
-                        holder.list_layout.getBackground().setAlpha(80);
-                        break;
-                    case "איטליה":
-                        holder.list_layout.setBackgroundResource(R.drawable.italy);
-                        holder.list_layout.getBackground().setAlpha(80);
-                        break;
-                    default:
-                        holder.list_layout.getBackground().setAlpha(80);
-                        break;
-                }
-                String user_id=model.getUser_id();
-                //Set image and fullName for the post from profile imageURL
-                reference = FirebaseDatabase.getInstance().getReference("users").child(user_id);
-                reference.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        user = snapshot.getValue(UsersObj.class);
-                        //set fullName
-                        holder.list_fullName.setText(user.getFullName());
-                        //set image
-                        if (user.getImageUrl().equals("default")) {
-                            Glide.with(homePage.this).load(R.drawable.profile).circleCrop().into(holder.list_image_url);
-                        } else {
-                            Glide.with(homePage.this).load(user.getImageUrl()).circleCrop().into(holder.list_image_url);
-                        }
-
-                        if (user.getFavPosts() != null) {
-                            for (String key : user.getFavPosts().keySet()) {
-                                if (user.getFavPosts().get(key).equals(model.getId())) {
-                                    holder.Star.setFavorite(true);
-                                }
-                            }
-                        }
-                    }//onDataChange
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-                holder.Star.setOnFavoriteChangeListener(
-                        new MaterialFavoriteButton.OnFavoriteChangeListener() {
-                            @Override
-                            public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
-                                if (favorite) {
-                                    buttonView.setFavorite(favorite);
-                                    reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid()).child("favPosts");
-                                    reference.push().setValue(model.getId());
-                                }//if
-                                else
-                                {
-                                    buttonView.setFavorite(favorite);
-                                    reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid()).child("favPosts");
-                                    com.google.firebase.database.Query query = reference.orderByValue().equalTo(model.getId());
-                                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
-                                                snapshot.getRef().removeValue();
-                                            }//for
-                                        }//OnDataChange
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                                            throw databaseError.toException();
-                                        }
-                                    });
-                                }
-                            }
-                        });
-
-
-            }
-        };//Adapter
+        FirestoreRecyclerOptions<PostsModel> options = new FirestoreRecyclerOptions.Builder<PostsModel>()
+                .setQuery(query, PostsModel.class).build();
         //Setting for recycleview: where filling the posts
+        adapter=new AdapterHome(options,homePage.this);
+        mFirestoreList = findViewById(R.id.firestore_list);
         mFirestoreList.setHasFixedSize(true);
-        mFirestoreList.setLayoutManager(new LinearLayoutManager(this));
+        mFirestoreList.setLayoutManager(new LinearLayoutManager(homePage.this));
+        adapter.startListening();
         mFirestoreList.setAdapter(adapter);
 
     }//oncreate
@@ -304,39 +151,5 @@ public class homePage extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    /*
-        Inner class for Fitting the data for each posts that will present in the homepage
-     */
-    private class PostsViewHolder extends RecyclerView.ViewHolder
-    {
-        private TextView list_fullName;
-        private TextView list_departure_date;
-        private TextView list_return_date;
-        private TextView list_destination;
-        private TextView list_age;
-        private TextView list_gender;
-        private TextView list_description;
-        private TextView list_type;
-        private ImageView list_image_url;
-        private MaterialFavoriteButton Star;
-        private RelativeLayout list_layout;
-
-        public PostsViewHolder(@NonNull View itemView) {
-            super(itemView);
-            list_fullName=itemView.findViewById(R.id.list_fullName);
-            list_departure_date=itemView.findViewById(R.id.list_departure_date);
-            list_return_date=itemView.findViewById(R.id.list_return_date);
-            list_destination=itemView.findViewById(R.id.list_destination);
-            list_age=itemView.findViewById(R.id.list_age);
-            list_gender=itemView.findViewById(R.id.list_gender);
-            list_description=itemView.findViewById(R.id.list_description);
-            list_type=itemView.findViewById(R.id.list_type);
-            list_image_url=itemView.findViewById(R.id.list_image_url);
-            Star = itemView.findViewById(R.id.Star);
-            list_layout = itemView.findViewById(R.id.list_layout);
-
-        }//Constructor
-    }//PostViewr
 
 }
