@@ -43,6 +43,19 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
+                android:id="@+id/change_picture_txt"
+                android:layout_width="250dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="100dp"
+                android:layout_marginTop="130dp"
+                android:text="הוסף תמונת פרופיל"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                app:layout_constraintTop_toTopOf="@+id/image_profile_view"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
                 android:id="@+id/name_and_age_txt"
                 android:layout_width="150dp"
                 android:layout_height="30dp"
@@ -90,7 +103,7 @@
             <TextView
                 android:id="@+id/My_Posts"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="50dp"
                 android:text="הפוסטים שלי:"
@@ -98,6 +111,18 @@
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/Edit_profile_btn" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@id/change_picture_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@id/image_profile_view"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginBottom="30dp"
+                android:layout_marginStart="30dp"
+                android:src="@drawable/camera"
+                android:background="@color/white"
+                />
 
 
             <androidx.recyclerview.widget.RecyclerView
@@ -109,7 +134,8 @@
                 android:layout_alignParentBottom="true"
                 android:layout_marginTop="30dp"
                 app:layout_constraintStart_toStartOf="@+id/My_Posts"
-                app:layout_constraintTop_toBottomOf="@+id/My_Posts" />
+                app:layout_constraintTop_toBottomOf="@+id/My_Posts"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

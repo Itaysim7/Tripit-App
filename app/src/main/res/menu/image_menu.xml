@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/upload_image"
+        android:title="העלאת תמונה                                             "
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/delete_image"
+        android:title="הסרת תמונה קיימת                                    "
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/open_camera"
+        android:title="צילום תמונה                                                "
+        app:showAsAction="never"/>
+</menu>

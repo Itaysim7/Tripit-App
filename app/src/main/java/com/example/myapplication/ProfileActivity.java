@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.app.VoiceInteractor;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -28,12 +29,14 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
@@ -41,6 +44,7 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -78,6 +82,7 @@ public class ProfileActivity extends AppCompatActivity
     private FirebaseUser fUser;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+
     //private RecyclerView mFirestoreList;
     //private FirestorePagingAdapter<PostsModel, PostsViewHolder> adapter;
     private UsersObj user;
@@ -88,6 +93,8 @@ public class ProfileActivity extends AppCompatActivity
     private TextView myPosts;
     private TextView name_age_txt;
     private Button edit_profile_btn;
+    private TextView change_image_txt;
+    private FloatingActionButton change_image_btn;
     private ScrollView mScrollView;
 
     //change
@@ -104,6 +111,8 @@ public class ProfileActivity extends AppCompatActivity
         myPosts = findViewById(R.id.My_Posts);
         name_age_txt = findViewById(R.id.name_and_age_txt);
         edit_profile_btn = findViewById(R.id.Edit_profile_btn);
+        change_image_txt= findViewById(R.id.change_picture_txt);
+        change_image_btn = findViewById(R.id.change_picture_btn);
         mScrollView = findViewById(R.id.scrollView);
 
         mScrollView.getViewTreeObserver().addOnScrollChangedListener(new ScrollPositionObserver());
@@ -129,13 +138,17 @@ public class ProfileActivity extends AppCompatActivity
                 }
                 name_age_txt.setText(intro);
                 //set image
-                if(user != null && user.getImageUrl().equals("default")) {
-                    ViewGroup.LayoutParams params = (ViewGroup.LayoutParams) image_profile.getLayoutParams();
-                    params.height = 220;
-                    image_profile.setLayoutParams(params);
-                } else{
+                if(user != null && !user.getImageUrl().equals("default")) {
                     Glide.with(ProfileActivity.this).load(user.getImageUrl()).into(image_profile);
+                    change_image_txt.setVisibility(View.INVISIBLE);
+                    change_image_btn.setVisibility(View.VISIBLE);
                 }
+                else{
+                    image_profile.setImageResource(android.R.color.transparent);
+                    change_image_txt.setVisibility(View.VISIBLE);
+                    change_image_btn.setVisibility(View.INVISIBLE);
+                }
+
                 //set description
                 if(user.getDescription().equals("empty")) {
                     about_myself_txt.setText("למשתמש זה אין שום דבר לומר על עצמו.");
@@ -179,8 +192,9 @@ public class ProfileActivity extends AppCompatActivity
         });
 
         storageReference = FirebaseStorage.getInstance().getReference("uploads");
-        image_profile.setOnClickListener(this);
+        change_image_txt.setOnClickListener(this);
         edit_profile_btn.setOnClickListener(this);
+        change_image_btn.setOnClickListener(this);
 
         //Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -205,16 +219,14 @@ public class ProfileActivity extends AppCompatActivity
 
     @Override
     public void onClick(View v) {
-        if (v == image_profile){
-            openImage();
+        if (v == change_image_txt || v == change_image_btn){
+            BottomNavigationDrawerFragment bottomNavigationDrawerFragment = new BottomNavigationDrawerFragment();
+            bottomNavigationDrawerFragment.show(getSupportFragmentManager(), bottomNavigationDrawerFragment.getTag());
         }
 
         if(v == edit_profile_btn){
             openEditProfileDialog();
         }
-//        if(v == about_myself_txt){
-//            changeText();
-//        }
     }
 
     private void openEditProfileDialog() {
@@ -227,95 +239,6 @@ public class ProfileActivity extends AppCompatActivity
         String newDescription = about_myself_txt.getText().toString();
         user.setDescription(newDescription);
         reference.setValue(user);
-    }
-
-    //-----------------------------Upload Image Function ------------------------------
-    /**
-     * Allows the user to select an image from his phone
-     */
-    private void openImage(){
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, IMAGE_REQUEST);
-    }
-
-    private String getFileExtension(Uri uri){
-        ContentResolver contentResolver = getContentResolver();
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
-    }
-
-    private void uploadImage(){
-        final ProgressDialog pd = new ProgressDialog(ProfileActivity.this);
-
-        pd.setMessage("Uploading");
-        pd.show();
-
-        if(imageUri != null){
-            final StorageReference fileReference = storageReference.child(System.currentTimeMillis()
-                    +"."+getFileExtension(imageUri));
-
-            uploadTask = fileReference.putFile(imageUri);
-            try {
-                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                    @Override
-                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                        if (!task.isSuccessful()) throw task.getException();
-                        return fileReference.getDownloadUrl();
-                    }
-                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
-                            Uri downloadUri = task.getResult();
-                            String mUri = downloadUri.toString();
-
-                            fUser = mAuth.getCurrentUser();
-                            HashMap<String, Object> map = new HashMap<>();
-                            map.put("imageUrl", mUri);
-                            reference.updateChildren(map);
-
-                            pd.dismiss();
-                        } else {
-                            Toast.makeText(ProfileActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-                            pd.dismiss();
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        pd.dismiss();
-                    }
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        else{
-            Toast.makeText(ProfileActivity.this, "No Image Selected",Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(data == null || data.getData() == null){
-            Toast.makeText(ProfileActivity.this, "Opening image Failed.",Toast.LENGTH_SHORT).show();
-        }
-
-        if(requestCode == IMAGE_REQUEST && resultCode == RESULT_OK){
-            imageUri = data.getData();
-
-            if(uploadTask != null && uploadTask.isInProgress()){
-                Toast.makeText(ProfileActivity.this, "Uploading In Progress",Toast.LENGTH_SHORT).show();
-            }
-            else{
-                uploadImage();
-            }
-        }
     }
 
     //------------------------Toolbar functions-------------------------------------
