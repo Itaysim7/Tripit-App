@@ -66,7 +66,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
+/*
+ Profile Activity represent the About of the user.
+ Profile Activity have the following functionality:
+    1)Add profile picture given by the camera,phone memory or delete id necessary.
+    2)Basic information of the user like name and description.
+    3)All his posts that was created by him.
+    4)Listen for changes and update accordingly.
+    5)Handle ScrollView content updates at runtime.
+ */
 public class ProfileActivity extends AppCompatActivity
         implements View.OnClickListener, EditPostsDialog.EditPostsListener,EditProfileDialog.EditProfileListener {
 
@@ -77,29 +85,27 @@ public class ProfileActivity extends AppCompatActivity
     private Uri imageUri;
     private StorageTask<UploadTask.TaskSnapshot> uploadTask;
 
-
+    //--------------FireBase----------------\\
     private DatabaseReference reference;
     private FirebaseUser fUser;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-
-    //private RecyclerView mFirestoreList;
-    //private FirestorePagingAdapter<PostsModel, PostsViewHolder> adapter;
-    private UsersObj user;
+    private RecyclerView mFirestoreList;
     private Query query;
 
+    //-------------------Custom Objects---------------\\
+    private AdapterProfile adapter;
+    private UsersObj user;
+
+    //--------------Layout Variables----------------\\
     private ImageView image_profile;
-    private TextView about_myself_txt;
-    private TextView myPosts;
-    private TextView name_age_txt;
+    private TextView about_myself_txt,myPosts,name_age_txt,change_image_txt;
     private Button edit_profile_btn;
-    private TextView change_image_txt;
     private FloatingActionButton change_image_btn;
     private ScrollView mScrollView;
 
-    //change
-    private RecyclerView mFirestoreList;
-    private AdapterProfile adapter;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,26 +141,27 @@ public class ProfileActivity extends AppCompatActivity
                 String intro = user.getFullName();
                 if(user.getAge() != 0){
                     intro = intro + ", " + user.getAge();
-                }
+                }//if
                 name_age_txt.setText(intro);
                 //set image
                 if(user != null && !user.getImageUrl().equals("default")) {
                     Glide.with(ProfileActivity.this).load(user.getImageUrl()).into(image_profile);
                     change_image_txt.setVisibility(View.INVISIBLE);
                     change_image_btn.setVisibility(View.VISIBLE);
-                }
+                }//if
                 else{
                     image_profile.setImageResource(android.R.color.transparent);
                     change_image_txt.setVisibility(View.VISIBLE);
                     change_image_btn.setVisibility(View.INVISIBLE);
-                }
+                }//else
 
                 //set description
                 if(user.getDescription().equals("empty")) {
                     about_myself_txt.setText("למשתמש זה אין שום דבר לומר על עצמו.");
-                } else{
+                }//if
+                 else{
                     about_myself_txt.setText(user.getDescription());
-                }
+                }//else
                 //find the posts this user uploaded
                 query = db.collection("Posts").whereEqualTo("user_id", fUser.getUid()).whereEqualTo("approval",true).orderBy("timestamp",Query.Direction.DESCENDING).limit(100);
                 //Check if the user uploaded posts. If not, change the text.
@@ -164,11 +171,11 @@ public class ProfileActivity extends AppCompatActivity
                         if (error != null) {
                             Log.w(TAG, "Listen failed.", error);
                             return;
-                        }
+                        }//if
                         if(value.isEmpty())
                             myPosts.setText("לא קיימים פוסטים להצגה.");
-                    }
-                });
+                    }//onEvent
+                });//addSnapshotListener
                 //recyclerOptions
                 FirestoreRecyclerOptions<PostsModel> options = new FirestoreRecyclerOptions.Builder<PostsModel>()
                         .setQuery(query, PostsModel.class).build();
@@ -179,38 +186,33 @@ public class ProfileActivity extends AppCompatActivity
                 mFirestoreList.setLayoutManager(new LinearLayoutManager(ProfileActivity.this));
                 adapter.startListening();
                 mFirestoreList.setAdapter(adapter);
-
-//                    public void openDialog(PostsModel model){
-//                        EditPostsDialog dialog = new EditPostsDialog(model);
-//                        dialog.show(getSupportFragmentManager(), "Edit Post");
-//                    }
-                }
+            }//onDataChange
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("Failed", error.getMessage());
-            }
-        });
+                Log.d("מסד הנתונים נכשל.", error.getMessage());
+            }//onCancelled
+        });//addValueEventListener
 
         storageReference = FirebaseStorage.getInstance().getReference("uploads");
         change_image_txt.setOnClickListener(this);
         edit_profile_btn.setOnClickListener(this);
         change_image_btn.setOnClickListener(this);
 
-        //Toolbar
+        //Toolbar configuration
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
         mTitle.setText(toolbar.getTitle());
         getSupportActionBar().setDisplayShowTitleEnabled(false); //delete the default title
 
-    }
+    }//onCreate
 
 
     @Override
     protected void onStop() {
         super.onStop();
         adapter.stopListening();
-    }
+    }//onStop
 
     @Override
     protected void onStart() {
@@ -222,24 +224,24 @@ public class ProfileActivity extends AppCompatActivity
     public void onBackPressed() {
         Intent intent = new Intent(this, homePage.class);
         startActivity(intent);
-    }
+    }//onBackPressed
 
     @Override
     public void onClick(View v) {
         if (v == change_image_txt || v == change_image_btn){
             BottomNavigationDrawerFragment bottomNavigationDrawerFragment = new BottomNavigationDrawerFragment();
             bottomNavigationDrawerFragment.show(getSupportFragmentManager(), bottomNavigationDrawerFragment.getTag());
-        }
+        }//if
 
         if(v == edit_profile_btn){
             openEditProfileDialog();
-        }
-    }
+        }//of
+    }//onClick
 
     private void openEditProfileDialog() {
         EditProfileDialog dialog = new EditProfileDialog(user);
         dialog.show(getSupportFragmentManager(), "Edit Profile");
-    }
+    }//openEditProfileDialog
 
     //------------------------Toolbar functions-------------------------------------
 
@@ -248,7 +250,7 @@ public class ProfileActivity extends AppCompatActivity
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.toolbar_munu, menu);
         return true;
-    }
+    }//onCreateOptionsMenu
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
@@ -259,75 +261,75 @@ public class ProfileActivity extends AppCompatActivity
         {
             Intent intent=new Intent(this,CreatePost.class);
             startActivity(intent);
-        }
-        if(id==R.id.Search)
+        }//if
+        else if(id==R.id.Search)
         {
             Intent intent=new Intent(this,SearchPostActivity.class);
             startActivity(intent);
-        }
-        if(id==R.id.home)
+        }//else if
+        else if(id==R.id.home)
         {
             Intent intent=new Intent(this,homePage.class);
             startActivity(intent);
-        }
-        if(id==R.id.myProfile)
+        }//else if
+        else if(id==R.id.myProfile)
         {
             Intent intent=new Intent(this,ProfileActivity.class);
             startActivity(intent);
-        }
-        if(id == R.id.savePost){
+        }//else if
+        else if(id == R.id.savePost){
             Intent intent=new Intent(this,FavPostsActivity.class);
             startActivity(intent);
-        }
-        if(id==R.id.logOut)
+        }//else if
+        else if(id==R.id.logOut)
         {
             mAuth.signOut();
             finish();
             Intent intent = new Intent(getApplicationContext(), welcomeActivity.class);
             startActivity(intent);
-        }
+        }//else if
         return super.onOptionsItemSelected(item);
-    }
+    }//onOptionsItemSelected
 
 
     //---------------------------Methods for the posts dialog-------------------------
     @Override
     public void ChangeLocation(String location, String id) {
         db.collection("Posts").document(id).update("destination",location);
-    }
+    }//ChangeLocation
 
     @Override
     public void ChangeReturnDate(int return_date, String id) {
         db.collection("Posts").document(id).update("return_date",return_date);
-    }
+    }//ChangeReturnDate
 
     @Override
     public void ChangeDepartureDate(int departure_date, String id) {
         db.collection("Posts").document(id).update("departure_date",departure_date);
-    }
+    }//ChangeDepartureDate
 
     @Override
     public void ChangeGender(String newGender, String id) {
         db.collection("Posts").document(id).update("gender", newGender);
-    }
+    }//ChangeGender
 
     @Override
     public void ChangeAges(String StartAge, String EndAge, String id) {
         String range = StartAge+"-"+EndAge;
         db.collection("Posts").document(id).update("age",range);
-    }
+    }//ChangeAges
 
     @Override
     public void ChangeDescription(String Description, String id) {
         if(Description.equals(""))
             Description = "ספר על עצמך";
         db.collection("Posts").document(id).update("description", Description);
-    }
+    }//ChangeDescription
 
     @Override
     public void ChangeTripType(ArrayList<String> trip_types, String id) {
         db.collection("Posts").document(id).update("type_trip", trip_types);
-    }
+    }//ChangeTripType
 
     //----------------------------------Methods for the edit profile dialog---------------------
 
@@ -339,12 +341,12 @@ public class ProfileActivity extends AppCompatActivity
     @Override
     public void ChangeGenderForProfile(String newGender) {
         reference.child("gender").setValue(newGender);
-    }
+    }//ChangeGenderForProfile
 
     @Override
     public void ChangeProfileDescription(String newDescription) {
         reference.child("description").setValue(newDescription);
-    }
+    }//ChangeProfileDescription
 
     @Override
     public void ChangeBirthdayDate(int date) {
@@ -358,7 +360,7 @@ public class ProfileActivity extends AppCompatActivity
 
         public ScrollPositionObserver() {
             mImageViewHeight = getResources().getDimensionPixelSize(R.dimen.contact_photo_height);
-        }
+        }//ScrollPositionObserver
 
         @Override
         public void onScrollChanged() {
@@ -375,14 +377,14 @@ public class ProfileActivity extends AppCompatActivity
                 name_age_txt.offsetTopAndBottom(10);
 
 
-        }
+        }//onScrollChanged
 
         public int getColorWithAlpha(float alpha, int baseColor) {
             int a = Math.min(255, Math.max(0, (int) (alpha * 255))) << 24;
             int rgb = 0x00ffffff & baseColor;
             return a + rgb;
-        }
-    }
+        }//getColorWithAlpha
+    }//ScrollPositionObserver
 
 
-}
+}//ProfileActivity

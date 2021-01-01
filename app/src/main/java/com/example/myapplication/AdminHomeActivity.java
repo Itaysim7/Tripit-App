@@ -2,7 +2,6 @@ package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
@@ -19,7 +18,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-
+/*
+    AdminHomeActivity have the following functionality:
+        1)Makes integration between User to Admin with higher privileges.
+        2)Handling new posts approvement.
+        3)Showing the posts that was approved sorted by upload date.
+ */
 public class AdminHomeActivity extends AppCompatActivity implements View.OnClickListener{
 
     //FireBase/Store:
@@ -30,8 +34,8 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
     //Adapters for posts:
     private RecyclerView mFirestoreList;
     private AdapterHome adapter;
-
-    private Button goToPosts;
+    //Layout Variables
+    private Button go_To_Posts;
 
 
     @Override
@@ -51,10 +55,10 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
         db=FirebaseFirestore.getInstance();
         mFirestoreList=findViewById(R.id.firestore_list);
 
-        goToPosts = findViewById(R.id.goToAdminPostsBtn);
-        goToPosts.setOnClickListener(this);
+        go_To_Posts = findViewById(R.id.goToAdminPostsBtn);
+        go_To_Posts.setOnClickListener(this);
 
-        //Query for the posts that the admin did not approve yet
+        //Query for the posts that the admin did not approved yet
         Query query=db.collection("Posts").whereEqualTo("approval",true).orderBy("timestamp",Query.Direction.DESCENDING).limit(100);
         //recyclerOptions
         FirestoreRecyclerOptions<PostsModel> options = new FirestoreRecyclerOptions.Builder<PostsModel>()
@@ -67,27 +71,27 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
         adapter.startListening();
         mFirestoreList.setAdapter(adapter);
 
-    }
+    }//onCreate
 
     @Override
     public void onClick(View v) {
-        if(v == goToPosts){
+        if(v == go_To_Posts){
             Intent intent = new Intent(this, ApprovePostsActivity.class);
             startActivity(intent);
-        }
-    }
+        }//if
+    }//onClick
 
     @Override
     protected void onStop() {
         super.onStop();
         adapter.stopListening();
-    }
+    }//onStop
 
     @Override
     protected void onStart() {
         super.onStart();
         adapter.startListening();
-    }
+    }//onStart
 
 
     //---------------------ToolBar functions--------------------------------
@@ -108,36 +112,36 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
         {
             Intent intent=new Intent(this,CreatePost.class);
             startActivity(intent);
-        }
-        if(id==R.id.Search)
+        }//if
+        else if(id==R.id.Search)
         {
             Intent intent=new Intent(this,SearchPostActivity.class);
             startActivity(intent);
-        }
-        if(id==R.id.home)
+        }//if
+        else if(id==R.id.home)
         {
             Intent intent=new Intent(this,homePage.class);
             startActivity(intent);
-        }
-        if(id==R.id.myProfile)
+        }//if
+        else if(id==R.id.myProfile)
         {
             Intent intent=new Intent(this,ProfileActivity.class);
             startActivity(intent);
-        }
-        if(id == R.id.savePost){
+        }//if
+        else if(id == R.id.savePost){
             Intent intent=new Intent(this,FavPostsActivity.class);
             startActivity(intent);
-        }
-        if(id==R.id.logOut)
+        }//if
+        else if(id==R.id.logOut)
         {
             mAuth.signOut();
             finish();
             Intent intent = new Intent(getApplicationContext(), welcomeActivity.class);
             startActivity(intent);
-        }
+        }//if
         return super.onOptionsItemSelected(item);
-    }
+    }//onOptionsItemSelected
 
 
 
-}
+}//AdminHomeActivity

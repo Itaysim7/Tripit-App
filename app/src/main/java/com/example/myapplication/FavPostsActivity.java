@@ -32,7 +32,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import java.util.ArrayList;
-
+/*
+    FavPostsActivity have the following functionality:
+        1)Show the favorite posts of each user if exist.
+        2)Manage Adapter which handle the presentation style of the cards.
+ */
 public class FavPostsActivity extends AppCompatActivity {
 
     private DatabaseReference reference;
@@ -42,22 +46,21 @@ public class FavPostsActivity extends AppCompatActivity {
     private FirestorePagingAdapter adapter;
     private UsersObj user;
     private Query query;
-
+    //Layout Variables
     private TextView fav_posts_txt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //--------------------Layout Section----------------------\\
         setContentView(R.layout.activity_fav_posts);
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
         mTitle.setText(toolbar.getTitle());
         getSupportActionBar().setDisplayShowTitleEnabled(false); //delete the default title
-
         fav_posts_txt = findViewById(R.id.fav_posts_txt);
-
+        //--------------------FireBase Section----------------------\\
         mAuth=FirebaseAuth.getInstance();
         reference= FirebaseDatabase.getInstance().getReference("users");
         FirebaseUser fUser = mAuth.getCurrentUser();
@@ -70,11 +73,12 @@ public class FavPostsActivity extends AppCompatActivity {
                 user = snapshot.getValue(UsersObj.class);
                 if(user.getFavPosts() == null){
                     fav_posts_txt.setText("לא קיימים פוסטים להצגה.");
-                }else{
+                }//if
+                 else{
                     ArrayList<String> value = new ArrayList<>();
                     for (String key: user.getFavPosts().keySet()) {
                         value.add(user.getFavPosts().get(key));
-                    }
+                    }//for
                     query = db.collection("Posts").whereIn("id", value);
                     PagedList.Config config = new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
 
@@ -87,7 +91,7 @@ public class FavPostsActivity extends AppCompatActivity {
                         public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_single, parent, false);
                             return new PostsViewHolder(view);
-                        }
+                        }//onCreateViewHolder
 
                         @Override
                         protected void onBindViewHolder(@NonNull PostsViewHolder holder, int position, @NonNull PostsModel model) { //set data
@@ -117,36 +121,34 @@ public class FavPostsActivity extends AppCompatActivity {
                                     //set image
                                     if(user.getImageUrl().equals("default")) {
                                         holder.list_image_url.setImageResource(R.drawable.user_image);
-                                    } else {
+                                    }//if
+                                     else {
                                         Glide.with(FavPostsActivity.this).load(user.getImageUrl()).into(holder.list_image_url);
-                                    }
+                                    }//else
                                 }//onDataChange
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
 
-                                }
-                            });
-                        }
-                    };
+                                }//onCancelled
+                            });//addValueEventListener
+                        }//onBindViewHolder
+                    };//FirestorePagingAdapter
 
                     mFirestoreList.setHasFixedSize(true);
                     mFirestoreList.setLayoutManager(new LinearLayoutManager(FavPostsActivity.this));
                     mFirestoreList.setAdapter(adapter);
                     adapter.startListening();
 
-                }
-
-
-
-            }
+                }//else
+            }//onDataChange
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.d("Failed", error.getMessage());
-            }
-        });
-
-    }
+            }//onCancelled
+        });//addValueEventListener
+        //--------------------End FireBase Section----------------------\\
+    }//onCreate
 
 
     @Override
@@ -185,26 +187,26 @@ public class FavPostsActivity extends AppCompatActivity {
             Intent intent=new Intent(this,CreatePost.class);
             startActivity(intent);
         }
-        if(id==R.id.Search)
+        else if(id==R.id.Search)
         {
             Intent intent=new Intent(this,SearchPostActivity.class);
             startActivity(intent);
         }
-        if(id==R.id.home)
+        else if(id==R.id.home)
         {
             Intent intent=new Intent(this,homePage.class);
             startActivity(intent);
         }
-        if(id==R.id.myProfile)
+        else if(id==R.id.myProfile)
         {
             Intent intent=new Intent(this,ProfileActivity.class);
             startActivity(intent);
         }
-        if(id == R.id.savePost){
+        else if(id == R.id.savePost){
             Intent intent=new Intent(this,FavPostsActivity.class);
             startActivity(intent);
         }
-        if(id==R.id.logOut)
+        else if(id==R.id.logOut)
         {
             mAuth.signOut();
             finish();
@@ -215,7 +217,10 @@ public class FavPostsActivity extends AppCompatActivity {
     }
 
 
-    //------------------------Posts Class---------------------------------------
+    /*
+      ViewHoder responsible for the creation of the layout variables such as:TextView,Imageview etc..
+      and mapping each layout variable to component id.
+  */
     private class PostsViewHolder extends RecyclerView.ViewHolder {
         private TextView list_departure_date;
         private TextView list_return_date;
@@ -238,7 +243,7 @@ public class FavPostsActivity extends AppCompatActivity {
             list_type=itemView.findViewById(R.id.list_type);
             list_image_url=itemView.findViewById(R.id.list_image_url);
             star = itemView.findViewById(R.id.Star);
-        }
-    }
+        }//PostsViewHolder
+    }//PostsViewHolder
 
-}
+}//FavPostsActivity

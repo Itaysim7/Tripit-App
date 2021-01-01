@@ -15,7 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
-
+/*
+    AdapterProfile have the following functionality:
+        1)Makes integration between DB to Profile activity at run-time.
+        2)AdapterProfile create the card template which filled with user information.
+        3)Define hard-coded background.
+        4)Listen for changes in DB and user interaction and update accordingly.
+ */
 
 public class AdapterProfile  extends FirestoreRecyclerAdapter<PostsModel,AdapterProfile.ViewHolder>
 {
@@ -34,8 +40,8 @@ public class AdapterProfile  extends FirestoreRecyclerAdapter<PostsModel,Adapter
         super(options);
         this.context=context;
         db = FirebaseFirestore.getInstance();
-    }
-
+    }//AdapterProfile
+    //Handling the binding steps.
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull PostsModel model)
     {
@@ -61,16 +67,16 @@ public class AdapterProfile  extends FirestoreRecyclerAdapter<PostsModel,Adapter
             @Override
             public void onClick(View v) {
                 openDialog(model);
-            }
-        });
+            }//onClick
+        });//setOnClickListener
         holder.delete_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 db.collection("Posts").document(model.getId()).delete();
-            }
-        });
+            }//onClick
+        });//setOnClickListener
 
-    }
+    }//onBindViewHolder
 
     @NonNull
     @Override
@@ -79,14 +85,17 @@ public class AdapterProfile  extends FirestoreRecyclerAdapter<PostsModel,Adapter
         View v= LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_items_in_profile,parent,false);
         return new ViewHolder(v);
-    }
+    }//onCreateViewHolder
     public void openDialog(PostsModel model)
     {
         EditPostsDialog dialog = new EditPostsDialog(model);
         dialog.show(((AppCompatActivity)context).getSupportFragmentManager(), "Edit Post");
-    }
+    }//openDialog
 
-
+    /*
+       ViewHoder responsible for the creation of the layout variables such as:TextView,Imageview etc..
+       and mapping each layout variable to component id.
+   */
     public class ViewHolder extends RecyclerView.ViewHolder
     {
 
@@ -111,6 +120,6 @@ public class AdapterProfile  extends FirestoreRecyclerAdapter<PostsModel,Adapter
             list_type=itemView.findViewById(R.id.list_type);
             edit_btn = itemView.findViewById(R.id.edit_btn);
             delete_btn = itemView.findViewById(R.id.delete_btn);
-        }
+        }//ViewHolder
     }//PostViewr
 }

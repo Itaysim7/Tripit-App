@@ -23,6 +23,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+
+/*
+    AdapterHome have the following functionality:
+        1)Makes integration between DB to Home-Page activity at run-time.
+        2)AdapterHome create the card template which filled with user information.
+        3)Define hard-coded background.
+        4)Listen for changes in DB and user interaction and update accordingly.
+ */
 public class AdapterHome extends FirestoreRecyclerAdapter<PostsModel,AdapterHome.ViewHolder>
 {
     private DatabaseReference reference;
@@ -40,12 +48,12 @@ public class AdapterHome extends FirestoreRecyclerAdapter<PostsModel,AdapterHome
     public AdapterHome(@NonNull FirestoreRecyclerOptions<PostsModel> options, Context context) {
         super(options);
         this.context=context;
-    }
-
+    }//AdapterHome
+    //Handling the binding steps.
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull PostsModel model)
     {
-        //set data
+        //Create and set default display data
         holder.list_departure_date.setText("תאריך יציאה: "+model.getDeparture_date());
         holder.list_return_date.setText("תאריך חזרה: "+model.getReturn_date());
         holder.list_destination.setText("יעד: "+model.getDestination());
@@ -101,7 +109,7 @@ public class AdapterHome extends FirestoreRecyclerAdapter<PostsModel,AdapterHome
             default:
                 holder.list_layout.getBackground().setAlpha(80);
                 break;
-        }
+        }//switch
         String user_id=model.getUser_id();
         //Set image for the post from profile imageURL
         reference = FirebaseDatabase.getInstance().getReference("users").child(user_id);
@@ -116,9 +124,10 @@ public class AdapterHome extends FirestoreRecyclerAdapter<PostsModel,AdapterHome
                 //set image
                 if (user_for_post.getImageUrl().equals("default")) {
                     Glide.with(context).load(R.drawable.profile).circleCrop().into(holder.list_image_url);
-                } else {
+                }//if
+                 else {
                     Glide.with(context).load(user_for_post.getImageUrl()).circleCrop().into(holder.list_image_url);
-                }
+                }//else
                 if (user_for_post.getFavPosts() != null)
                 {
                     for (String key : user_for_post.getFavPosts().keySet())
@@ -126,15 +135,15 @@ public class AdapterHome extends FirestoreRecyclerAdapter<PostsModel,AdapterHome
                         if (user_for_post.getFavPosts().get(key).equals(model.getId()))
                         {
                             holder.Star.setFavorite(true);
-                        }
-                    }
-                }
+                        }//if
+                    }//for
+                }//if
             }//onDataChange
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+            }//onCancelled
+        });//addValueEventListener
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser myUser = mAuth.getCurrentUser();
         holder.Star.setOnFavoriteChangeListener(
@@ -162,24 +171,26 @@ public class AdapterHome extends FirestoreRecyclerAdapter<PostsModel,AdapterHome
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
                                     throw databaseError.toException();
-                                }
-                            });
-                        }
-                    }
-                });
+                                }//onCancelled
+                            });//addListenerForSingleValueEvent
+                        }//else
+                    }//onFavoriteChanged
+                });//setOnFavoriteChangeListener
 
-    }
+    }//onBindViewHolder
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v= LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_item_single,parent,false);
-        return new AdapterHome.ViewHolder(v);    }
+        return new AdapterHome.ViewHolder(v);
+    }//onCreateViewHolder
 
     /*
-            Inner class for Fitting the data for each posts that will present in the homepage
-         */
+        ViewHoder responsible for the creation of the layout variables such as:TextView,Imageview etc..
+        and mapping each layout variable to component id.
+    */
     public class ViewHolder extends RecyclerView.ViewHolder
     {
         private TextView list_fullName;
@@ -193,7 +204,7 @@ public class AdapterHome extends FirestoreRecyclerAdapter<PostsModel,AdapterHome
         private ImageView list_image_url;
         private MaterialFavoriteButton Star;
         private RelativeLayout list_layout;
-
+        //Constructor
         public ViewHolder(@NonNull View itemView)
         {
             super(itemView);

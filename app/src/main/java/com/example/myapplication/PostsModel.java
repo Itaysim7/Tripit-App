@@ -2,7 +2,11 @@ package com.example.myapplication;
 
 
 import java.util.ArrayList;
-
+/*
+     PostModel represent the post information which displayed in the app.
+     His functionality is to make some integration between the raw data was stored in the DB,
+     and the manipulate data that will present in the App.
+ */
 public class PostsModel
 {
     private int departure_date;
@@ -34,7 +38,7 @@ public class PostsModel
         this.clicks=clicks;
         this.timestamp=timestamp;
         this.user_id=user_id;
-    }
+    }//PostsModel
 
     //constructor
     private PostsModel()
@@ -98,7 +102,7 @@ public class PostsModel
     {
         String dep=intToStringDate(departure_date);
         return dep;
-    }
+    }//getDeparture_date
 
     public int getDeparture_date_int(){
         return departure_date;
@@ -108,7 +112,7 @@ public class PostsModel
     {
         String ret=intToStringDate(return_date);
         return ret;
-    }
+    }//getReturn_date
     public int getReturn_date_int(){
         return return_date;
     }
@@ -142,13 +146,13 @@ public class PostsModel
             for(int i=0;i<type_trip.size();i++)
             {
                 text=text+type_trip.get(i)+", ";
-            }
+            }//for
             text=text.substring(0,text.length()-2);
-        }
+        }//if
         else
             text="לא צוין";
         return text;
-    }
+    }//getType_trip
     public boolean getApproval() {
         return approval;
     }
@@ -182,7 +186,7 @@ public class PostsModel
         }//if
         else
             return "";
-    }
+    }//intToStringDate
 
 
-}
+}//PostModel
