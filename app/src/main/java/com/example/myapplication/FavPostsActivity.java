@@ -56,6 +56,8 @@ public class FavPostsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fav_posts);
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
+        TextView page_name = toolbar.findViewById(R.id.page_name);
+        page_name.setText("פוסטים שמורים");
         setSupportActionBar(toolbar);
         mTitle.setText(toolbar.getTitle());
         getSupportActionBar().setDisplayShowTitleEnabled(false); //delete the default title

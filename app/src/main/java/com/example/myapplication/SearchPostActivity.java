@@ -51,6 +51,8 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
         //toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        TextView page_name = toolbar.findViewById(R.id.page_name);
+        page_name.setText("חיפוש");
         setSupportActionBar(toolbar);
         mTitle.setText(toolbar.getTitle());
         getSupportActionBar().setDisplayShowTitleEnabled(false); //delete the default title
