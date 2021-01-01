@@ -110,6 +110,12 @@ public class homePage extends AppCompatActivity {
         super.onStart();
         adapter.startListening();
     }
+    //when clicking the "return" button on the phone
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, welcomeActivity.class);
+        startActivity(intent);
+    }
     //---------------------ToolBar functions--------------------------------
 
     @Override

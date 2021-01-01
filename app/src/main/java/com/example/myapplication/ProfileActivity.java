@@ -217,6 +217,13 @@ public class ProfileActivity extends AppCompatActivity
         super.onStart();
     }
 
+    //when clicking the "return" button on the phone
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, homePage.class);
+        startActivity(intent);
+    }
+
     @Override
     public void onClick(View v) {
         if (v == change_image_txt || v == change_image_btn){
@@ -232,13 +239,6 @@ public class ProfileActivity extends AppCompatActivity
     private void openEditProfileDialog() {
         EditProfileDialog dialog = new EditProfileDialog(user);
         dialog.show(getSupportFragmentManager(), "Edit Profile");
-    }
-
-    //-----------------------------Change Description Function-------------------------
-    private void changeText() {
-        String newDescription = about_myself_txt.getText().toString();
-        user.setDescription(newDescription);
-        reference.setValue(user);
     }
 
     //------------------------Toolbar functions-------------------------------------
@@ -367,7 +367,6 @@ public class ProfileActivity extends AppCompatActivity
             float alpha = scrollY / (float) mImageViewHeight;
 
             // changing position of ImageView
-            //image_profile.setTranslationY((float) (scrollY / 8));
             image_profile.setColorFilter(getColorWithAlpha(alpha, baseColor));
 
             //Don't let name disappear -

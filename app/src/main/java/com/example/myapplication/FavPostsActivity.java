@@ -157,7 +157,12 @@ public class FavPostsActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
+    }
+    //when clicking the "return" button on the phone
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, homePage.class);
+        startActivity(intent);
     }
 
 

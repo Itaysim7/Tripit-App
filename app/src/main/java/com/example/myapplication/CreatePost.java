@@ -124,6 +124,13 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
 
     }
 
+    //when clicking the "return" button on the phone
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, homePage.class);
+        startActivity(intent);
+    }
+
     //---------------------Toolbar Functions---------------------------
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -79,6 +79,14 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
         date_dep_end = Integer.MAX_VALUE;
     }//onCreate
 
+    //when clicking the "return" button on the phone
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, homePage.class);
+        startActivity(intent);
+    }
+
+    //------------------------------toolbar options------------------------------
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
