@@ -108,6 +108,11 @@ public class UsersObj {
         this.birthday = birthday;
     }
 
+
+    /*
+     * The function get int the represent birthday
+     * @return birthday in format of string day/month/time
+     */
     private String intToStringDate(int time) {
         if(time != -1) {
             String day=""+(time%100);

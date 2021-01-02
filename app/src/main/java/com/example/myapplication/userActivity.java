@@ -13,11 +13,9 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -41,11 +39,17 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.Arrays;
-import java.util.Date;
-
-public class userActivity extends AppCompatActivity implements View.OnClickListener {
+/*
+ user Activity represent the user page for login.
+ user Activity have the following functionality:
+    1)Allows login for all users.
+    2)Makes sure that the login details match the details in the db.
+    3)Allows login from google.
+    4)Allows login from facebook.
+ */
+public class userActivity extends AppCompatActivity implements View.OnClickListener
+{
     //Finals:
     private static final String TAG = "userActivity";
     private static final int RC_SIGN_IN = 1;
@@ -77,14 +81,12 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
     private LoginManager loginManager;
     //Google - credential
     private GoogleSignInClient mGoogleSignInClient;
-
-
-
+    //context
     final Context context = this;
 
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
@@ -129,8 +131,10 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
     }//onCreate
 
     @Override
-    public void onClick(View v) {
-        if (v == not_register) {
+    public void onClick(View v)
+    {
+        if (v == not_register)
+        {
             Intent intent = new Intent(this, RegisterActivity.class);
             startActivity(intent);
         }//if
@@ -143,8 +147,8 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
         {
             checkBox = save_Credentials.isChecked();
         }//else if
-        else if (v == login) {
-
+        else if (v == login)
+        {
             if(attempt<4)
             {
                 attempt++;
@@ -163,26 +167,28 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(getApplicationContext(), "הינך חסום זמנית עקב ניסיונות כושלים להתחבר.", Toast.LENGTH_LONG).show();
                 new CountDownTimer(10000, 1000) {
 
-                    public void onTick(long millisUntilFinished) {
+                    public void onTick(long millisUntilFinished)
+                    {
                        // mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
                         //here you can have your logic to set text to edittext
                     }
-
-                    public void onFinish() {
+                    public void onFinish()
+                    {
                         attempt = 1;
                         Toast.makeText(getApplicationContext(), "את/ה יכל/ה לנסות להיכנס עכשיו.", Toast.LENGTH_LONG).show();
                     }
-
                 }.start();
 
             }//4 More than 4 attempts
         }//else if
-        else if (v == mButtonFacebook) {
+        else if (v == mButtonFacebook)
+        {
             loginManager.logInWithReadPermissions(this,
                     Arrays.asList("email", "public_profile", "user_birthday"));
         }//else if
 
-        else if(v == signInButton_Google){
+        else if(v == signInButton_Google)
+        {
             signIn_withGoogle();
         }//else if
     }//OnClick
@@ -198,10 +204,13 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
         super.onResume();
         loadPreferences();
     }//onResume
+
     /*
-        Save the preference - user credentials
+      * The function Save the preference - user credentials
+      * @param checkBox- if the user wants to save his preference
      */
-    private void savePreferences(boolean checkBox) {
+    private void savePreferences(boolean checkBox)
+    {
         sp = getSharedPreferences(PREFS_NAME,
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
@@ -225,14 +234,14 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
         editor.putBoolean(KEY_CHECKBOX, this.checkBox);
         editor.commit();
     }//savePreference
-    /*
-        Loading data from SharedPreference
-     */
-    private void loadPreferences() {
 
+    /*
+        The function Loading data from SharedPreference
+     */
+    private void loadPreferences()
+    {
         sp = getSharedPreferences(PREFS_NAME,
                 Context.MODE_PRIVATE);
-
         // Get value
         checkBox = sp.getBoolean(KEY_CHECKBOX,false);
         email = sp.getString(KEY_NAME, "");
@@ -241,9 +250,9 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
         passwordEditText.setText(pass);
     }//loadPreferences
 
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+    {
         //For Facebook:
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
