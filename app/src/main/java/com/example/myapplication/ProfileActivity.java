@@ -371,12 +371,6 @@ public class ProfileActivity extends AppCompatActivity
             // changing position of ImageView
             image_profile.setColorFilter(getColorWithAlpha(alpha, baseColor));
 
-            //Don't let name disappear -
-            int distance_txt = name_age_txt.getTop() - mScrollView.getScrollY();
-            if(distance_txt < 0 )
-                name_age_txt.offsetTopAndBottom(10);
-
-
         }//onScrollChanged
 
         public int getColorWithAlpha(float alpha, int baseColor) {
