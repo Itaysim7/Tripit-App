@@ -2,7 +2,7 @@ package com.example.myapplication;
 
 
 import java.util.ArrayList;
-/*
+/**
      PostModel represent the post information which displayed in the app.
      His functionality is to make some integration between the raw data was stored in the DB,
      and the manipulate data that will present in the App.

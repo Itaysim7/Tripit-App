@@ -23,7 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-/*
+/**
  Approve Posts Activity represent the page that the admins approve posts.
  Approve Posts Activity  have the following functionality:
     1)The admin can see the unapproved posts.

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-/*
+/**
  edit posts dialog Activity represent dialog for edit post for user in his profile
  edit posts dialog Activity have the following functionality:
     The user can change every field that he wants.
@@ -286,7 +286,7 @@ public class EditPostsDialog extends AppCompatDialogFragment implements View.OnC
                     "must implement EditPostsDialog!");
         }
     }
-    /*
+    /**
      * The function Refresh the page after the user edit his post.
      */
     private void Refresh(){
@@ -294,7 +294,7 @@ public class EditPostsDialog extends AppCompatDialogFragment implements View.OnC
         startActivity(intent);
     }
 
-    /*
+    /**
      * interface for edit posts listener, with the following function:
      * 1)ChangeLocation - changes the destination of the trip
      * 2)ChangeReturnDate - changes the return date of the trip
