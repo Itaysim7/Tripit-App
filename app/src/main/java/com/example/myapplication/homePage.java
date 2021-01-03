@@ -20,16 +20,14 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.StorageTask;
 import java.util.ArrayList;
 
+/**
+ * This class represents the activity "home page".
+ * In this class, the user will be able to see other users' posts.
+ * Only posts that have been approved by an admin will appear in the home page.
+ */
 public class homePage extends AppCompatActivity {
     //FireBase/Store:
-    private FirebaseFirestore db;
-    private Query query;
     private FirebaseAuth mAuth;
-    private DatabaseReference reference;
-    //Upload Images:
-    private StorageTask uploadTask;
-    //Saving Data of Users as objects:
-    private UsersObj user;
     //Adapters for posts:
     private RecyclerView mFirestoreList;
     private AdapterHome adapter;

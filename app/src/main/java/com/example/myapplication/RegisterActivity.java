@@ -1,6 +1,5 @@
 package com.example.myapplication;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -21,7 +20,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.Date;
 
 public class RegisterActivity extends AppCompatActivity
 {
@@ -84,6 +82,11 @@ public class RegisterActivity extends AppCompatActivity
 
     }//onCreate
 
+    /**
+     * This function creates
+     * @param email
+     * @param password
+     */
     private void registerUser(String email, String password)
     {
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -109,6 +112,11 @@ public class RegisterActivity extends AppCompatActivity
                 });
     }
 
+    /**
+     * This function adds the user data to the database,
+     * and moves the user from this activity to the home activity if the registration was successful.
+     * @param firebaseUser is the current user.
+     */
     public void updateUI(FirebaseUser firebaseUser)
     {
         reference.child(firebaseUser.getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -123,7 +131,4 @@ public class RegisterActivity extends AppCompatActivity
             }
         });
     }
-
-
-
 }

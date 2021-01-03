@@ -32,7 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import java.util.ArrayList;
-/*
+/**
     FavPostsActivity have the following functionality:
         1)Show the favorite posts of each user if exist.
         2)Manage Adapter which handle the presentation style of the cards.
@@ -81,7 +81,7 @@ public class FavPostsActivity extends AppCompatActivity {
                     for (String key: user.getFavPosts().keySet()) {
                         value.add(user.getFavPosts().get(key));
                     }//for
-                    query = db.collection("Posts").whereIn("id", value);
+                    query = db.collection("Posts").whereIn("id", value).orderBy("timestamp",Query.Direction.DESCENDING).limit(9);
                     PagedList.Config config = new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
 
                     //recyclerOptions
