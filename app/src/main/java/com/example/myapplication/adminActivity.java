@@ -2,7 +2,6 @@ package com.example.myapplication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -23,6 +21,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+/**
+ * Admin Activity represent the admin page for login.
+ * Admin Activity have the following functionality:
+    1)Allows login only for users that are admin.
+    2)Makes sure that the login details match the details in the db
+ */
 public class adminActivity extends AppCompatActivity implements View.OnClickListener {
     //Finals:
     private static final String TAG = "adminActivity";
@@ -37,7 +41,8 @@ public class adminActivity extends AppCompatActivity implements View.OnClickList
     private Button login;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
@@ -54,16 +59,16 @@ public class adminActivity extends AppCompatActivity implements View.OnClickList
         emailEditText.setOnClickListener(this);
         passwordEditText.setOnClickListener(this);
         login.setOnClickListener(this);
-
-
     }//onCreate
 
-    public void onClick(View v) {
-        if (v == login) {
+    public void onClick(View v)
+    {
+        if (v == login)
+        {
             String email = emailEditText.getText().toString();
             String password = passwordEditText.getText().toString();
             if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-                Toast.makeText(getApplicationContext(), "Enter email or password", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "הכנס סיסמה ואימייל", Toast.LENGTH_LONG).show();
                 return;
             }//if
             else {
@@ -72,11 +77,20 @@ public class adminActivity extends AppCompatActivity implements View.OnClickList
         }//else if
     }//onClick
 
-    public void validation(String email, String password) {
+
+    /**
+     * The function Makes sure that the login details match the details in the db
+     * @param email- email of the admin
+     * @param password- password of the admin
+     */
+    public void validation(String email, String password)
+    {
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>()
+                {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+                    public void onComplete(@NonNull Task<AuthResult> task)
+                    {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
@@ -90,26 +104,33 @@ public class adminActivity extends AppCompatActivity implements View.OnClickList
                             //updateUI(null);
 
                         }//else
-                    }
+                    }//onComplete
                 });
     }//validation
 
-    private void updateUI(FirebaseUser user) {
+    /**
+     * The function Makes sure that this user is admin.
+     * @param user- FirebaseUser from db
+     */
+    private void updateUI(FirebaseUser user)
+    {
         reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid());
-        reference.addValueEventListener(new ValueEventListener() {
+        reference.addValueEventListener(new ValueEventListener()
+        {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
                 UsersObj user = snapshot.getValue(UsersObj.class);
-                if(!user.getAdmin()){
+                if(user!= null && !user.getAdmin()){
                     Toast.makeText(getApplicationContext(), "אין למשתמש זה אישור להכנס.", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(getApplicationContext(), welcomeActivity.class);
                     startActivity(intent);
                 }//if
             }//onDataChange
-
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("Failed", error.getMessage());
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+                Log.d("נכשל", error.getMessage());
             }//onCancelled
         });
         Intent loginIntent = new Intent(this, AdminHomeActivity.class);

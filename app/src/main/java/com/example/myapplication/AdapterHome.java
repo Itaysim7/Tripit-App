@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,8 +34,6 @@ import com.google.firebase.database.ValueEventListener;
  */
 public class AdapterHome extends FirestoreRecyclerAdapter<PostsModel,AdapterHome.ViewHolder>
 {
-    private DatabaseReference reference;
-    private FirebaseAuth mAuth;
     private UsersObj user_for_post;
     private Context context;
 
@@ -112,7 +111,7 @@ public class AdapterHome extends FirestoreRecyclerAdapter<PostsModel,AdapterHome
         }//switch
         String user_id=model.getUser_id();
         //Set image for the post from profile imageURL
-        reference = FirebaseDatabase.getInstance().getReference("users").child(user_id);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(user_id);
         reference.addValueEventListener(new ValueEventListener()
         {
             @Override
@@ -120,6 +119,7 @@ public class AdapterHome extends FirestoreRecyclerAdapter<PostsModel,AdapterHome
             {
                 user_for_post = snapshot.getValue(UsersObj.class);
                 //set fullName
+                assert user_for_post != null;
                 holder.list_fullName.setText(user_for_post.getFullName());
                 //set image
                 if (user_for_post.getImageUrl().equals("default")) {
@@ -128,38 +128,61 @@ public class AdapterHome extends FirestoreRecyclerAdapter<PostsModel,AdapterHome
                  else {
                     Glide.with(context).load(user_for_post.getImageUrl()).circleCrop().into(holder.list_image_url);
                 }//else
-                if (user_for_post.getFavPosts() != null)
-                {
-                    for (String key : user_for_post.getFavPosts().keySet())
-                    {
-                        if (user_for_post.getFavPosts().get(key).equals(model.getId()))
-                        {
-                            holder.Star.setFavorite(true);
-                        }//if
-                    }//for
-                }//if
-            }//onDataChange
+            }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }//onCancelled
         });//addValueEventListener
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser myUser = mAuth.getCurrentUser();
+
+        FirebaseUser myUser = FirebaseAuth.getInstance().getCurrentUser();
+        String myUser_id = myUser.getUid();
+        DatabaseReference reference_user = FirebaseDatabase.getInstance().getReference("users").child(myUser_id);
+        reference_user.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    UsersObj user = snapshot.getValue(UsersObj.class);
+                    if (user.getFavPosts() != null) {
+                        for (String key : user.getFavPosts().keySet()) {
+                            if (user.getFavPosts().get(key).equals(model.getId())) {
+                                holder.Star.setFavorite(true);
+                            }//if
+                        }//for
+                    }//if
+                }//onDataChange
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         holder.Star.setOnFavoriteChangeListener(
                 new MaterialFavoriteButton.OnFavoriteChangeListener() {
                     @Override
                     public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
                         if (favorite) {
                             buttonView.setFavorite(favorite);
-                            reference = FirebaseDatabase.getInstance().getReference("users").child(myUser.getUid()).child("favPosts");
-                            reference.push().setValue(model.getId());
+                            DatabaseReference reference_userPosts = reference_user.child("favPosts");
+                            com.google.firebase.database.Query query = reference_userPosts.orderByValue().equalTo(model.getId());
+                            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if(!dataSnapshot.exists()){
+                                        reference_userPosts.push().setValue(model.getId());
+                                    }
+                                }//OnDataChange
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    throw databaseError.toException();
+                                }//onCancelled
+                            });//addListenerForSingleValueEvent
                         }//if
                         else
                         {
                             buttonView.setFavorite(favorite);
-                            reference = FirebaseDatabase.getInstance().getReference("users").child(myUser.getUid()).child("favPosts");
-                            com.google.firebase.database.Query query = reference.orderByValue().equalTo(model.getId());
+                            DatabaseReference reference_userPosts = reference_user.child("favPosts");
+                            com.google.firebase.database.Query query = reference_userPosts.orderByValue().equalTo(model.getId());
                             query.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -187,7 +210,7 @@ public class AdapterHome extends FirestoreRecyclerAdapter<PostsModel,AdapterHome
         return new AdapterHome.ViewHolder(v);
     }//onCreateViewHolder
 
-    /*
+    /**
         ViewHoder responsible for the creation of the layout variables such as:TextView,Imageview etc..
         and mapping each layout variable to component id.
     */

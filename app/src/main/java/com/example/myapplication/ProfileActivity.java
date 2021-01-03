@@ -17,6 +17,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,6 +37,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
@@ -78,14 +81,8 @@ import java.util.List;
 public class ProfileActivity extends AppCompatActivity
         implements View.OnClickListener, EditPostsDialog.EditPostsListener,EditProfileDialog.EditProfileListener {
 
-    //variables for the photo upload
-    private StorageReference storageReference;
     private static final String TAG = "ProfileActivity";
-    private static final int IMAGE_REQUEST = 1;
-    private Uri imageUri;
-    private StorageTask<UploadTask.TaskSnapshot> uploadTask;
 
-    //--------------FireBase----------------\\
     private DatabaseReference reference;
     private FirebaseUser fUser;
     private FirebaseAuth mAuth;
@@ -145,12 +142,13 @@ public class ProfileActivity extends AppCompatActivity
                 name_age_txt.setText(intro);
                 //set image
                 if(user != null && !user.getImageUrl().equals("default")) {
-                    Glide.with(ProfileActivity.this).load(user.getImageUrl()).into(image_profile);
+                    image_profile.setBackgroundColor(Color.WHITE);
+                    Glide.with(ProfileActivity.this).load(user.getImageUrl()).apply(new RequestOptions().transform(new CenterCrop(), new RoundedCorners(25))).into(image_profile);
                     change_image_txt.setVisibility(View.INVISIBLE);
                     change_image_btn.setVisibility(View.VISIBLE);
                 }//if
                 else{
-                    image_profile.setImageResource(android.R.color.transparent);
+                    image_profile.setImageResource(R.color.grey);
                     change_image_txt.setVisibility(View.VISIBLE);
                     change_image_btn.setVisibility(View.INVISIBLE);
                 }//else
@@ -193,7 +191,7 @@ public class ProfileActivity extends AppCompatActivity
             }//onCancelled
         });//addValueEventListener
 
-        storageReference = FirebaseStorage.getInstance().getReference("uploads");
+        //variables for the photo upload
         change_image_txt.setOnClickListener(this);
         edit_profile_btn.setOnClickListener(this);
         change_image_btn.setOnClickListener(this);
@@ -201,6 +199,8 @@ public class ProfileActivity extends AppCompatActivity
         //Toolbar configuration
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
+        TextView page_name = toolbar.findViewById(R.id.page_name);
+        page_name.setText("הפרופיל שלי");
         setSupportActionBar(toolbar);
         mTitle.setText(toolbar.getTitle());
         getSupportActionBar().setDisplayShowTitleEnabled(false); //delete the default title

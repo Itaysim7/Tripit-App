@@ -46,6 +46,8 @@ public class AdminHomeActivity extends AppCompatActivity implements View.OnClick
         //Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
+        TextView page_name = toolbar.findViewById(R.id.page_name);
+        page_name.setText("דף הבית");
         setSupportActionBar(toolbar);
         mTitle.setText(toolbar.getTitle());
         getSupportActionBar().setDisplayShowTitleEnabled(false); //delete the default title

@@ -1,8 +1,9 @@
 package com.example.myapplication;
-/*
-    Simple Class that represent the User Object with all his fields.
+/**
+ *   Simple Class that represents the User Object with all his fields.
  */
 
+import java.util.Calendar;
 import java.util.HashMap;
 
 public class UsersObj {
@@ -11,7 +12,6 @@ public class UsersObj {
     private String description;
     private String fullName;
     private String gender;
-    private int age;
     private int birthday;
     private boolean admin;
     private HashMap<String, String> favPosts;
@@ -64,11 +64,15 @@ public class UsersObj {
     }
 
     public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+        long timeNow = day + (month+1)*100 + year*10000;
+        if(this.getBirthday() == 0)
+            return 0;
+        int Age = (int) (timeNow - this.getBirthday());
+        return Age/10000;
     }
 
     public boolean getAdmin() {
@@ -108,6 +112,12 @@ public class UsersObj {
         this.birthday = birthday;
     }
 
+
+    /**
+     * The function get int the represent birthday
+     * @param time is the date of the integer birthday to be converted
+     * @return birthday in format of string day/month/time
+     */
     private String intToStringDate(int time) {
         if(time != -1) {
             String day=""+(time%100);

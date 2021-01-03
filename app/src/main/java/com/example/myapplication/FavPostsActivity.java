@@ -56,10 +56,13 @@ public class FavPostsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fav_posts);
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
+        TextView page_name = toolbar.findViewById(R.id.page_name);
+        page_name.setText("פוסטים שמורים");
         setSupportActionBar(toolbar);
         mTitle.setText(toolbar.getTitle());
         getSupportActionBar().setDisplayShowTitleEnabled(false); //delete the default title
         fav_posts_txt = findViewById(R.id.fav_posts_txt);
+
         //--------------------FireBase Section----------------------\\
         mAuth=FirebaseAuth.getInstance();
         reference= FirebaseDatabase.getInstance().getReference("users");
@@ -79,7 +82,7 @@ public class FavPostsActivity extends AppCompatActivity {
                     for (String key: user.getFavPosts().keySet()) {
                         value.add(user.getFavPosts().get(key));
                     }//for
-                    query = db.collection("Posts").whereIn("id", value);
+                    query = db.collection("Posts").whereIn("id", value).orderBy("timestamp",Query.Direction.DESCENDING).limit(9);
                     PagedList.Config config = new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
 
                     //recyclerOptions

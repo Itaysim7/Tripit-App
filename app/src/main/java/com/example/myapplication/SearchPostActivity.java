@@ -30,12 +30,20 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * This class represents the activity "search post".
+ * In this class, the user is able search for posts, by entering the destination, departure date and the purposes.
+ * The user will be brought back to the home page, but will see only the posts that match his wishes.
+ *
+ * There are two different ways to pick the departure date:
+ * Range - The user will pick two dates, and the departure date will be any date in that range.
+ * Specific - The user will pick a single date, and the posts that have that date as the departure date will be shown.
+ */
 public class SearchPostActivity extends AppCompatActivity implements View.OnClickListener  {
-    private CountryCodePicker counry_picker;
+    private CountryCodePicker country_picker;
     private ArrayList<String> flight_Purposes;
     private int date_dep_start;
     private int date_dep_end;
-    private String destination;
     private FirebaseAuth mAuth;
     Button btn_date_specific, btn_date_range,  btn_trip_type, btn_search;
     Calendar c_start_end;
@@ -43,6 +51,7 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
     MaterialDatePicker.Builder<androidx.core.util.Pair<Long, Long>> build_range;
     MaterialDatePicker<androidx.core.util.Pair<Long, Long>> pick_range;
     FirebaseFirestore db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,18 +59,19 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
 
         //toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
-        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
+        TextView page_name = toolbar.findViewById(R.id.page_name);
+        page_name.setText("חיפוש");
         setSupportActionBar(toolbar);
         mTitle.setText(toolbar.getTitle());
         getSupportActionBar().setDisplayShowTitleEnabled(false); //delete the default title
 
         //findView
-
-        counry_picker = (CountryCodePicker) findViewById(R.id.autocomp_destination);
-        btn_date_specific = (Button) findViewById(R.id.search_date_specific_input);
-        btn_date_range = (Button) findViewById(R.id.search_date_range_input);
-        btn_trip_type = (Button) findViewById(R.id.btn_trip_type);
-        btn_search = (Button) findViewById(R.id.btn_search);
+        country_picker = findViewById(R.id.autocomp_destination);
+        btn_date_specific = findViewById(R.id.search_date_specific_input);
+        btn_date_range = findViewById(R.id.search_date_range_input);
+        btn_trip_type = findViewById(R.id.btn_trip_type);
+        btn_search = findViewById(R.id.btn_search);
 
         //Listeners:
         btn_date_specific.setOnClickListener(this);
@@ -132,6 +142,7 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
         }
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     public void onClick(View v) {
         if (v == btn_date_specific) // Case of specific date
@@ -152,7 +163,7 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
                 }//onDateSet
             }, year, month, day);
             dp_start_end.show();
-        }//If
+        }//If v == btn_date_specific
         else if (v == btn_date_range) //Case of range of dates
         {
             build_range = MaterialDatePicker.Builder.dateRangePicker();
@@ -180,7 +191,7 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
                 }//onPositiveButtonClick
             });//addOnPositiveButtonClickListener
 
-        }//else if
+        }//else if v == btn_date_range
         else if (v == btn_trip_type) {
             AlertDialog.Builder builder = new AlertDialog.Builder(SearchPostActivity.this,R.style.CustomAlertDialog);
             //string array for alert dialog multichoice items(flight Purposes)
@@ -229,23 +240,24 @@ public class SearchPostActivity extends AppCompatActivity implements View.OnClic
             AlertDialog dialog = builder.create();
             //show alert
             dialog.show();
-        }//else if
-
-
-
+        }//else if v == btn_trip_type
         else if(v == btn_search)
         {
-            destination = counry_picker.getSelectedCountryName();
+            String destination = country_picker.getSelectedCountryName();
             FilterObj filter = new FilterObj(destination,date_dep_start,date_dep_end,flight_Purposes);
             Bundle bundle = new Bundle();
             bundle.putSerializable("filter", filter);
             Intent intent=new Intent(this,homePage.class);
             intent.putExtras(bundle);
             startActivity(intent);
-        }//else if
+        }//else if v == btn_search
     }//onClick
-    /*
-    Simple convert function from dd/mm/yyyy format to yyyymmdd Integer
+
+
+    /**
+     * Simple convert function from dd/mm/yyyy format to yyyymmdd Integer
+     * @param date is the date to be converted
+     * @return integer in format yyyymmdd
      */
     private int Date_To_Int(String date) {
         String[] partial = date.split("/");
