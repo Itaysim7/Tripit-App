@@ -20,7 +20,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-
+/**
+ * This class represents the "Register" activity.
+ * In this class, the user can register to the app by entering his full name, e-mail, and password.
+ * The data is then saved into the database.
+ */
 public class RegisterActivity extends AppCompatActivity
 {
     private EditText emailEditText,passwordEditText,password2EditText,fullNameEditText;
@@ -83,9 +87,9 @@ public class RegisterActivity extends AppCompatActivity
     }//onCreate
 
     /**
-     * This function creates
-     * @param email
-     * @param password
+     * This function creates a new user in the firebase authentication, with the e-mail and password the user entered.
+     * @param email is the e-mail the user entered.
+     * @param password is the user's password.
      */
     private void registerUser(String email, String password)
     {
@@ -105,7 +109,7 @@ public class RegisterActivity extends AppCompatActivity
                             {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(RegisterActivity.this, "Authentication failed.",
+                            Toast.makeText(RegisterActivity.this, "הרשמה נכשלה. נסה שנית.",
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -113,7 +117,7 @@ public class RegisterActivity extends AppCompatActivity
     }
 
     /**
-     * This function adds the user data to the database,
+     * This function adds the user data to the realtime database,
      * and moves the user from this activity to the home activity if the registration was successful.
      * @param firebaseUser is the current user.
      */

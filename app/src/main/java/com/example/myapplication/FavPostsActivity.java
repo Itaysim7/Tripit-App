@@ -62,6 +62,7 @@ public class FavPostsActivity extends AppCompatActivity {
         mTitle.setText(toolbar.getTitle());
         getSupportActionBar().setDisplayShowTitleEnabled(false); //delete the default title
         fav_posts_txt = findViewById(R.id.fav_posts_txt);
+
         //--------------------FireBase Section----------------------\\
         mAuth=FirebaseAuth.getInstance();
         reference= FirebaseDatabase.getInstance().getReference("users");
