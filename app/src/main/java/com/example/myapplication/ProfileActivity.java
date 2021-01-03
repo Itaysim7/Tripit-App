@@ -66,7 +66,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-/*
+/**
  Profile Activity represent the About of the user.
  Profile Activity have the following functionality:
     1)Add profile picture given by the camera,phone memory or delete id necessary.

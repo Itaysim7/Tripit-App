@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-/*
+/**
     AdminHomeActivity have the following functionality:
         1)Makes integration between User to Admin with higher privileges.
         2)Handling new posts approvement.

@@ -32,7 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import java.util.ArrayList;
-/*
+/**
     FavPostsActivity have the following functionality:
         1)Show the favorite posts of each user if exist.
         2)Manage Adapter which handle the presentation style of the cards.

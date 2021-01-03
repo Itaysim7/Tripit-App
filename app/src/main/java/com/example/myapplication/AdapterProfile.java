@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
-/*
+/**
     AdapterProfile have the following functionality:
         1)Makes integration between DB to Profile activity at run-time.
         2)AdapterProfile create the card template which filled with user information.

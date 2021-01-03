@@ -24,7 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
-/*
+/**
     AdapterHome have the following functionality:
         1)Makes integration between DB to Home-Page activity at run-time.
         2)AdapterHome create the card template which filled with user information.

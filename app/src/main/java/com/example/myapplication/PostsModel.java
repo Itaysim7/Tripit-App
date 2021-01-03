@@ -2,7 +2,7 @@ package com.example.myapplication;
 
 
 import java.util.ArrayList;
-/*
+/**
      PostModel represent the post information which displayed in the app.
      His functionality is to make some integration between the raw data was stored in the DB,
      and the manipulate data that will present in the App.
@@ -45,7 +45,7 @@ public class PostsModel
     {
 
     }
-
+    //--------------------Setters----------------------\\
     public void setId(String id) {
         this.id = id;
     }
@@ -98,6 +98,10 @@ public class PostsModel
         this.return_date = return_date;
     }
 
+    //----------------------------Getters----------------------------\\
+    /**
+     * @return Departure date in string format dd/mm/yyyy
+     */
     public String getDeparture_date()
     {
         String dep=intToStringDate(departure_date);
@@ -107,7 +111,9 @@ public class PostsModel
     public int getDeparture_date_int(){
         return departure_date;
     }
-
+    /**
+     * @return Return date in string format dd/mm/yyyy
+     */
     public String getReturn_date()
     {
         String ret=intToStringDate(return_date);
@@ -137,13 +143,15 @@ public class PostsModel
     public String getDescription() {
         return description;
     }
-
+    /**
+     * @return Concatination of all the trip type was selected from user if defined.
+     */
     public String getType_trip()
     {
         String text="";
         if(type_trip!=null)
         {
-            for(int i=0;i<type_trip.size();i++)
+            for(int i=0;i<type_trip.size();++i)
             {
                 text=text+type_trip.get(i)+", ";
             }//for
@@ -172,7 +180,11 @@ public class PostsModel
     public String getUser_id() {
         return user_id;
     }
-
+    /**
+     * Mapped time in int to String
+     * @param time - time presented in int
+     * @return string format of dd/mm/yyyy
+     */
     private String intToStringDate(int time)
     {
         if(time != -1)
