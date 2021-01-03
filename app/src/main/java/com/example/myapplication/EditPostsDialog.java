@@ -31,7 +31,7 @@ public class EditPostsDialog extends AppCompatDialogFragment implements View.OnC
     //country picker
     private CountryCodePicker ccp;
     //field for the posts
-    private int dep_date, ret_date;
+    private int dep_date, ret_date, min_age_int, max_age_int;
     private TextView dep_date_txt, ret_date_txt, type_type_txt;
     private EditText min_age, max_age, description;
     private String gender;
@@ -76,9 +76,17 @@ public class EditPostsDialog extends AppCompatDialogFragment implements View.OnC
         ret_date_txt.setText(model.getReturn_date());
         btn_gender.setText(model.getGender());
         description.setText(model.getDescription());
+        btn_type_trip.setText(model.getType_trip_String());
+        String m = String.valueOf(model.getMin_age());
+        min_age.setText(String.valueOf(model.getMin_age()));
+        max_age.setText(String.valueOf(model.getMax_age()));
+
         dep_date = model.getDeparture_date_int();
         ret_date = model.getReturn_date_int();
         gender = model.getGender();
+        type_array = model.getType_trip();
+        min_age_int = model.getMin_age();
+        max_age_int = model.getMax_age();
 
         //OnClickListeners
         dep_date_txt.setOnClickListener(this);
@@ -116,44 +124,41 @@ public class EditPostsDialog extends AppCompatDialogFragment implements View.OnC
 
                         if(ret_date != model.getReturn_date_int())
                             listener.ChangeReturnDate(ret_date, model.getId());
-                        String age1 = min_age.getText().toString();
-                        String age2 = max_age.getText().toString();
                         //checks that the input is valid
-                        int min = 0, max = 0;
-                        if(!age1.equals("") || !age2.equals(""))
+                        if(!min_age.getText().toString().equals("") || !max_age.getText().toString().equals(""))
                         {
-                            if (!age1.equals("")) {
+                            if (!min_age.getText().toString().equals("")) {
                                 try {
-                                    min = Integer.parseInt(age1);
+                                    min_age_int = Integer.parseInt(min_age.getText().toString());
                                 } catch (Exception e) {
                                     Toast.makeText(getContext(), "שדה גיל אינו מספר", Toast.LENGTH_LONG).show();
                                     return;
                                 }//catch
                             }//if
-                            if (!age2.equals("")) {
+                            if (!max_age.getText().toString().equals("")) {
                                 try {
-                                    max = Integer.parseInt(age2);
+                                    max_age_int = Integer.parseInt(max_age.getText().toString());
                                 } catch (Exception e) {
                                     Toast.makeText(getContext(), "שדה גיל אינו מספר", Toast.LENGTH_LONG).show();
                                     return;
                                 }//catch
                             }//if
 
-                            if (max < min) {
+                            if (max_age_int < min_age_int) {
                                 Toast.makeText(getContext(), "הגיל המינימלי חייב להיות קטן מהגיל המקסימלי", Toast.LENGTH_LONG).show();
                                 return;
                             }//if
-                            if (min < 16) {
+                            if (min_age_int < 16 && min_age_int != -1) {
                                 Toast.makeText(getContext(), "הגיל המינימלי הוא 16", Toast.LENGTH_LONG).show();
                                 return;
                             }//if
-                            if (max > 120) {
+                            if (max_age_int > 120 && max_age_int != -1) {
                                 Toast.makeText(getContext(), "הגיל המקסימלי הוא 120", Toast.LENGTH_LONG).show();
                                 return;
                             }//if
                         }//if
 
-                        listener.ChangeAges(age1,age2, model.getId());
+                        listener.ChangeAges(min_age_int, max_age_int, model.getId());
                         listener.ChangeGender(gender, model.getId());
 
                         String new_description = description.getText().toString();
@@ -310,7 +315,7 @@ public class EditPostsDialog extends AppCompatDialogFragment implements View.OnC
         void ChangeReturnDate(int return_date, String id);
         void ChangeDepartureDate(int departure_date, String id);
         void ChangeGender(String newGender, String id);
-        void ChangeAges(String StartAge, String EndAge, String id);
+        void ChangeAges(int StartAge, int EndAge, String id);
         void ChangeDescription(String Description, String id);
         void ChangeTripType(ArrayList<String> trip_types, String id);
     }

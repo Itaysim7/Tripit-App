@@ -314,9 +314,9 @@ public class ProfileActivity extends AppCompatActivity
     }//ChangeGender
 
     @Override
-    public void ChangeAges(String StartAge, String EndAge, String id) {
-        String range = StartAge+"-"+EndAge;
-        db.collection("Posts").document(id).update("age",range);
+    public void ChangeAges(int StartAge, int EndAge, String id) {
+        db.collection("Posts").document(id).update("max_age", EndAge);
+        db.collection("Posts").document(id).update("min_age", StartAge);
     }//ChangeAges
 
     @Override

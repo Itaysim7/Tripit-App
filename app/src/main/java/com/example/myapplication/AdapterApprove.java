@@ -20,13 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-/**
- AdapterHome have the following functionality:
- 1)Makes integration between DB to Home-Page activity at run-time.
- 2)AdapterHome create the card template which filled with user information.
- 3)Define hard-coded background.
- 4)Listen for changes in DB and user interaction and update accordingly.
- */
+
 public class AdapterApprove extends FirestoreRecyclerAdapter<PostsModel,AdapterApprove.ViewHolder>
 {
     private Context context;
@@ -57,7 +51,7 @@ public class AdapterApprove extends FirestoreRecyclerAdapter<PostsModel,AdapterA
         holder.list_destination.setText("יעד: "+model.getDestination());
         holder.list_gender.setText("מין: "+model.getGender());
         holder.list_description.setText("תיאור: "+model.getDescription());
-        holder.list_type.setText("מטרות הטיול שלי: "+model.getType_trip());
+        holder.list_type.setText("מטרות הטיול שלי: "+model.getType_trip_String());
         //set age
         int min_age=model.getMin_age();
         int max_age=model.getMax_age();
@@ -188,6 +182,6 @@ public class AdapterApprove extends FirestoreRecyclerAdapter<PostsModel,AdapterA
             list_layout = itemView.findViewById(R.id.list_layout);
             yes_txt = itemView.findViewById(R.id.yes_txt);
             no_txt = itemView.findViewById(R.id.no_txt);
-        }//ViewHolder
-    }//ViewHolder
-}//AdapterApprove
+        }
+    }
+}

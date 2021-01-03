@@ -143,10 +143,15 @@ public class PostsModel
     public String getDescription() {
         return description;
     }
+
+    public ArrayList<String>getType_trip(){
+        return this.type_trip;
+    }
+
     /**
      * @return Concatination of all the trip type was selected from user if defined.
      */
-    public String getType_trip()
+    public String getType_trip_String()
     {
         String text="";
         if(type_trip!=null)
