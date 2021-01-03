@@ -17,7 +17,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import java.util.Calendar;
 
-/*
+/**
  edit profile dialog Activity represent dialog for edit details of the user in his profile
  edit profile dialog Activity have the following functionality:
     The user can change every field that he wants.
@@ -156,7 +156,7 @@ public class EditProfileDialog extends AppCompatDialogFragment implements View.O
         } //if choose_gender_btn
     }//onClick
 
-    /*
+    /**
      * The function Refresh the page after the user edit his details.
      */
     private void Refresh(){
@@ -164,7 +164,7 @@ public class EditProfileDialog extends AppCompatDialogFragment implements View.O
         startActivity(intent);
     }
 
-    /*
+    /**
      * interface for edit profile listener, with the following function:
      * 1)ChangeName - changes the full name of the user
      * 2)ChangeGenderForProfile - changes the gender of the user

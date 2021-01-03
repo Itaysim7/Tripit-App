@@ -40,7 +40,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import java.util.Arrays;
-/*
+/**
  user Activity represent the user page for login.
  user Activity have the following functionality:
     1)Allows login for all users.

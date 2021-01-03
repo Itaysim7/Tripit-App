@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,7 +21,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.storage.StorageTask;
 import java.util.ArrayList;
 
 /**
@@ -32,12 +30,8 @@ import java.util.ArrayList;
  */
 public class homePage extends AppCompatActivity {
     //FireBase/Store:
-    private FirebaseFirestore db;
-    private Query query;
     private FirebaseAuth mAuth;
     private DatabaseReference reference;
-    //Upload Images:
-    private StorageTask uploadTask;
     //Saving Data of Users as objects:
     private UsersObj user;
     private String fullName;
@@ -85,9 +79,11 @@ public class homePage extends AppCompatActivity {
         Query query = db.collection("Posts").whereEqualTo("approval", true);//Query for the post that admin approve
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
+        boolean specific=true;
         //Compound Query By Premade Indexes: serializing queries by user inputs
-        if (bundle != null) {
-            Toast.makeText(getApplicationContext(), "Inside", Toast.LENGTH_LONG).show();
+        if (bundle != null)
+        {
+            page_name.setText("תוצאות החיפוש");
             FilterObj filter = (FilterObj) bundle.getSerializable("filter");
             String destination = filter.getDestination();
             if (destination != null) {
@@ -97,21 +93,22 @@ public class homePage extends AppCompatActivity {
             int date_dep_end = filter.getDate_dep_end();
 
             if (date_dep_end == Integer.MAX_VALUE && date_dep_start != Integer.MIN_VALUE) {//Specific
-                System.out.println("Specific");
                 query = query.whereEqualTo("departure_date", date_dep_start);
             }//if
             if (date_dep_end != Integer.MAX_VALUE && date_dep_start != Integer.MIN_VALUE) {//Not specific
-                System.out.println("Not Specific");
+                specific=false;
                 query = query.whereGreaterThanOrEqualTo("departure_date", date_dep_start);
                 query = query.whereLessThanOrEqualTo("departure_date", date_dep_end);
             }//else
             if (filter.get_Flight_Purposes() != null) {
                 ArrayList<String> trip_type = new ArrayList<String>(filter.get_Flight_Purposes());
-                System.out.println("Trip type:\t" + trip_type.toString());
                 query = query.whereArrayContainsAny("type_trip", trip_type);
             }//if
         }//if
-        query=query.orderBy("timestamp",Query.Direction.DESCENDING).limit(100);
+        if(!specific)
+            query=query.orderBy("departure_date",Query.Direction.ASCENDING).limit(100);
+        else
+            query=query.orderBy("timestamp",Query.Direction.DESCENDING).limit(100);
         //recyclerOptions
         FirestoreRecyclerOptions<PostsModel> options = new FirestoreRecyclerOptions.Builder<PostsModel>()
                 .setQuery(query, PostsModel.class).build();
