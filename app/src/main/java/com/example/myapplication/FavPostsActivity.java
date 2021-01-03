@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
@@ -65,7 +66,6 @@ public class FavPostsActivity extends AppCompatActivity {
 
         //--------------------FireBase Section----------------------\\
         mAuth=FirebaseAuth.getInstance();
-        reference= FirebaseDatabase.getInstance().getReference("users");
         FirebaseUser fUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
         mFirestoreList=findViewById(R.id.firestore_list);
@@ -78,11 +78,14 @@ public class FavPostsActivity extends AppCompatActivity {
                     fav_posts_txt.setText("לא קיימים פוסטים להצגה.");
                 }//if
                  else{
+                    Query query = db.collection("Posts").whereEqualTo("approval", true);
                     ArrayList<String> value = new ArrayList<>();
                     for (String key: user.getFavPosts().keySet()) {
-                        value.add(user.getFavPosts().get(key));
+                        //value.add(user.getFavPosts().get(key));
+                        query = query.whereEqualTo("id", user.getFavPosts().get(key));
                     }//for
-                    query = db.collection("Posts").whereIn("id", value).orderBy("timestamp",Query.Direction.DESCENDING).limit(9);
+
+
                     PagedList.Config config = new PagedList.Config.Builder().setInitialLoadSizeHint(8).setPageSize(2).build();
 
                     //recyclerOptions
@@ -115,7 +118,6 @@ public class FavPostsActivity extends AppCompatActivity {
                                 holder.list_age.setText("טווח גילאים: לפחות " + min_age);
                             if(min_age!=-1&&max_age!=-1)
                                 holder.list_age.setText("טווח גילאים: " + min_age+"-"+max_age);
-                            holder.star.setVisibility(View.INVISIBLE);
 
                             reference = FirebaseDatabase.getInstance().getReference("users").child(model.getUser_id());
                             reference.addValueEventListener(new ValueEventListener() {
@@ -232,7 +234,6 @@ public class FavPostsActivity extends AppCompatActivity {
         private TextView list_gender;
         private TextView list_description;
         private TextView list_type;
-        private TextView star;
         private ImageView list_image_url;
 
         public PostsViewHolder(@NonNull View itemView) {
@@ -245,7 +246,6 @@ public class FavPostsActivity extends AppCompatActivity {
             list_description=itemView.findViewById(R.id.list_description);
             list_type=itemView.findViewById(R.id.list_type);
             list_image_url=itemView.findViewById(R.id.list_image_url);
-            star = itemView.findViewById(R.id.Star);
         }//PostsViewHolder
     }//PostsViewHolder
 
