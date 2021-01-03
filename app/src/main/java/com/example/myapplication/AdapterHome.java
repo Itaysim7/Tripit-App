@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,7 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
-/*
+/**
     AdapterHome have the following functionality:
         1)Makes integration between DB to Home-Page activity at run-time.
         2)AdapterHome create the card template which filled with user information.
@@ -120,6 +121,7 @@ public class AdapterHome extends FirestoreRecyclerAdapter<PostsModel,AdapterHome
             {
                 user_for_post = snapshot.getValue(UsersObj.class);
                 //set fullName
+                assert user_for_post != null;
                 holder.list_fullName.setText(user_for_post.getFullName());
                 //set image
                 if (user_for_post.getImageUrl().equals("default")) {
@@ -128,17 +130,7 @@ public class AdapterHome extends FirestoreRecyclerAdapter<PostsModel,AdapterHome
                  else {
                     Glide.with(context).load(user_for_post.getImageUrl()).circleCrop().into(holder.list_image_url);
                 }//else
-                if (user_for_post.getFavPosts() != null)
-                {
-                    for (String key : user_for_post.getFavPosts().keySet())
-                    {
-                        if (user_for_post.getFavPosts().get(key).equals(model.getId()))
-                        {
-                            holder.Star.setFavorite(true);
-                        }//if
-                    }//for
-                }//if
-            }//onDataChange
+            }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -146,6 +138,30 @@ public class AdapterHome extends FirestoreRecyclerAdapter<PostsModel,AdapterHome
         });//addValueEventListener
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser myUser = mAuth.getCurrentUser();
+        String myUser_id = myUser.getUid();
+        reference = FirebaseDatabase.getInstance().getReference("users").child(myUser_id);
+        reference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    UsersObj user = snapshot.getValue(UsersObj.class);
+                    if (user.getFavPosts() != null)
+                    {
+                        for (String key : user.getFavPosts().keySet())
+                        {
+                            Toast.makeText(AdapterHome.this.context, user.getFullName() ,Toast.LENGTH_SHORT).show();
+                            if (user.getFavPosts().get(key).equals(model.getId()))
+                            {
+                                holder.Star.setFavorite(true);
+                            }//if
+                        }//for
+                    }//if
+                }//onDataChange
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         holder.Star.setOnFavoriteChangeListener(
                 new MaterialFavoriteButton.OnFavoriteChangeListener() {
                     @Override
@@ -187,7 +203,7 @@ public class AdapterHome extends FirestoreRecyclerAdapter<PostsModel,AdapterHome
         return new AdapterHome.ViewHolder(v);
     }//onCreateViewHolder
 
-    /*
+    /**
         ViewHoder responsible for the creation of the layout variables such as:TextView,Imageview etc..
         and mapping each layout variable to component id.
     */

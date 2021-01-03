@@ -1,12 +1,11 @@
 package com.example.myapplication;
 
+
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,11 +28,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hbb20.CountryCodePicker;
 
@@ -45,22 +39,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * This class represents the activity "create post".
+ * In this class, the user is able to enter details about his trip, such as:
+ * dates of the vacation, destination, purposes, and a short description.
+ * He can also enter details about the partners, such as the partners' age and gender.
+ * After the user finishes and clicks "post", the post is saved in the database.
+ */
 public class CreatePost extends AppCompatActivity implements View.OnClickListener
 {
     private String age_text = "לא צוין",departure_date="",return_date="",gender="לא משנה",current_user_id="",min_age_string="",max_age_string="";
     private EditText description;
     private CountryCodePicker ccp;
-    private Uri post_image_uri;
     private FirebaseFirestore db;
     private FirebaseAuth firebaseAuth;
-    private FirebaseUser fUser;
-    private UsersObj user;
-    private DatabaseReference reference;
     private ProgressDialog pd;
     private TextView text_dep_date,text_ret_date,text_type_trip;
     private Button btn_dep_date,btn_ret_date,btn_type_trip,btn_gender,btn_age,btn_publish;
-    private Calendar cal_dep,cal_ret;
-    private DatePickerDialog dpd_dep,dpd_ret;
     private ArrayList<String> type_array;
     private int dep_date=-1,ret_date=-1,min_age_int=-1,max_age_int=-1;
 
@@ -72,7 +67,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
 
         //toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
-        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
         TextView page_name = toolbar.findViewById(R.id.page_name);
         page_name.setText("הוספת פוסט");
         setSupportActionBar(toolbar);
@@ -82,19 +77,6 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
         //firebase
         db=FirebaseFirestore.getInstance();
         firebaseAuth=FirebaseAuth.getInstance();
-        fUser = firebaseAuth.getCurrentUser();
-        reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid());
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                user = snapshot.getValue(UsersObj.class);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("Failed", error.getMessage());
-            }
-        });
         current_user_id=firebaseAuth.getCurrentUser().getUid();
 
         //progressDialog
@@ -185,40 +167,37 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
     {
         if(view==btn_dep_date)
         {
-            cal_dep=Calendar.getInstance();
-            int day=cal_dep.get(Calendar.DAY_OF_MONTH);
-            int month=cal_dep.get(Calendar.MONTH);
-            int year=cal_dep.get(Calendar.YEAR);
-            dpd_dep=new DatePickerDialog(CreatePost.this, new DatePickerDialog.OnDateSetListener()
-            {
+            Calendar cal_dep = Calendar.getInstance();
+            int day= cal_dep.get(Calendar.DAY_OF_MONTH);
+            int month= cal_dep.get(Calendar.MONTH);
+            int year= cal_dep.get(Calendar.YEAR);
+            //onDateSet
+            DatePickerDialog dpd_dep = new DatePickerDialog(CreatePost.this, new DatePickerDialog.OnDateSetListener() {
                 @Override
-                public void onDateSet(DatePicker view, int mYear, int mMonth, int dayOfMonth)
-                {
-                    departure_date=dayOfMonth+ "/" + (mMonth+1) + "/"+ mYear;
+                public void onDateSet(DatePicker view, int mYear, int mMonth, int dayOfMonth) {
+                    departure_date = dayOfMonth + "/" + (mMonth + 1) + "/" + mYear;
                     text_dep_date.setText(departure_date);
-                    dep_date =dayOfMonth+(mMonth+1)*100+ mYear*10000;
+                    dep_date = dayOfMonth + (mMonth + 1) * 100 + mYear * 10000;
                 }//onDateSet
-            },year,month,day);
+            }, year, month, day);
             dpd_dep.show();
-        }//if
+        }//if view == btn_dep_date
         else if(view==btn_ret_date)
         {
-            cal_ret=Calendar.getInstance();
-            int day=cal_ret.get(Calendar.DAY_OF_MONTH);
-            int month=cal_ret.get(Calendar.MONTH);
-            int year=cal_ret.get(Calendar.YEAR);
-            dpd_ret=new DatePickerDialog(CreatePost.this, new DatePickerDialog.OnDateSetListener()
-            {
+            Calendar cal_ret = Calendar.getInstance();
+            int day= cal_ret.get(Calendar.DAY_OF_MONTH);
+            int month= cal_ret.get(Calendar.MONTH);
+            int year= cal_ret.get(Calendar.YEAR);
+            DatePickerDialog dpd_ret = new DatePickerDialog(CreatePost.this, new DatePickerDialog.OnDateSetListener() {
                 @Override
-                public void onDateSet(DatePicker view, int mYear, int mMonth, int dayOfMonth)
-                {
-                    return_date=dayOfMonth+ "/" + (mMonth+1) + "/"+ mYear;
+                public void onDateSet(DatePicker view, int mYear, int mMonth, int dayOfMonth) {
+                    return_date = dayOfMonth + "/" + (mMonth + 1) + "/" + mYear;
                     text_ret_date.setText(return_date);
-                    ret_date =dayOfMonth+(mMonth+1)*100+ mYear*10000;
+                    ret_date = dayOfMonth + (mMonth + 1) * 100 + mYear * 10000;
                 }
-            },year,month,day);
+            }, year, month, day);
             dpd_ret.show();
-        }
+        }//if view==btn_ret_date
         else if(view==btn_type_trip)
         {
             AlertDialog.Builder builder=new AlertDialog.Builder(CreatePost.this,R.style.CustomAlertDialog);
@@ -269,7 +248,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
             AlertDialog dialog=builder.create();
             //show alert
             dialog.show();
-        }
+        }//if view == btn_type_trip
         else if(view==btn_gender)
         {
             String [] list_gender=new String[]{"אישה", "גבר", "לא משנה"};
@@ -292,7 +271,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
             });
             AlertDialog mDialog=mBuilder.create();
             mDialog.show();
-        }
+        }//if view==btn_gender
         else if(view==btn_age)
         {
             LayoutInflater factory = LayoutInflater.from(this);
@@ -320,7 +299,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                         }
                     });
             alert.show();
-        }
+        }//if view==btn_age
         else if(view==btn_publish)
         {
             String dest=ccp.getSelectedCountryName();
@@ -338,7 +317,7 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                 return;
             }
             //check if min_age<max_age and if the user insert integer
-            if(min_age_string!=""&&max_age_string!="")
+            if(!min_age_string.equals("") && !max_age_string.equals(""))
             {
                 try
                 {
@@ -369,68 +348,59 @@ public class CreatePost extends AppCompatActivity implements View.OnClickListene
                 }
             }
             uploadData(dest,desc);
-        }
+        }//else if view == btn_publish
     }
 
-    /*
-        The function upload the data of the post to the firebase
+    /**
+     * The function upload the data of the post to the firebase.
+     * @param dest The destination the user chose
+     * @param desc The description the user wrote about his soon-to-be trip
      */
     private void uploadData(String dest,String desc)
-    {
-        pd.setTitle("מוסיף את המידע למאגר");
-        pd.show();
-        //random id for each data to be stored
-        String id= UUID.randomUUID().toString(); //Create Random Post ID
-        Map<String,Object> post_map=new HashMap<>();
-        post_map.put("id",id);
-        post_map.put("approval",false);
-        post_map.put("user_id",current_user_id);
-        post_map.put("timestamp",System.currentTimeMillis());
-        post_map.put("destination",dest);
-        post_map.put("departure_date",dep_date);
-        post_map.put("return_date",ret_date);
-        post_map.put("min_age",min_age_int);
-        post_map.put("max_age",max_age_int);
-        post_map.put("gender",gender);
-        post_map.put("type_trip",type_array);
-        post_map.put("description",desc);
-        post_map.put("clicks",0);
+        {
+            pd.setTitle("מוסיף את המידע למאגר");
+            pd.show();
+            //random id for each data to be stored
+            String id= UUID.randomUUID().toString(); //Create Random Post ID
+            Map<String,Object> post_map=new HashMap<>();
+            post_map.put("id",id);
+            post_map.put("approval",false);
+            post_map.put("user_id",current_user_id);
+            post_map.put("timestamp",System.currentTimeMillis());
+            post_map.put("destination",dest);
+            post_map.put("departure_date",dep_date);
+            post_map.put("return_date",ret_date);
+            post_map.put("min_age",min_age_int);
+            post_map.put("max_age",max_age_int);
+            post_map.put("gender",gender);
+            post_map.put("type_trip",type_array);
+            post_map.put("description",desc);
+            post_map.put("clicks",0);
 
-        //add this data
-        db.collection("Posts").document(id).set(post_map)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        //this will be called when the data added successfully
-                        pd.dismiss();
-                        Toast.makeText(CreatePost.this,"Uploaded...",Toast.LENGTH_SHORT).show();
-                        Intent home_page=new Intent(CreatePost.this,homePage.class);
-                        startActivity(home_page);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        //this will be called if there is any error while uploading
-                        pd.dismiss();
-                        Toast.makeText(CreatePost.this,e.getMessage(),Toast.LENGTH_SHORT).show();
-                    }
-                });
+            //add this data
+            db.collection("Posts").document(id).set(post_map)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            //this will be called when the data added successfully
+                            pd.dismiss();
+                            Toast.makeText(CreatePost.this,"Uploaded...",Toast.LENGTH_SHORT).show();
+                            Intent home_page=new Intent(CreatePost.this,homePage.class);
+                            startActivity(home_page);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            //this will be called if there is any error while uploading
+                            pd.dismiss();
+                            Toast.makeText(CreatePost.this,e.getMessage(),Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
-    }
+        }
 
 
-    private long getTime()
-    {
-        Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
-        long sum=minute+hour*100+day*10000+month*1000000+year*100000000;
-        return sum;
-    }
 
 
 }

@@ -20,9 +20,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-/*
- admin Activity represent the admin page for login.
- admin Activity have the following functionality:
+
+/**
+ * Admin Activity represent the admin page for login.
+ * Admin Activity have the following functionality:
     1)Allows login only for users that are admin.
     2)Makes sure that the login details match the details in the db
  */
@@ -106,6 +107,7 @@ public class adminActivity extends AppCompatActivity implements View.OnClickList
                     }//onComplete
                 });
     }//validation
+
     /**
      * The function Makes sure that this user is admin.
      * @param user- FirebaseUser from db
@@ -119,7 +121,7 @@ public class adminActivity extends AppCompatActivity implements View.OnClickList
             public void onDataChange(@NonNull DataSnapshot snapshot)
             {
                 UsersObj user = snapshot.getValue(UsersObj.class);
-                if(!user.getAdmin()){
+                if(user!= null && !user.getAdmin()){
                     Toast.makeText(getApplicationContext(), "אין למשתמש זה אישור להכנס.", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(getApplicationContext(), welcomeActivity.class);
                     startActivity(intent);
