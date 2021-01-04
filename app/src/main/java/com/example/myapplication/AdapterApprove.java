@@ -46,7 +46,7 @@ public class AdapterApprove extends FirestoreRecyclerAdapter<PostsModel,AdapterA
         super(options);
         this.context=context;
         db = FirebaseFirestore.getInstance();
-    }
+    }//AdapterApprove
 
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull PostsModel model)
@@ -107,7 +107,7 @@ public class AdapterApprove extends FirestoreRecyclerAdapter<PostsModel,AdapterA
             default:
                 holder.list_layout.getBackground().setAlpha(80);
                 break;
-        }
+        }//switch
         String user_id=model.getUser_id();
         //Set image for the post from profile imageURL
         reference = FirebaseDatabase.getInstance().getReference("users").child(user_id);
@@ -120,30 +120,30 @@ public class AdapterApprove extends FirestoreRecyclerAdapter<PostsModel,AdapterA
                 //set image
                 if (user.getImageUrl().equals("default")) {
                     holder.list_image_url.setImageResource(R.drawable.user_image);
-                }
+                }//if
                 else {
                     Glide.with(context).load(user.getImageUrl()).into(holder.list_image_url);
-                }
+                }//else
             }//onDataChange
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+            }//onCancelled
+        });//addValueEventListener
         //approve post
         holder.yes_txt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 db.collection("Posts").document(model.getId()).update("approval",true);
-            }
-        });
+            }//onClick
+        });//setOnClickListener
         holder.no_txt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 db.collection("Posts").document(model.getId()).delete();
-            }
-        });
-    }
+            }//onClick
+        });//setOnClickListener
+    }//onBindViewHolder
 
     @NonNull
     @Override
@@ -188,6 +188,6 @@ public class AdapterApprove extends FirestoreRecyclerAdapter<PostsModel,AdapterA
             list_layout = itemView.findViewById(R.id.list_layout);
             yes_txt = itemView.findViewById(R.id.yes_txt);
             no_txt = itemView.findViewById(R.id.no_txt);
-        }
-    }
-}
+        }//ViewHolder
+    }//ViewHolder
+}//AdapterApprove
