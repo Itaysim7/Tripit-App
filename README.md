@@ -44,6 +44,8 @@ If you are having issues, you can contact us at the email:
 
 The first page you will see is the welcome page, which enables you to login either as a user or as an admin. Click on "user".
 
+<img src = "https://github.com/Itaysim7/Tripit-App/blob/master/Media/Welcome_Screenshot.png" width="350">
+
 From there you will be transferred to the login page. 
 
 #### Registration
