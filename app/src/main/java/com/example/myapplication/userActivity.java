@@ -67,20 +67,20 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
     //FireBase/Store
     private UsersObj user;
     private FirebaseDatabase database;
-    private DatabaseReference mDatebase;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener authStateListener;
-    private AccessTokenTracker accessTokenTracker;
+    private DatabaseReference m_datebase;
+    private FirebaseAuth m_auth;
+    private FirebaseAuth.AuthStateListener auth_state_listener;
+    private AccessTokenTracker access_token_tracker;
     //Layout - connectivity
     private TextView not_register,forgot_password;
-    private EditText emailEditText, passwordEditText;
-    private Button login,mButtonFacebook, signInButton_Google;
+    private EditText email_EditText, password_EditText;
+    private Button login, m_button_facebook, sign_in_button_google;
     private CheckBox save_Credentials;
     //Facebook - credential
-    private CallbackManager callbackManager;
-    private LoginManager loginManager;
+    private CallbackManager call_back_manager;
+    private LoginManager login_manager;
     //Google - credential
-    private GoogleSignInClient mGoogleSignInClient;
+    private GoogleSignInClient m_google_signIn_client;
     //context
     final Context context = this;
 
@@ -92,16 +92,16 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
 
         //find view
         not_register = (TextView) findViewById(R.id.register);
-        emailEditText = (EditText) findViewById(R.id.username);
-        passwordEditText = (EditText) findViewById(R.id.password);
+        email_EditText = (EditText) findViewById(R.id.username);
+        password_EditText = (EditText) findViewById(R.id.password);
         login = (Button) findViewById(R.id.login);
         save_Credentials = (CheckBox)findViewById(R.id.checkBox);
         forgot_password = (TextView)findViewById(R.id.forgot_password);
 
         //Listeners
         not_register.setOnClickListener(this);
-        emailEditText.setOnClickListener(this);
-        passwordEditText.setOnClickListener(this);
+        email_EditText.setOnClickListener(this);
+        password_EditText.setOnClickListener(this);
         login.setOnClickListener(this);
         save_Credentials.setOnClickListener(this);
         forgot_password.setOnClickListener(this);
@@ -111,23 +111,23 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
 
         //Database - Firebase
         database = FirebaseDatabase.getInstance();
-        mDatebase = database.getReference("users");
-        mAuth = FirebaseAuth.getInstance();
+        m_datebase = database.getReference("users");
+        m_auth = FirebaseAuth.getInstance();
 
         //For the facebook login:
         FacebookSdk.sdkInitialize(getApplicationContext());
         facebookLogin();
-        mButtonFacebook = findViewById(R.id.buttonForFacebook);
-        mButtonFacebook.setOnClickListener(this);
+        m_button_facebook = findViewById(R.id.buttonForFacebook);
+        m_button_facebook.setOnClickListener(this);
 
         //For the google login:
-        signInButton_Google = findViewById(R.id.buttonForGoogle);
+        sign_in_button_google = findViewById(R.id.buttonForGoogle);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        signInButton_Google.setOnClickListener(this);
+        m_google_signIn_client = GoogleSignIn.getClient(this, gso);
+        sign_in_button_google.setOnClickListener(this);
     }//onCreate
 
     @Override
@@ -152,8 +152,8 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
             if(attempt<4)
             {
                 attempt++;
-                email = emailEditText.getText().toString();
-                pass = passwordEditText.getText().toString();
+                email = email_EditText.getText().toString();
+                pass = password_EditText.getText().toString();
                 if (TextUtils.isEmpty(email) || TextUtils.isEmpty(pass)) {
                     Toast.makeText(getApplicationContext(), "הכנס/י אימייל וססמא", Toast.LENGTH_LONG).show();
                     return;
@@ -181,13 +181,13 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
 
             }//4 More than 4 attempts
         }//else if
-        else if (v == mButtonFacebook)
+        else if (v == m_button_facebook)
         {
-            loginManager.logInWithReadPermissions(this,
+            login_manager.logInWithReadPermissions(this,
                     Arrays.asList("email", "public_profile", "user_birthday"));
         }//else if
 
-        else if(v == signInButton_Google)
+        else if(v == sign_in_button_google)
         {
             signIn_withGoogle();
         }//else if
@@ -217,8 +217,8 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
         // Edit and commit
         if(checkBox)//If checkbox was clicked
         {
-            email = emailEditText.getText().toString();
-            pass = passwordEditText.getText().toString();
+            email = email_EditText.getText().toString();
+            pass = password_EditText.getText().toString();
             System.out.println("onPause saved email: " + email);
             System.out.println("onPause saved password: " + pass);
             editor.putString(KEY_NAME, email);
@@ -246,15 +246,15 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
         checkBox = sp.getBoolean(KEY_CHECKBOX,false);
         email = sp.getString(KEY_NAME, "");
         pass = sp.getString(KEY_PASS, "");
-        emailEditText.setText(email);
-        passwordEditText.setText(pass);
+        email_EditText.setText(email);
+        password_EditText.setText(pass);
     }//loadPreferences
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
     {
         //For Facebook:
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        call_back_manager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
         //Google:
         if(requestCode == RC_SIGN_IN){
@@ -269,21 +269,21 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = m_auth.getCurrentUser();
         if(currentUser == null)
             return;
         updateUI(currentUser);
     }//onStart
 
     public void validation(String email, String password) {
-        mAuth.signInWithEmailAndPassword(email, password)
+        m_auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            FirebaseUser user = m_auth.getCurrentUser();
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -313,10 +313,10 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
     //-----------------------Login with facebook functions--------------------
 
     public void facebookLogin() {
-        loginManager = LoginManager.getInstance();
-        callbackManager = CallbackManager.Factory.create();
+        login_manager = LoginManager.getInstance();
+        call_back_manager = CallbackManager.Factory.create();
 
-        loginManager.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        login_manager.registerCallback(call_back_manager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "OnSuccess"+loginResult);
@@ -335,7 +335,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
             }//onError
         });//facebookLogin
 
-        authStateListener = new FirebaseAuth.AuthStateListener() {
+        auth_state_listener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -346,11 +346,11 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
             }//onAuthStateChanged
         };//AuthStateListener
 
-        accessTokenTracker = new AccessTokenTracker() {
+        access_token_tracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
                 if(currentAccessToken == null){
-                    mAuth.signOut();
+                    m_auth.signOut();
                 }//if
             }//onCurrentAccessTokenChanged
         };//AccessTokenTracker
@@ -359,12 +359,12 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
     private void handleFacebookToken(AccessToken token){
         Log.d(TAG, "handleFacebookToken " + token);
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        mAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        m_auth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     Log.d(TAG, "sign in with credential: successful");
-                    FirebaseUser user = mAuth.getCurrentUser();
+                    FirebaseUser user = m_auth.getCurrentUser();
                     updateUI(user);
                 }//if
                 else{
@@ -380,7 +380,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
     //-----------------------Login with Google functions--------------------
 
     private void signIn_withGoogle() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        Intent signInIntent = m_google_signIn_client.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }//signIn
 
@@ -401,13 +401,13 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
         //check if the account is null
         if (acct != null) {
             AuthCredential authCredential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-            mAuth.signInWithCredential(authCredential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            m_auth.signInWithCredential(authCredential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         Toast.makeText(userActivity.this, "Successful", Toast.LENGTH_SHORT).show();
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        if(mDatebase.child(user.getUid()) == null)
+                        FirebaseUser user = m_auth.getCurrentUser();
+                        if(m_datebase.child(user.getUid()) == null)
                             register(user);
                         Intent loginIntent=new Intent(userActivity.this, homePage.class);
                         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -427,7 +427,7 @@ public class userActivity extends AppCompatActivity implements View.OnClickListe
 
     public void register(FirebaseUser firebaseUser) {
         user = new UsersObj(firebaseUser.getEmail(),"default","empty","default","default", 0,false);
-        mDatebase.child(firebaseUser.getUid()).setValue(user);
+        m_datebase.child(firebaseUser.getUid()).setValue(user);
     }
 
 }
