@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,8 +37,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.HashMap;
-
-import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 
 public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
@@ -84,8 +81,10 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
                 switch (menuItem.getItemId()){
                     case R.id.upload_image:
                         openImage();
+                        return true;
                     case R.id.delete_image:
                         reference.child("imageUrl").setValue("default");
+                        return true;
                     case R.id.open_camera:
                         //ask the user for permissions
                         if(mContext.checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
@@ -96,6 +95,7 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
                         else {
                             openCamera();
                         }
+                        return true;
                 }
                 return false;
             }
